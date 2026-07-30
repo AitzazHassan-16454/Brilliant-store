@@ -126,10 +126,18 @@ class CategoryProductSeeder extends Seeder
             ],
         ];
 
-        $categories->each(function ($products, $categoryName) use ($subcategoryMap) {
+        $descriptions = [
+            'Fashion' => 'Curated apparel and accessories crafted for timeless style and everyday luxury.',
+            'Electronic' => 'Premium gadgets and devices designed to elevate your digital lifestyle.',
+        ];
+
+        $categories->each(function ($products, $categoryName) use ($subcategoryMap, $descriptions) {
             $category = Category::firstOrCreate(
                 ['name' => $categoryName],
-                ['uid' => 'CAT_'.strtoupper(Str::random(8))]
+                [
+                    'uid' => 'CAT_'.strtoupper(Str::random(8)),
+                    'description' => $descriptions[$categoryName] ?? null,
+                ]
             );
 
             foreach ($products as $productName => $imageFile) {

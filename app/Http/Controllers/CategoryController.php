@@ -35,7 +35,13 @@ class CategoryController extends Controller
         // Start building the product query for this category
         $productQuery = Product::with('category', 'subcategory')
             ->where('category_id', $category->id)
-            ->where('is_active', true);
+            ->where('is_active', true)
+            ->withCount(['reviews' => function ($query) {
+                $query->where('status', 'approved');
+            }])
+            ->withAvg(['reviews' => function ($query) {
+                $query->where('status', 'approved');
+            }], 'rating');
 
         // If the user searched for something, filter by product name
         if ($request->search) {

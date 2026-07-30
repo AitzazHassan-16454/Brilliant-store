@@ -25,7 +25,14 @@ class ProductController extends Controller
     public function home(Request $request)
     {
         // Start building the query for active products only
-        $productQuery = Product::with('category')->where('is_active', true);
+        $productQuery = Product::with('category')
+            ->where('is_active', true)
+            ->withCount(['reviews' => function ($query) {
+                $query->where('status', 'approved');
+            }])
+            ->withAvg(['reviews' => function ($query) {
+                $query->where('status', 'approved');
+            }], 'rating');
 
         // If the user searched for a product name, filter by it
         if ($request->search) {

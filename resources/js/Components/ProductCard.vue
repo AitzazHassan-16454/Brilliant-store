@@ -18,19 +18,17 @@ const imgLoaded = ref(false)
     class="group relative flex h-full flex-col overflow-hidden rounded-2xl md:rounded-lg border border-border bg-card shadow-luxury transition-luxury hover:border-[#D4AF37]/50 hover:shadow-luxury-hover">
 
     <!-- Image -->
-    <Link :href="`/products/${product.uid}`" class="relative block aspect-square overflow-hidden">
-      <div v-if="!imgLoaded"
-        class="shimmer absolute inset-0" />
-
-      <img
+    <Link :href="`/products/${product.uid}`" class="relative block aspect-square overflow-hidden bg-gradient-to-br from-[#D4AF37]/25 via-[#D4AF37]/10 to-[#D4AF37]/30 dark:from-[#D4AF37]/20 dark:via-[#D4AF37]/5 dark:to-[#D4AF37]/25">
+      <div v-if="!product.image || !imgLoaded" class="absolute inset-0 flex items-center justify-center p-4 text-center">
+        <span class="text-sm font-semibold text-[#D4AF37]/80 dark:text-[#D4AF37]/70 leading-tight">{{ product.name }}</span>
+      </div>
+      <img v-if="product.image"
         :src="`/storage/${product.image}`"
         :alt="product.name"
         loading="lazy"
-        :class="[
-          'h-full w-full object-cover transition-luxury duration-500 group-hover:scale-[1.06]',
-          imgLoaded ? 'opacity-100' : 'opacity-0'
-        ]"
-        @load="imgLoaded = true" />
+        class="relative h-full w-full object-cover transition-luxury duration-500 group-hover:scale-[1.06]"
+        @load="imgLoaded = true"
+        @error="imgLoaded = false" />
 
       <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-luxury" />
 
@@ -170,3 +168,5 @@ const imgLoaded = ref(false)
     </div>
   </div>
 </template>
+
+

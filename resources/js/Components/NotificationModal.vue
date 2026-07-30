@@ -10,9 +10,9 @@ const { isVisible, message, type, close } = useNotification()
       v-if="isVisible"
       class="fixed top-20 left-1/2 -translate-x-1/2 z-[100] flex items-center gap-3 px-5 py-3.5 rounded-xl shadow-lg cursor-pointer max-w-md bg-white dark:bg-[#1A1A1A] border dark:border-[#D4AF37]/20"
       :style="{
-        borderColor: type === 'success' ? 'rgba(13,148,136,0.2)' : 'rgba(220,38,38,0.2)',
+        borderColor: type === 'success' ? 'rgba(212,175,55,0.2)' : 'rgba(220,38,38,0.2)',
         boxShadow: type === 'success'
-          ? '0 8px 30px rgba(13,148,136,0.12), 0 2px 8px rgba(0,0,0,0.04)'
+          ? '0 8px 30px rgba(212,175,55,0.12), 0 2px 8px rgba(0,0,0,0.04)'
           : '0 8px 30px rgba(220,38,38,0.12), 0 2px 8px rgba(0,0,0,0.04)',
       }"
       @click="close"
@@ -21,7 +21,7 @@ const { isVisible, message, type, close } = useNotification()
       <div
         class="w-8 h-8 rounded-lg flex items-center justify-center shrink-0"
         :style="{
-          background: type === 'success' ? 'rgba(13,148,136,0.1)' : 'rgba(220,38,38,0.1)',
+          background: type === 'success' ? 'rgba(212,175,55,0.1)' : 'rgba(220,38,38,0.1)',
         }"
       >
         <svg v-if="type === 'success'" class="w-4 h-4 text-[#D4AF37]" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">

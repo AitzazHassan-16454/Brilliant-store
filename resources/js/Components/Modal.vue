@@ -28,7 +28,7 @@ const close = () => {
     >
       <div
         :class="[
-          'bg-white dark:bg-[#1A1A1A] w-full rounded-2xl p-6 shadow-xl',
+          'bg-white dark:bg-[#1A1A1A] w-full rounded-2xl p-6 shadow-xl max-h-[85vh] overflow-y-auto',
           widthClasses[maxWidth] || 'max-w-sm',
         ]"
       >

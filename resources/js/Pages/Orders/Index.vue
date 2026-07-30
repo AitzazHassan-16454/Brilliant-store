@@ -212,7 +212,7 @@ const timeAgo = (date) => {
     <Transition name="modal">
       <div v-if="$page.props.flash?.success"
         class="mb-5 px-4 py-3 rounded-xl text-sm font-medium flex items-center gap-2"
-        style="background:rgba(13,148,136,0.08); border:1px solid rgba(13,148,136,0.2); color:#0D9488;">
+        style="background:rgba(212,175,55,0.08); border:1px solid rgba(212,175,55,0.2); color:#D4AF37;">
         <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
         {{ $page.props.flash.success }}
       </div>
@@ -242,7 +242,7 @@ const timeAgo = (date) => {
       class="bg-white dark:bg-[#1A1A1A] border border-gray-200 dark:border-[#D4AF37]/20 rounded-2xl p-16 text-center flex flex-col items-center gap-4"
     >
       <div class="w-20 h-20 rounded-2xl flex items-center justify-center bg-[#D4AF37]/10">
-        <svg class="w-10 h-10" fill="none" stroke="#0D9488" stroke-width="1.5" viewBox="0 0 24 24">
+        <svg class="w-10 h-10" fill="none" stroke="#D4AF37" stroke-width="1.5" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/>
         </svg>
       </div>

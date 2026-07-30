@@ -174,7 +174,7 @@ const toggleWishlist = (product) => {
   <!-- ══════════════════════════════
        BROWSE BY CATEGORY
   ══════════════════════════════ -->
-  <section id="categories" class="py-12 sm:py-20 bg-[#FAF7F2] dark:bg-[#0A0A0A] border-t border-gray-200/50 dark:border-[#D4AF37]/10">
+  <section id="categories" class="py-12 sm:py-20 bg-[#FAF7F2] dark:bg-[#0A0A0A] border-t border-gray-200/50 dark:border-[#D4AF37]/10 shadow-xl">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
       <div class="text-center mb-8 sm:mb-12">
@@ -227,7 +227,7 @@ const toggleWishlist = (product) => {
   <!-- ══════════════════════════════
        TRENDING PRODUCTS
   ══════════════════════════════ -->
-  <section id="products" class="py-12 sm:py-20 hero-gradient-static dark:hero-gradient-static border-t border-[#D4AF37]/10">
+  <section id="products" class="py-12 sm:py-20 hero-gradient-static dark:hero-gradient-static border-t border-[#D4AF37]/10 shadow-xl">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
       <div class="mb-8 sm:mb-12 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
@@ -257,7 +257,7 @@ const toggleWishlist = (product) => {
   <!-- ══════════════════════════════
        FEATURES
   ══════════════════════════════ -->
-  <section class="py-12 sm:py-20 bg-[#FAF7F2] dark:bg-[#0A0A0A] border-t border-gray-200/50 dark:border-[#D4AF37]/10">
+  <section class="py-12 sm:py-20 bg-[#FAF7F2] dark:bg-[#0A0A0A] border-t border-gray-200/50 dark:border-[#D4AF37]/10 shadow-xl">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="grid grid-cols-2 gap-6 sm:gap-8 lg:grid-cols-4">
 
@@ -300,7 +300,7 @@ const toggleWishlist = (product) => {
   <!-- ══════════════════════════════
        TESTIMONIALS
   ══════════════════════════════ -->
-  <section class="py-12 sm:py-20 bg-[#FAF7F2] dark:bg-[#0A0A0A] border-t border-gray-200/50 dark:border-[#D4AF37]/10">
+  <section class="py-12 sm:py-20 hero-gradient-static dark:hero-gradient-static border-t border-gray-200/50 dark:border-[#D4AF37]/10 shadow-xl">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
       <div class="mb-10 sm:mb-12 text-center">
@@ -350,7 +350,7 @@ const toggleWishlist = (product) => {
   <!-- ══════════════════════════════
        CTA SECTION
   ══════════════════════════════ -->
-  <section id="custom-order" class="py-12 sm:py-20 bg-[#FAF7F2] dark:bg-[#0A0A0A] border-t border-gray-200/50 dark:border-[#D4AF37]/10">
+  <section id="custom-order" class="py-12 sm:py-20 bg-[#FAF7F2] dark:bg-[#0A0A0A] border-t border-gray-200/50 dark:border-[#D4AF37]/10 shadow-xl">
     <div class="max-w-4xl mx-auto px-4 text-center sm:px-6 lg:px-8">
       <div class="rounded-2xl p-8 sm:p-12 border border-gray-200 dark:border-[#D4AF37]/20 bg-gradient-to-br from-[#D4AF37]/10 to-slate-900/5 dark:from-[#D4AF37]/10 dark:to-[#1A1A1A]/50 shadow-lg shadow-[#D4AF37]/10 dark:shadow-[#D4AF37]/20 hover:shadow-xl hover:shadow-[#D4AF37]/20 dark:hover:shadow-[#D4AF37]/25 transition-shadow duration-300">
 
