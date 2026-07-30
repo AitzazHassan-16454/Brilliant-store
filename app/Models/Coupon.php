@@ -1,0 +1,60 @@
+<?php
+
+namespace App\Models;
+
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+
+class Coupon extends Model
+{
+    protected $fillable = [
+        'code',
+        'type',
+        'value',
+        'min_order',
+        'max_uses',
+        'expires_at',
+        'active',
+    ];
+
+    protected function casts(): array
+    {
+        return [
+            'value' => 'decimal:2',
+            'min_order' => 'decimal:2',
+            'expires_at' => 'datetime',
+            'active' => 'boolean',
+        ];
+    }
+
+    public function orders(): HasManyThrough
+    {
+        return $this->hasManyThrough(Order::class, OrderCoupon::class);
+    }
+
+    public function isValid(): bool
+    {
+        if (! $this->active) {
+            return false;
+        }
+
+        if ($this->expires_at && $this->expires_at->isPast()) {
+            return false;
+        }
+
+        if ($this->max_uses !== null && $this->used_count >= $this->max_uses) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function calculateDiscount(float $subtotal): float
+    {
+        if ($this->type === 'percentage') {
+            return round($subtotal * ($this->value / 100), 2);
+        }
+
+        return min($this->value, $subtotal);
+    }
+}
