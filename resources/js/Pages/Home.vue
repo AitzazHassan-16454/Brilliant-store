@@ -50,9 +50,9 @@ const toggleWishlist = (product) => {
   ══════════════════════════════ -->
   <section class="relative overflow-hidden hero-premium-bg hero-gradient-animated">
 
-    <div class="absolute w-96 h-96 rounded-full top-[-10%] right-[-5%] hero-glow-orb" style="background:rgba(212,175,55,0.12); filter:blur(80px); animation:glow-pulse 6s ease-in-out infinite;"></div>
-    <div class="absolute w-80 h-80 rounded-full bottom-[-8%] left-[-8%] hero-glow-orb" style="background:rgba(212,175,55,0.08); filter:blur(80px); animation:glow-pulse 6s ease-in-out infinite 2.5s;"></div>
-    <div class="absolute w-64 h-64 rounded-full top-[40%] left-[-4%] hero-glow-orb" style="background:rgba(212,175,55,0.06); filter:blur(80px); animation:glow-pulse 6s ease-in-out infinite 4s;"></div>
+    <div class="absolute w-96 h-96 rounded-2xl top-[-10%] right-[-5%] hero-glow-orb" style="background:rgba(212,175,55,0.12); filter:blur(80px); animation:glow-pulse 6s cubic-bezier(0.4,0,0.2,1) infinite;"></div>
+    <div class="absolute w-80 h-80 rounded-2xl bottom-[-8%] left-[-8%] hero-glow-orb" style="background:rgba(212,175,55,0.08); filter:blur(80px); animation:glow-pulse 6s cubic-bezier(0.4,0,0.2,1) infinite 2.5s;"></div>
+    <div class="absolute w-64 h-64 rounded-2xl top-[40%] left-[-4%] hero-glow-orb" style="background:rgba(212,175,55,0.06); filter:blur(80px); animation:glow-pulse 6s cubic-bezier(0.4,0,0.2,1) infinite 4.5s;"></div>
 
     <div class="hero-rays"></div>
 
@@ -74,13 +74,13 @@ const toggleWishlist = (product) => {
             </div>
 
             <!-- Heading -->
-            <h1 class="text-lg font-bold leading-tight sm:text-xl lg:text-2xl xl:text-3xl">
+            <h1 class="text-2xl font-bold leading-tight sm:text-3xl lg:text-4xl xl:text-5xl">
               <span class="text-[#1A1A1A] dark:text-[#F5F5F5]">Where Precision Meets</span>
-              <span class="block mt-0.5 text-gold-gradient">Elegance</span>
+              <span class="block mt-1 text-gold-gradient">Elegance</span>
             </h1>
 
             <!-- Subtitle -->
-            <p class="max-w-lg text-xs leading-relaxed sm:text-sm text-[#6B6B6B] dark:text-[#A0A0A0]">
+            <p class="max-w-lg text-sm leading-relaxed sm:text-base lg:text-lg text-[#6B6B6B] dark:text-[#A0A0A0]">
               Discover exclusive luxury products crafted with passion, precision, and excellence. Every collection is carefully curated to feel timeless.
             </p>
           </div>
@@ -118,49 +118,53 @@ const toggleWishlist = (product) => {
         <div class="relative flex justify-center lg:justify-end">
           <div class="hero-image-group">
 
-            <!-- Glow backdrop -->
-            <div class="hero-glow-backdrop"></div>
+            <!-- Breathing glow -->
+            <div class="hero-glow"></div>
 
-            <!-- Orbit dots -->
-            <div class="hero-orbit">
-              <div class="hero-orbit-dot hero-orbit-dot-1"></div>
-              <div class="hero-orbit-dot hero-orbit-dot-2"></div>
-              <div class="hero-orbit-dot hero-orbit-dot-3"></div>
-              <div class="hero-orbit-dot hero-orbit-dot-4"></div>
-            </div>
+            <!-- Brand emblem card -->
+            <div class="hero-emblem">
+              <div class="hero-emblem-card">
+                <div class="relative">
 
-            <div class="hero-image-wrapper">
-              <!-- Ring wheel -->
-              <div class="hero-ring-wheel"></div>
+                  <!-- Diamond icon -->
+                  <svg class="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 text-[#D4AF37] mx-auto" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+                    <path d="M6 3h12l4 6-10 13L2 9z"/>
+                    <path d="M2 9h20"/>
+                    <path d="M12 22L6 9"/>
+                    <path d="M12 22l6-13"/>
+                  </svg>
 
-              <!-- Diamond icon -->
-              <div class="hero-image-ring">
-                <div class="hero-ring-border"></div>
-                <div class="relative w-full h-full flex items-center justify-center">
-                  <div class="relative w-40 h-40 sm:w-52 sm:h-52 lg:w-64 lg:h-64 z-10 flex items-center justify-center">
-                    <!-- Outer ring -->
-                    <div class="absolute inset-0 rounded-full border-2 border-dashed hero-ring-outer" style="border-color:rgba(212,175,55,0.2); animation:spin 25s linear infinite;"></div>
-
-                    <!-- Main shape -->
-                    <div class="relative w-28 h-28 sm:w-36 sm:h-36 lg:w-44 lg:h-44 rounded-2xl flex items-center justify-center hero-diamond-box"
-                      style="background:linear-gradient(135deg,#D4AF37,#B8941E); box-shadow:0 12px 40px rgba(212,175,55,0.3),0 2px 8px rgba(0,0,0,0.06); transform:rotate(45deg); animation:box-pulse 4s ease-in-out infinite;">
-
-                      <!-- Shine overlay -->
-                      <div class="absolute inset-0 rounded-2xl overflow-hidden">
-                        <div class="absolute inset-0 hero-shine"></div>
-                      </div>
-
-                      <!-- Diamond icon -->
-                      <svg class="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 -rotate-45 transition-transform duration-500 hover:scale-110" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                        <path d="M6 3h12l4 6-10 13L2 9z"/>
-                        <path d="M2 9h20"/>
-                        <path d="M12 22L6 9"/>
-                        <path d="M12 22l6-13"/>
-                      </svg>
-                    </div>
+                  <!-- Twinkling sparkles -->
+                  <div class="hero-sparkle" style="top:-10px; right:-12px; animation-delay:1.2s;">
+                    <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 0l2.5 9.5L24 12l-9.5 2.5L12 24l-2.5-9.5L0 12l9.5-2.5z"/>
+                    </svg>
+                  </div>
+                  <div class="hero-sparkle" style="bottom:-6px; left:-14px; animation-delay:2.1s;">
+                    <svg class="w-3 h-3 sm:w-4 sm:h-4" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M12 0l2.5 9.5L24 12l-9.5 2.5L12 24l-2.5-9.5L0 12l9.5-2.5z"/>
+                    </svg>
+                  </div>
+                  <div class="hero-sparkle" style="top: calc(50% - 4px); right: -22px; animation-delay:2.8s;">
+                    <span class="block w-2 h-2 bg-[#D4AF37] rounded-full"></span>
+                  </div>
+                  <div class="hero-sparkle" style="top: calc(50% - 4px); left: -22px; animation-delay:2.8s;">
+                    <span class="block w-2 h-2 bg-[#D4AF37] rounded-full"></span>
                   </div>
                 </div>
-                <div class="hero-image-overlay"></div>
+
+                <!-- Wordmark -->
+                <div class="mt-5 text-center">
+                  <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Brilliant</h2>
+                  <div class="mt-2 flex items-center justify-center gap-2">
+                    <span class="w-8 h-px bg-[#D4AF37]"></span>
+                    <span class="text-[9px] font-bold uppercase tracking-[0.3em] text-[#D4AF37]">Premium Store</span>
+                    <span class="w-8 h-px bg-[#D4AF37]"></span>
+                  </div>
+                </div>
+
+                <!-- Gradient border -->
+                <div class="absolute -inset-px rounded-[28px] border border-transparent bg-gradient-to-br from-[#D4AF37]/40 via-transparent to-[#D4AF37]/40 pointer-events-none"></div>
               </div>
             </div>
 
@@ -398,19 +402,10 @@ html {
   background: repeating-linear-gradient(55deg, transparent, transparent 60px, rgba(212, 175, 55, 0.06) 60px, rgba(212, 175, 55, 0.06) 62px) !important;
 }
 
-.dark .hero-diamond-box {
-  background: linear-gradient(135deg, #D4AF37, #B8941E) !important;
-  box-shadow: 0 12px 40px rgba(212, 175, 55, 0.4), 0 2px 8px rgba(0, 0, 0, 0.15) !important;
-}
-
-.dark .hero-ring-outer {
-  border-color: rgba(212, 175, 55, 0.3) !important;
-}
-
 .dark .hero-gradient-animated {
   background: linear-gradient(135deg, #0A0A0A, #1A1A1A, #111, #1A1A1A, #0A0A0A) !important;
   background-size: 200% 200% !important;
-  animation: gradient-shift 12s ease-in-out infinite !important;
+  animation: gradient-shift 20s cubic-bezier(0.4, 0, 0.2, 1) infinite !important;
 }
 
 .dark .hero-stat-card {
@@ -422,58 +417,6 @@ html {
 .dark .hero-stat-card:hover {
   box-shadow: 0 12px 40px rgba(212, 175, 55, 0.1) !important;
   border-color: rgba(212, 175, 55, 0.3) !important;
-}
-
-.dark .hero-glow-backdrop {
-  background: radial-gradient(circle, rgba(212, 175, 55, 0.25) 0%, rgba(212, 175, 55, 0.08) 40%, transparent 70%) !important;
-}
-
-.dark .hero-ring-border {
-  border-color: rgba(212, 175, 55, 0.35) !important;
-  box-shadow: 0 0 15px rgba(212, 175, 55, 0.1), inset 0 0 15px rgba(212, 175, 55, 0.05) !important;
-}
-
-.dark .hero-image-group:hover .hero-ring-border {
-  border-color: rgba(212, 175, 55, 0.65) !important;
-  box-shadow: 0 0 30px rgba(212, 175, 55, 0.25), inset 0 0 25px rgba(212, 175, 55, 0.1) !important;
-}
-
-.dark .hero-ring-wheel {
-  border-color: rgba(212, 175, 55, 0.2) !important;
-  box-shadow: 0 0 8px rgba(212, 175, 55, 0.04), inset 0 0 8px rgba(212, 175, 55, 0.04) !important;
-}
-
-.dark .hero-ring-wheel:before,
-.dark .hero-ring-wheel:after {
-  background: #D4AF37 !important;
-  box-shadow: 0 0 12px rgba(212, 175, 55, 0.6), 0 0 24px rgba(212, 175, 55, 0.2) !important;
-}
-
-.dark .hero-image-group:hover .hero-ring-wheel {
-  border-color: rgba(212, 175, 55, 0.55) !important;
-  box-shadow: 0 0 25px rgba(212, 175, 55, 0.15), inset 0 0 25px rgba(212, 175, 55, 0.1) !important;
-}
-
-.dark .hero-image-group:hover .hero-ring-wheel:before,
-.dark .hero-image-group:hover .hero-ring-wheel:after {
-  box-shadow: 0 0 18px rgba(212, 175, 55, 0.8), 0 0 35px rgba(212, 175, 55, 0.3) !important;
-}
-
-.dark .hero-orbit-dot {
-  background: #D4AF37 !important;
-  box-shadow: 0 0 12px rgba(212, 175, 55, 0.7), 0 0 25px rgba(212, 175, 55, 0.3) !important;
-}
-
-.dark .hero-image-group:hover .hero-orbit-dot {
-  box-shadow: 0 0 18px rgba(212, 175, 55, 0.9), 0 0 35px rgba(212, 175, 55, 0.4) !important;
-}
-
-.dark .hero-image-ring:after {
-  background: linear-gradient(105deg, transparent 40%, rgba(212, 175, 55, 0.06) 45%, rgba(212, 175, 55, 0.1) 50%, rgba(212, 175, 55, 0.06) 55%, transparent 60%) !important;
-}
-
-.dark .hero-image-overlay {
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.4) 0%, transparent 50%) !important;
 }
 
 .category-rays {
@@ -494,12 +437,12 @@ html {
 .hero-gradient-animated {
   background: linear-gradient(135deg, #FAF7F2, #F5F1E8, #FFF, #F5F1E8, #FAF7F2);
   background-size: 200% 200%;
-  animation: gradient-shift 20s ease-in-out infinite;
+  animation: gradient-shift 30s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
 @keyframes glow-pulse {
-  0%, 100% { opacity: 0.2; transform: scale(1); }
-  50% { opacity: 0.45; transform: scale(1.06); }
+  0%, 100% { opacity: 0.25; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(1.05); }
 }
 
 .hero-glow-orb {
@@ -519,213 +462,56 @@ html {
   bottom: -50%;
   left: -50%;
   background: repeating-linear-gradient(55deg, transparent, transparent 60px, rgba(212, 175, 55, 0.03) 60px, rgba(212, 175, 55, 0.03) 62px);
-  animation: rays-sweep 25s linear infinite;
+  animation: rays-sweep 40s linear infinite;
   pointer-events: none;
 }
 
-@keyframes spin {
-  from { transform: translate(-50%, -50%) rotate(0deg); }
-  to { transform: translate(-50%, -50%) rotate(360deg); }
+.hero-glow {
+  position: absolute;
+  width: 280px;
+  height: 280px;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.28), transparent 65%);
+  filter: blur(30px);
+  animation: glow-pulse 6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+  pointer-events: none;
 }
 
-@keyframes box-pulse {
-  0%, 100% { transform: rotate(45deg) scale(1); box-shadow:0 12px 40px rgba(212,175,55,0.3),0 2px 8px rgba(0,0,0,0.06); }
-  50% { transform: rotate(45deg) scale(1.03); box-shadow:0 16px 50px rgba(212,175,55,0.35),0 4px 12px rgba(0,0,0,0.08); }
+.hero-emblem {
+  position: relative;
+  animation: emblem-float 6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
-@keyframes shine-sweep {
-  0%, 100% { background-position: 200% center; }
-  50% { background-position: -200% center; }
-}
-
-.hero-shine {
-  background: linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.2) 45%, rgba(255,255,255,0.35) 50%, rgba(255,255,255,0.2) 55%, transparent 60%);
-  background-size: 250% 100%;
-  animation: shine-sweep 6s ease-in-out infinite;
-}
-
-@keyframes hero-float {
+@keyframes emblem-float {
   0%, 100% { transform: translateY(0); }
-  25% { transform: translateY(-6px); }
-  50% { transform: translateY(-2px); }
-  75% { transform: translateY(3px); }
+  50% { transform: translateY(-12px); }
 }
 
-.hero-image-wrapper {
-  animation: hero-float 12s ease-in-out infinite;
-  will-change: transform;
-}
-
-.hero-image-group {
+.hero-emblem-card {
   position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  background: #1a1f36;
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  border-radius: 28px;
+  padding: 2.5rem 2.75rem;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  animation: emblem-breathe 5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
-.hero-glow-backdrop {
+@keyframes emblem-breathe {
+  0%, 100% { box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 0 30px rgba(212, 175, 55, 0.08); }
+  50% { box-shadow: 0 28px 70px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 0 50px rgba(212, 175, 55, 0.22); }
+}
+
+.hero-sparkle {
   position: absolute;
-  width: 90%;
-  height: 90%;
-  border-radius: 50%;
-  background: radial-gradient(circle, rgba(212, 175, 55, 0.25) 0%, rgba(212, 175, 55, 0.08) 40%, transparent 70%);
-  animation: glow-pulse 5s ease-in-out infinite;
-  pointer-events: none;
-  transition: opacity 0.6s ease;
+  color: #D4AF37;
+  animation: sparkle-twinkle 3s ease-in-out infinite;
 }
 
-.hero-image-group:hover .hero-glow-backdrop {
-  opacity: 1.4;
+@keyframes sparkle-twinkle {
+  0%, 100% { opacity: 0.2; transform: scale(0.6); }
+  50% { opacity: 1; transform: scale(1); }
 }
-
-.hero-image-ring {
-  position: relative;
-  width: 100%;
-  max-width: 320px;
-  min-width: 320px;
-  aspect-ratio: 1 / 1;
-  border-radius: 50%;
-  overflow: hidden;
-  z-index: 2;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.hero-image-group:hover .hero-image-ring img {
-  transform: scale(1.08);
-}
-
-.hero-ring-border {
-  position: absolute;
-  top: -6px; right: -6px; bottom: -6px; left: -6px;
-  border-radius: 50%;
-  border: 1.5px solid rgba(212, 175, 55, 0.35);
-  box-shadow: 0 0 15px rgba(212, 175, 55, 0.1), inset 0 0 15px rgba(212, 175, 55, 0.05);
-  pointer-events: none;
-  transition: border-color 0.5s ease, box-shadow 0.5s ease;
-  z-index: 3;
-}
-
-.hero-image-group:hover .hero-ring-border {
-  border-color: rgba(212, 175, 55, 0.65);
-  box-shadow: 0 0 30px rgba(212, 175, 55, 0.25), inset 0 0 25px rgba(212, 175, 55, 0.1);
-}
-
-@keyframes spin-wheel {
-  0% { transform: translate(-50%, -50%) rotate(0); }
-  100% { transform: translate(-50%, -50%) rotate(360deg); }
-}
-
-.hero-ring-wheel {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: calc(100% + 100px);
-  height: calc(100% + 100px);
-  transform: translate(-50%, -50%);
-  border-radius: 50%;
-  border: 1.5px solid rgba(212, 175, 55, 0.2);
-  animation: spin-wheel 15s linear infinite;
-  pointer-events: none;
-  z-index: 3;
-  transition: border-color 0.5s ease, width 0.5s ease, height 0.5s ease;
-  box-shadow: 0 0 8px rgba(212, 175, 55, 0.04), inset 0 0 8px rgba(212, 175, 55, 0.04);
-}
-
-.hero-ring-wheel:before,
-.hero-ring-wheel:after {
-  content: "";
-  position: absolute;
-  width: 10px;
-  height: 10px;
-  margin-left: -5px;
-  margin-top: -5px;
-  border-radius: 50%;
-  background: #D4AF37;
-  box-shadow: 0 0 12px rgba(212, 175, 55, 0.6), 0 0 24px rgba(212, 175, 55, 0.2);
-  transition: box-shadow 0.5s ease, transform 0.5s ease;
-}
-
-.hero-ring-wheel:before { top: 50%; left: 0; }
-.hero-ring-wheel:after { top: 50%; left: 100%; }
-
-.hero-image-group:hover .hero-ring-wheel {
-  border-color: rgba(212, 175, 55, 0.55);
-  width: calc(100% + 110px);
-  height: calc(100% + 110px);
-  box-shadow: 0 0 25px rgba(212, 175, 55, 0.15), inset 0 0 25px rgba(212, 175, 55, 0.1);
-}
-
-.hero-image-group:hover .hero-ring-wheel:before,
-.hero-image-group:hover .hero-ring-wheel:after {
-  box-shadow: 0 0 18px rgba(212, 175, 55, 0.8), 0 0 35px rgba(212, 175, 55, 0.3);
-  transform: scale(1.2);
-}
-
-.hero-image-overlay {
-  position: absolute;
-  top: 0; right: 0; bottom: 0; left: 0;
-  border-radius: 50%;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.2) 0%, transparent 50%);
-  pointer-events: none;
-  z-index: 2;
-}
-
-.hero-orbit {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0;
-  height: 0;
-  z-index: 4;
-  pointer-events: none;
-}
-
-@keyframes hero-orbit-1 {
-  0% { transform: rotate(0deg) translateX(150px) rotate(0deg); }
-  100% { transform: rotate(360deg) translateX(150px) rotate(-360deg); }
-}
-
-@keyframes hero-orbit-2 {
-  0% { transform: rotate(0deg) translateX(165px) rotate(0deg); }
-  100% { transform: rotate(360deg) translateX(165px) rotate(-360deg); }
-}
-
-@keyframes hero-orbit-3 {
-  0% { transform: rotate(0deg) translateX(140px) rotate(0deg); }
-  100% { transform: rotate(360deg) translateX(140px) rotate(-360deg); }
-}
-
-@keyframes hero-orbit-4 {
-  0% { transform: rotate(0deg) translateX(160px) rotate(0deg); }
-  100% { transform: rotate(360deg) translateX(160px) rotate(-360deg); }
-}
-
-.hero-orbit-dot {
-  position: absolute;
-  width: 10px;
-  height: 10px;
-  margin: -5px 0 0 -5px;
-  border-radius: 50%;
-  background: #D4AF37;
-  box-shadow: 0 0 12px rgba(212, 175, 55, 0.7), 0 0 25px rgba(212, 175, 55, 0.3);
-  transition: box-shadow 0.5s ease, transform 0.5s ease;
-  will-change: transform;
-}
-
-.hero-image-group:hover .hero-orbit-dot {
-  box-shadow: 0 0 18px rgba(212, 175, 55, 0.9), 0 0 35px rgba(212, 175, 55, 0.4);
-}
-
-.hero-orbit-dot-1 { animation: hero-orbit-1 5s linear infinite; }
-.hero-image-group:hover .hero-orbit-dot-1 { animation-duration: 3s; }
-.hero-orbit-dot-2 { animation: hero-orbit-2 7s linear infinite reverse; }
-.hero-image-group:hover .hero-orbit-dot-2 { animation-duration: 4.5s; }
-.hero-orbit-dot-3 { animation: hero-orbit-3 4.5s linear infinite; }
-.hero-image-group:hover .hero-orbit-dot-3 { animation-duration: 2.8s; }
-.hero-orbit-dot-4 { animation: hero-orbit-4 8.5s linear infinite reverse; }
-.hero-image-group:hover .hero-orbit-dot-4 { animation-duration: 5.5s; }
 
 .hero-stat-card {
   border-radius: 1rem;
@@ -767,65 +553,20 @@ html {
   color: #A0A0A0;
 }
 
-.hero-image-ring:after {
-  content: "";
-  position: absolute;
-  top: 0; right: 0; bottom: 0; left: 0;
-  border-radius: 50%;
-  background: linear-gradient(105deg, transparent 40%, rgba(255, 255, 255, 0.15) 45%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0.15) 55%, transparent 60%);
-  animation: img-shine 8s ease-in-out infinite;
-  animation-delay: 2s;
-  pointer-events: none;
-  z-index: 2;
-  mix-blend-mode: overlay;
-}
-
-@keyframes img-shine {
-  0% { transform: translate(-100%) rotate(20deg); }
-  30% { transform: translate(100%) rotate(20deg); }
-  100% { transform: translate(100%) rotate(20deg); }
-}
-
-@media (max-width: 1023px) {
-  .hero-image-ring {
-    max-width: 280px;
-    min-width: 280px;
-  }
-  @keyframes hero-orbit-1 { 0% { transform: rotate(0deg) translateX(130px) rotate(0deg); } 100% { transform: rotate(360deg) translateX(130px) rotate(-360deg); } }
-  @keyframes hero-orbit-2 { 0% { transform: rotate(0deg) translateX(145px) rotate(0deg); } 100% { transform: rotate(360deg) translateX(145px) rotate(-360deg); } }
-  @keyframes hero-orbit-3 { 0% { transform: rotate(0deg) translateX(120px) rotate(0deg); } 100% { transform: rotate(360deg) translateX(120px) rotate(-360deg); } }
-  @keyframes hero-orbit-4 { 0% { transform: rotate(0deg) translateX(140px) rotate(0deg); } 100% { transform: rotate(360deg) translateX(140px) rotate(-360deg); } }
-}
-
-@media (max-width: 639px) {
-  .hero-image-ring {
-    max-width: 240px;
-    min-width: 240px;
-  }
-  @keyframes hero-orbit-1 { 0% { transform: rotate(0deg) translateX(110px) rotate(0deg); } 100% { transform: rotate(360deg) translateX(110px) rotate(-360deg); } }
-  @keyframes hero-orbit-2 { 0% { transform: rotate(0deg) translateX(125px) rotate(0deg); } 100% { transform: rotate(360deg) translateX(125px) rotate(-360deg); } }
-  @keyframes hero-orbit-3 { 0% { transform: rotate(0deg) translateX(100px) rotate(0deg); } 100% { transform: rotate(360deg) translateX(100px) rotate(-360deg); } }
-  @keyframes hero-orbit-4 { 0% { transform: rotate(0deg) translateX(118px) rotate(0deg); } 100% { transform: rotate(360deg) translateX(118px) rotate(-360deg); } }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .hero-gradient-animated,
   .hero-glow-orb,
   .hero-rays,
-  .hero-image-wrapper,
-  .hero-glow-backdrop,
-  .hero-orbit-dot,
-  .hero-ring-wheel,
-  .hero-image-ring:after {
+  .hero-glow,
+  .hero-emblem,
+  .hero-emblem-card,
+  .hero-sparkle {
     animation: none !important;
     transition: none !important;
     transform: none !important;
     opacity: 1 !important;
   }
-  .hero-stat-card,
-  .hero-image-group:hover .hero-ring-border,
-  .hero-image-group:hover .hero-glow-backdrop,
-  .hero-image-group:hover .hero-image-ring img {
+  .hero-stat-card {
     transform: none !important;
     box-shadow: none !important;
     border-color: inherit !important;

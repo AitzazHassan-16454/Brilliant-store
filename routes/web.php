@@ -6,6 +6,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ChatBotController;
 use App\Http\Controllers\CouponController;
 use App\Http\Controllers\CustomOrderController;
+use App\Http\Controllers\FaqController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\RoleController;
@@ -28,6 +29,8 @@ Route::get('/login', fn () => redirect('/'))->name('login');
 
 Route::get('/custom-order', [CustomOrderController::class, 'create'])->name('custom-order.create');
 
+Route::get('/faq', [FaqController::class, 'index'])->name('faq');
+
 Route::get('/products/{product}', [ProductController::class, 'show'])
     ->name('products.show');
 
@@ -42,6 +45,8 @@ Route::middleware('guest')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
+
+    Route::post('/welcome/seen', [AuthController::class, 'markWelcomeSeen']);
 
     Route::get('/Profile', function () {
         return Inertia::render('Profile', [
@@ -242,6 +247,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('products', ProductController::class)
         ->except(['show', 'home']);
 
+    Route::post('/products/ai-description', [ProductController::class, 'generateDescription']);
+
     Route::get('/CreateProduct', [ProductController::class, 'create']);
 
     Route::post('/logout', [AuthController::class, 'logout']);
@@ -292,4 +299,6 @@ Route::middleware('auth')->group(function () {
 
     Route::post('/custom-order', [CustomOrderController::class, 'store']);
     Route::get('/custom-orders', [CustomOrderController::class, 'index']);
+
+    Route::get('/faqs', [FaqController::class, 'adminIndex']);
 });

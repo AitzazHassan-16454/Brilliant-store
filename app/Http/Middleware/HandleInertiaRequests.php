@@ -49,6 +49,10 @@ class HandleInertiaRequests extends Middleware
 
         return array_merge(parent::share($request), [
 
+            'csrfToken' => csrf_token(),
+
+            'isFirstLogin' => $user ? ! $user->has_seen_welcome : false,
+
             'auth' => [
                 'user' => $user
                     ? [

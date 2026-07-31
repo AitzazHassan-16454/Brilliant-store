@@ -32,6 +32,7 @@ class ApplicationPermissions
             'orders.view',
             'orders.update',
             // 'orders.manage',
+            'faqs.view',
             'coupons.view',
             'coupons.create',
             'coupons.update',

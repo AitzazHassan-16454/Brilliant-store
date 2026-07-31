@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Ai\Agents\ProductCopywriterAgent;
 use App\Models\Cart;
 use App\Models\Category;
 use App\Models\Coupon;
@@ -12,6 +13,7 @@ use App\Models\Role;
 use App\Models\Subcategory;
 use App\Models\User;
 use App\Models\Wishlist;
+use App\Services\SemanticSearchService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
@@ -35,7 +37,18 @@ class ProductController extends Controller
             }], 'rating');
 
         // If the user searched for a product name, filter by it
+        $semanticIds = null;
         if ($request->search) {
+            $semanticIds = app(SemanticSearchService::class)->rankedIds($request->search);
+        }
+
+        if ($semanticIds !== null) {
+            $productQuery->whereIn('id', $semanticIds);
+
+            if (! empty($semanticIds)) {
+                $productQuery->orderByRaw('FIELD(id, '.implode(',', array_map('intval', $semanticIds)).')');
+            }
+        } elseif ($request->search) {
             $productQuery->where('name', 'like', '%'.$request->search.'%');
         }
 
@@ -44,13 +57,15 @@ class ProductController extends Controller
             $productQuery->where('category_id', $request->category);
         }
 
-        // Sort the products based on user selection
-        if ($request->sortBy === 'low-to-high') {
-            $productQuery->orderBy('price', 'asc');
-        } elseif ($request->sortBy === 'high-to-low') {
-            $productQuery->orderBy('price', 'desc');
-        } else {
-            $productQuery->latest();
+        // Sort the products based on user selection (only when not semantically ranked)
+        if ($semanticIds === null) {
+            if ($request->sortBy === 'low-to-high') {
+                $productQuery->orderBy('price', 'asc');
+            } elseif ($request->sortBy === 'high-to-low') {
+                $productQuery->orderBy('price', 'desc');
+            } else {
+                $productQuery->latest();
+            }
         }
 
         // Get IDs of products in the user's cart (if logged in)
@@ -424,6 +439,42 @@ class ProductController extends Controller
         $product->update($validatedData);
 
         return redirect()->route('products.index');
+    }
+
+    /**
+     * Admin: Generate product copy (description, features, SEO) using AI.
+     */
+    public function generateDescription(Request $request)
+    {
+        $user = auth()->user();
+
+        if (! $user->can('products.create') && ! $user->can('products.update')) {
+            abort(403);
+        }
+
+        $validatedData = $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'category_id' => ['nullable', 'exists:categories,id'],
+            'price' => ['nullable', 'numeric', 'between:0,999999.99'],
+        ]);
+
+        $category = $validatedData['category_id'] ?? null
+            ? Category::find($validatedData['category_id'])
+            : null;
+
+        $context = 'Product name: '.$validatedData['name'];
+
+        if ($category) {
+            $context .= "\nCategory: ".$category->name;
+        }
+
+        if (isset($validatedData['price']) && $validatedData['price'] !== null) {
+            $context .= "\nPrice: $".number_format((float) $validatedData['price'], 2);
+        }
+
+        $response = (new ProductCopywriterAgent)->prompt($context);
+
+        return response()->json($response->structured);
     }
 
     /**

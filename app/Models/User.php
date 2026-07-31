@@ -22,6 +22,7 @@ class User extends Authenticatable
         'role',
         'avatar',
         'is_admin',
+        'has_seen_welcome',
     ];
 
     protected $guard_name = 'web';
@@ -58,6 +59,7 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'is_admin' => 'boolean',
+            'has_seen_welcome' => 'boolean',
         ];
     }
 }

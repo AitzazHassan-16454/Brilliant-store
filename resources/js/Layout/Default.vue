@@ -6,6 +6,7 @@ import NotificationModal from "../Components/NotificationModal.vue"
 import { useAuthModal } from "../composables/useAuthModal.js"
 import ThemeToggle from "../Pages/components/ThemeToggle.vue"
 import ChatBot from "../Components/ChatBot.vue"
+import OnboardingTour from "../Components/OnboardingTour.vue"
 
 const page = usePage()
 const { openLogin } = useAuthModal()
@@ -272,6 +273,9 @@ const inactiveMobileNavClasses = 'text-[#1A1A1A] dark:text-[#F5F5F5] bg-transpar
 
     <!-- CHATBOT -->
     <ChatBot />
+
+    <!-- FIRST-LOGIN WELCOME TUTORIAL -->
+    <OnboardingTour />
 
   </div>
 </template>

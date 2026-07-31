@@ -6,6 +6,7 @@ use App\Models\Cart;
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\Wishlist;
+use App\Services\SemanticSearchService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
@@ -43,8 +44,20 @@ class CategoryController extends Controller
                 $query->where('status', 'approved');
             }], 'rating');
 
-        // If the user searched for something, filter by product name
+        // If the user searched for something, rank results semantically
+        $semanticIds = null;
         if ($request->search) {
+            $semanticIds = app(SemanticSearchService::class)
+                ->rankedIds($request->search, $category->id);
+        }
+
+        if ($semanticIds !== null) {
+            $productQuery->whereIn('id', $semanticIds);
+
+            if (! empty($semanticIds)) {
+                $productQuery->orderByRaw('FIELD(id, '.implode(',', array_map('intval', $semanticIds)).')');
+            }
+        } elseif ($request->search) {
             $productQuery->where('name', 'like', '%'.$request->search.'%');
         }
 
@@ -63,13 +76,15 @@ class CategoryController extends Controller
             $productQuery->where('price', '<=', $request->max_price);
         }
 
-        // Sort the products based on the user's selection
-        if ($request->sortBy === 'low-to-high') {
-            $productQuery->orderBy('price', 'asc');
-        } elseif ($request->sortBy === 'high-to-low') {
-            $productQuery->orderBy('price', 'desc');
-        } else {
-            $productQuery->latest();
+        // Sort the products based on the user's selection (only when not semantically ranked)
+        if ($semanticIds === null) {
+            if ($request->sortBy === 'low-to-high') {
+                $productQuery->orderBy('price', 'asc');
+            } elseif ($request->sortBy === 'high-to-low') {
+                $productQuery->orderBy('price', 'desc');
+            } else {
+                $productQuery->latest();
+            }
         }
 
         // Get the IDs of products in the user's cart (if logged in)

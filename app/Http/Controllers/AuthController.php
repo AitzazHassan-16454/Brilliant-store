@@ -149,6 +149,16 @@ class AuthController extends Controller
     }
 
     /**
+     * Mark the welcome tutorial as seen for the authenticated user.
+     */
+    public function markWelcomeSeen(Request $request)
+    {
+        $request->user()->update(['has_seen_welcome' => true]);
+
+        return response()->noContent();
+    }
+
+    /**
      * Log out the current user.
      */
     public function logout(Request $request)

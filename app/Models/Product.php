@@ -19,6 +19,7 @@ class Product extends Model
         'is_active',
         'image',
         'description',
+        'embedding',
         'category_id',
         'subcategory_id',
     ];
@@ -28,6 +29,7 @@ class Product extends Model
         return [
             'price' => 'decimal:2',
             'is_active' => 'boolean',
+            'embedding' => 'array',
         ];
     }
 

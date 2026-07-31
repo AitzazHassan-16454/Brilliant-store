@@ -1,11 +1,15 @@
 <script setup>
-import { useForm } from '@inertiajs/vue3'
+import { useForm, usePage } from '@inertiajs/vue3'
 import { ref, computed } from 'vue'
 import Sidebar from "../components/Sidebar.vue";
 import { Link, Head } from '@inertiajs/vue3'
 import { useNotification } from "../../composables/useNotification.js";
 
 const { error } = useNotification();
+const page = usePage();
+
+const csrfToken = () =>
+    page.props.csrfToken || document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || ''
 
 defineOptions({ layout: false })
 
@@ -40,6 +44,43 @@ const submit = () => {
 
 function handleFileChange(event) {
     form.image = event.target.files[0] || null
+}
+
+const generating = ref(false)
+const aiError = ref('')
+
+const generateWithAI = async () => {
+    if (!form.name.trim() || generating.value) return
+
+    generating.value = true
+    aiError.value = ''
+
+    try {
+        const res = await fetch('/products/ai-description', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': csrfToken(),
+            },
+            body: JSON.stringify({
+                name: form.name,
+                category_id: form.category_id || null,
+                price: form.price || null,
+            }),
+        })
+
+        if (!res.ok) throw new Error('Failed')
+
+        const data = await res.json()
+        if (data.description) {
+            form.description = data.description
+        }
+    } catch (e) {
+        aiError.value = "Couldn't generate the description. Please try again."
+    } finally {
+        generating.value = false
+    }
 }
 </script>
 
@@ -81,7 +122,19 @@ function handleFileChange(event) {
 
                  <!-- PRODUCT DESCRIPTION -->
                  <div>
-                    <label class="block text-gray-700 dark:text-[#F5F5F5] font-medium mb-2">Product Description <span class="text-red-500">*</span></label>
+                    <div class="flex items-center justify-between mb-2">
+                        <label class="block text-gray-700 dark:text-[#F5F5F5] font-medium">Product Description <span class="text-red-500">*</span></label>
+                        <button
+                            type="button"
+                            @click="generateWithAI"
+                            :disabled="!form.name.trim() || generating"
+                            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-[#B8960F] dark:text-[#D4AF37] hover:bg-[#D4AF37]/20 transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                        >
+                            <svg v-if="generating" class="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path></svg>
+                            <svg v-else class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0l2.5 9.5L24 12l-9.5 2.5L12 24l-2.5-9.5L0 12l9.5-2.5z"/></svg>
+                            {{ generating ? 'Generating...' : 'Generate with AI' }}
+                        </button>
+                    </div>
                     <input
                         type="text"
                         v-model="form.description"
@@ -89,6 +142,7 @@ function handleFileChange(event) {
                         class="w-full border border-gray-200 dark:border-[#D4AF37]/20 rounded-lg px-4 py-3 focus:outline-none transition-all bg-white dark:bg-[#1A1A1A] dark:text-[#F5F5F5]"
                     />
                     <p v-if="form.errors.description" class="text-red-500 text-sm mt-1">{{ form.errors.description }}</p>
+                    <p v-if="aiError" class="text-red-500 text-sm mt-1">{{ aiError }}</p>
                 </div>
 
                 <!-- CATEGORY -->

@@ -20,6 +20,7 @@ class DatabaseSeeder extends Seeder
             SubcategorySeeder::class,
             ReviewSeeder::class,
             OrderSeeder::class,
+            FaqSeeder::class,
         ]);
     }
 }
