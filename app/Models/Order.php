@@ -2,14 +2,19 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Str;
 
 class Order extends Model
 {
+    use HasFactory;
+
     protected $fillable = [
         'user_id',
+        'tracking_code',
         'subtotal',
         'total',
         'discount',
@@ -31,6 +36,24 @@ class Order extends Model
             'total' => 'decimal:2',
             'discount' => 'decimal:2',
         ];
+    }
+
+    protected static function booted(): void
+    {
+        static::creating(function (Order $order) {
+            if (empty($order->tracking_code)) {
+                $order->tracking_code = static::generateUniqueTrackingCode();
+            }
+        });
+    }
+
+    public static function generateUniqueTrackingCode(): string
+    {
+        do {
+            $code = 'BR-'.strtoupper(Str::random(8));
+        } while (static::where('tracking_code', $code)->exists());
+
+        return $code;
     }
 
     public function items(): HasMany

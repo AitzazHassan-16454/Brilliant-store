@@ -17,6 +17,15 @@ const activeFilter = ref("all");
 const searchQuery = ref("");
 const debouncedSearch = ref("");
 const sortBy = ref("newest");
+const copied = ref("");
+
+const copyCode = async (code) => {
+  try {
+    await navigator.clipboard.writeText(code);
+    copied.value = code;
+    setTimeout(() => (copied.value = ""), 1500);
+  } catch {}
+};
 
 const updateSearch = debounce((val) => {
   debouncedSearch.value = val;
@@ -218,6 +227,36 @@ const timeAgo = (date) => {
       </div>
     </Transition>
 
+    <!-- TRACKING CODE BANNER -->
+    <Transition name="modal">
+      <div
+        v-if="$page.props.flash?.tracking_code"
+        class="mb-5 px-4 sm:px-5 py-4 rounded-xl flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3"
+        style="background:rgba(212,175,55,0.08); border:1px solid rgba(212,175,55,0.25);"
+      >
+        <div class="flex items-center gap-3 min-w-0">
+          <div class="w-9 h-9 rounded-lg bg-[#D4AF37]/15 flex items-center justify-center shrink-0">
+            <svg class="w-4.5 h-4.5 text-[#B8960F] dark:text-[#D4AF37]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12"/></svg>
+          </div>
+          <div class="min-w-0">
+            <p class="text-sm font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">Your tracking code</p>
+            <p class="text-xs text-gray-500 dark:text-[#A0A0A0] mt-0.5">Keep this code safe to track your order anytime.</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-2">
+          <code class="text-sm font-mono font-bold tracking-wide text-[#1A1A1A] dark:text-[#D4AF37] bg-white dark:bg-[#0A0A0A] border border-[#D4AF37]/30 rounded-lg px-3 py-1.5 select-all">
+            {{ $page.props.flash.tracking_code }}
+          </code>
+          <button
+            @click="copyCode($page.props.flash.tracking_code)"
+            class="px-3 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer bg-[#D4AF37] hover:bg-[#B8960F] text-white"
+          >
+            {{ copied === $page.props.flash.tracking_code ? "Copied!" : "Copy" }}
+          </button>
+        </div>
+      </div>
+    </Transition>
+
     <!-- STATS -->
     <div v-if="orders.length > 0" class="grid grid-cols-3 gap-4 mb-8">
       <div class="bg-white dark:bg-[#1A1A1A] border border-gray-100 dark:border-[#D4AF37]/20 rounded-lg p-4">
@@ -321,6 +360,24 @@ const timeAgo = (date) => {
             <div>
               <p class="text-sm font-medium text-[#1A1A1A] dark:text-[#F5F5F5]">Order Placed</p>
               <p class="text-xs text-gray-400 dark:text-[#A0A0A0]" :title="formatTime(order.created_at)">{{ timeAgo(order.created_at) }}</p>
+              <p v-if="order.tracking_code" class="mt-1 flex items-center gap-1.5">
+                <Link
+                  :href="`/track-order?code=${order.tracking_code}`"
+                  class="inline-flex items-center gap-1 font-mono text-[10px] font-semibold tracking-wide text-[#B8960F] dark:text-[#D4AF37] bg-[#D4AF37]/10 border border-[#D4AF37]/25 rounded px-1.5 py-0.5 hover:bg-[#D4AF37]/20 no-underline"
+                  :title="`Track ${order.tracking_code}`"
+                >
+                  <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12"/></svg>
+                  {{ order.tracking_code }}
+                </Link>
+                <button
+                  @click="copyCode(order.tracking_code)"
+                  class="text-gray-400 dark:text-[#A0A0A0] hover:text-gray-600 dark:hover:text-[#c9d1d9] transition cursor-pointer"
+                  :title="`Copy ${order.tracking_code}`"
+                >
+                  <svg v-if="copied !== order.tracking_code" class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+                  <svg v-else class="w-3 h-3 text-emerald-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                </button>
+              </p>
             </div>
           </div>
           <div class="flex items-center gap-3">

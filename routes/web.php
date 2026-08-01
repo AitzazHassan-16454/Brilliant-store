@@ -7,6 +7,7 @@ use App\Http\Controllers\ChatBotController;
 use App\Http\Controllers\CouponController;
 use App\Http\Controllers\CustomOrderController;
 use App\Http\Controllers\FaqController;
+use App\Http\Controllers\OrderTrackingController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\RoleController;
@@ -33,6 +34,11 @@ Route::get('/faq', [FaqController::class, 'index'])->name('faq');
 
 Route::get('/products/{product}', [ProductController::class, 'show'])
     ->name('products.show');
+
+Route::get('/track-order', [OrderTrackingController::class, 'show'])
+    ->name('track-order');
+
+Route::get('/about', fn () => Inertia::render('About'))->name('about');
 
 Route::get('/categories/{category}', [CategoryController::class, 'show'])
     ->name('categories.show');
@@ -143,7 +149,9 @@ Route::middleware('auth')->group(function () {
 
         $total = max(0, $subtotal - $discount);
 
-        DB::transaction(function () use ($user, $cartItems, $subtotal, $discount, $total, $coupon, $validated) {
+        $createdOrder = null;
+
+        DB::transaction(function () use ($user, $cartItems, $subtotal, $discount, $total, $coupon, $validated, &$createdOrder) {
 
             foreach ($cartItems as $item) {
                 $item->product->decrement('stock', $item->qty);
@@ -191,9 +199,13 @@ Route::middleware('auth')->group(function () {
             ]);
 
             Cart::where('user_id', $user->id)->delete();
+
+            $createdOrder = $order;
         });
 
-        return redirect('/orders')->with('success', 'Order placed successfully!');
+        return redirect('/orders')
+            ->with('success', 'Order placed successfully!')
+            ->with('tracking_code', $createdOrder->tracking_code);
     });
 
     Route::delete('/orders/{id}', function ($id) {
