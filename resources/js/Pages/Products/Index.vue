@@ -22,7 +22,7 @@ const canManageProducts = () => can('products.update') || can('products.delete')
 <template>
   <Head title="Products" />
 
-  <div class="flex min-h-screen bg-[#FAF7F2] dark:bg-[#0A0A0A] transition-colors duration-300">
+  <div class="flex min-h-screen bg-[#FAF7F2] dark:bg-[#0A0A0A]">
 
     <!-- SIDEBAR -->
     <Sidebar />
@@ -31,7 +31,7 @@ const canManageProducts = () => can('products.update') || can('products.delete')
     <main class="flex-1 p-6 lg:p-8 overflow-x-auto">
 
       <!-- HEADER -->
-      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 animate-fade-in-up-sm">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
 
         <h1 class="text-2xl font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">
           All Products
@@ -41,7 +41,7 @@ const canManageProducts = () => can('products.update') || can('products.delete')
           <Link
             v-if="can('products.create')"
             href="/CreateProduct"
-            class="px-5 py-2.5 bg-[#D4AF37] hover:bg-[#B8960F] text-white rounded-xl font-semibold transition shadow-sm active:scale-95"
+            class="px-5 py-2.5 bg-[#D4AF37] hover:bg-[#B8960F] text-white rounded-xl font-semibold shadow-sm"
           >
             + Add Product
           </Link>
@@ -50,7 +50,7 @@ const canManageProducts = () => can('products.update') || can('products.delete')
       </div>
 
       <!-- TABLE CARD -->
-      <div class="bg-white dark:bg-[#1A1A1A] border border-gray-200 dark:border-[#D4AF37]/20 rounded-2xl shadow-sm overflow-hidden animate-fade-in-up-sm" style="animation-delay:0.04s">
+      <div class="bg-white dark:bg-[#1A1A1A] border border-gray-200 dark:border-[#D4AF37]/20 rounded-2xl shadow-sm overflow-hidden">
 
         <!-- TITLE -->
         <div class="p-5 border-b border-gray-100 dark:border-[#D4AF37]/20">
@@ -81,10 +81,9 @@ const canManageProducts = () => can('products.update') || can('products.delete')
             <tbody>
 
               <tr
-                v-for="(product, index) in products.data"
+                v-for="product in products.data"
                 :key="product.id"
-                class="border-t border-gray-100 dark:border-[#D4AF37]/20 hover:bg-[#FAF7F2] dark:hover:bg-[#30363d]/50 transition animate-fade-in"
-                :style="{ animationDelay: `${Math.min(index * 0.03, 0.3)}s`, animationFillMode: 'both' }"
+                class="border-t border-gray-100 dark:border-[#D4AF37]/20 hover:bg-[#FAF7F2] dark:hover:bg-[#30363d]/50"
               >
 
                 <!-- IMAGE -->
@@ -135,7 +134,7 @@ const canManageProducts = () => can('products.update') || can('products.delete')
                     <Link
                       v-if="can('products.update')"
                       :href="`/products/${product.uid}/edit`"
-                      class="px-3 py-1.5 rounded-lg bg-[#FAF7F2] dark:bg-[#1A1A1A] text-gray-700 dark:text-[#F5F5F5] hover:bg-yellow-500 dark:hover:bg-yellow-500 hover:text-white transition active:scale-90"
+                      class="px-3 py-1.5 rounded-lg bg-[#FAF7F2] dark:bg-[#1A1A1A] text-gray-700 dark:text-[#F5F5F5] hover:bg-yellow-500 dark:hover:bg-yellow-500 hover:text-white"
                     >
                       Edit
                     </Link>
@@ -143,7 +142,7 @@ const canManageProducts = () => can('products.update') || can('products.delete')
                     <button
                       v-if="can('products.delete')"
                       @click="deleteProduct(product.uid)"
-                      class="px-3 py-1.5 rounded-lg bg-[#FAF7F2] dark:bg-[#1A1A1A] text-gray-700 dark:text-[#F5F5F5] hover:bg-red-500 dark:hover:bg-red-500 hover:text-white transition active:scale-90"
+                      class="px-3 py-1.5 rounded-lg bg-[#FAF7F2] dark:bg-[#1A1A1A] text-gray-700 dark:text-[#F5F5F5] hover:bg-red-500 dark:hover:bg-red-500 hover:text-white"
                     >
                       Delete
                     </button>

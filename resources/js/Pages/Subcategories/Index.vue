@@ -3,7 +3,6 @@ import { ref, watch } from "vue";
 import { router, Head, usePage } from "@inertiajs/vue3";
 import Sidebar from "../components/Sidebar.vue";
 import Pagination from "../components/Pagination.vue";
-import { motion } from "motion-v";
 import { useNotification } from "../../composables/useNotification.js";
 
 const { notify, error, success } = useNotification();
@@ -98,18 +97,13 @@ const remove = (uid) => {
 <template>
 <Head title="Subcategories" />
 
-<div class="flex min-h-screen bg-[#FAF7F2] dark:bg-[#0A0A0A] transition-colors duration-300">
+<div class="flex min-h-screen bg-[#FAF7F2] dark:bg-[#0A0A0A]">
 
     <Sidebar />
 
     <main class="flex-1 p-8">
 
-        <motion.div
-            :initial="{ opacity: 0, y: -1 }"
-            :animate="{ opacity: 1, y: 0 }"
-            :transition="{ duration: 0.4 }"
-            class="flex items-center justify-between mb-6"
-        >
+        <div class="flex items-center justify-between mb-6">
             <div>
                 <h1 class="text-3xl font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">
                     Subcategories
@@ -118,7 +112,7 @@ const remove = (uid) => {
                     Manage subcategories for each category
                 </p>
             </div>
-        </motion.div>
+        </div>
 
         <div v-if="can('categories.create') || can('categories.update')" class="flex gap-3 mb-6">
             <select
@@ -135,12 +129,12 @@ const remove = (uid) => {
                 v-model="name"
                 type="text"
                 placeholder="Enter subcategory name"
-                class="border px-4 py-2.5 flex-1 rounded-xl dark:bg-[#1A1A1A] dark:border-[#D4AF37]/20 dark:text-[#F5F5F5] outline-none transition focus:border-gray-400 dark:focus:border-gray-500"
+                class="border px-4 py-2.5 flex-1 rounded-xl dark:bg-[#1A1A1A] dark:border-[#D4AF37]/20 dark:text-[#F5F5F5] outline-none focus:border-gray-400 dark:focus:border-gray-500"
             />
 
             <button
                 @click="save"
-                class="bg-[#D4AF37] hover:bg-[#B8960F] text-white px-5 py-2.5 rounded-xl font-semibold transition active:scale-95 cursor-pointer"
+                class="bg-[#D4AF37] hover:bg-[#B8960F] text-white px-5 py-2.5 rounded-xl font-semibold cursor-pointer"
             >
                 {{ editingId ? "Update" : "Add" }}
             </button>
@@ -153,7 +147,7 @@ const remove = (uid) => {
             </span>
             <button
                 @click="categoryId = ''"
-                class="text-sm text-gray-400 hover:text-gray-600 dark:text-[#A0A0A0] dark:hover:text-slate-400 transition-colors"
+                class="text-sm text-gray-400 hover:text-gray-600 dark:text-[#A0A0A0] dark:hover:text-slate-400"
             >
                 Clear filter
             </button>
@@ -182,13 +176,10 @@ const remove = (uid) => {
 
                     <tbody>
 
-                        <motion.tr
+                        <tr
                             v-for="sub in subcategories.data"
                             :key="sub.id"
-                            :initial="{ opacity: 0, x: -15 }"
-                            :animate="{ opacity: 1, x: 0 }"
-                            :transition="{ duration: 0.3 }"
-                            class="border-t border-gray-100 dark:border-[#D4AF37]/20 hover:bg-[#FAF7F2] dark:hover:bg-[#21262d]/50 transition"
+                            class="border-t border-gray-100 dark:border-[#D4AF37]/20 hover:bg-[#FAF7F2] dark:hover:bg-[#21262d]/50"
                         >
 
                             <td class="p-4 text-gray-700 dark:text-[#F5F5F5]">
@@ -209,7 +200,7 @@ const remove = (uid) => {
                                     <button
                                         v-if="can('categories.update')"
                                         @click="edit(sub)"
-                                        class="px-3 py-1.5 bg-[#FAF7F2] dark:bg-[#1A1A1A] rounded-lg hover:bg-yellow-500 hover:text-white dark:hover:bg-yellow-500 transition"
+                                        class="px-3 py-1.5 bg-[#FAF7F2] dark:bg-[#1A1A1A] rounded-lg hover:bg-yellow-500 hover:text-white dark:hover:bg-yellow-500"
                                     >
                                         Edit
                                     </button>
@@ -217,7 +208,7 @@ const remove = (uid) => {
                                     <button
                                         v-if="can('categories.delete')"
                                         @click="remove(sub.uid)"
-                                        class="px-3 py-1.5 bg-[#FAF7F2] dark:bg-[#1A1A1A] rounded-lg hover:bg-red-500 hover:text-white dark:hover:bg-red-500 transition"
+                                        class="px-3 py-1.5 bg-[#FAF7F2] dark:bg-[#1A1A1A] rounded-lg hover:bg-red-500 hover:text-white dark:hover:bg-red-500"
                                     >
                                         Delete
                                     </button>
@@ -225,7 +216,7 @@ const remove = (uid) => {
                                 </div>
                             </td>
 
-                        </motion.tr>
+                        </tr>
 
                         <tr v-if="subcategories.data.length === 0">
                             <td colspan="4" class="p-10 text-center text-gray-400 dark:text-[#A0A0A0]">

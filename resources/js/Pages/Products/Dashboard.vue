@@ -139,14 +139,14 @@ const categoryChartOptions = {
 <template>
 <Head title="Dashboard" />
 
-<div class="flex min-h-screen bg-[#FAF7F2] dark:bg-[#0A0A0A] text-[#1A1A1A] dark:text-[#F5F5F5] transition-colors duration-300">
+<div class="flex min-h-screen bg-[#FAF7F2] dark:bg-[#0A0A0A] text-[#1A1A1A] dark:text-[#F5F5F5]">
 
     <Sidebar />
 
     <main class="flex-1 overflow-hidden">
 
         <!-- Header -->
-        <div class="sticky top-0 z-30 bg-white/80 dark:bg-[#0A0A0A]/80 backdrop-blur-md border-b border-gray-100 dark:border-[#D4AF37]/20 transition-colors duration-300">
+        <div class="sticky top-0 z-30 bg-white/80 dark:bg-[#0A0A0A]/80 backdrop-blur-md border-b border-gray-100 dark:border-[#D4AF37]/20">
             <div class="h-16 px-6 sm:px-8 flex items-center justify-between">
                 <div>
                     <h1 class="text-xl font-medium tracking-tight text-[#1A1A1A] dark:text-[#F5F5F5]">
@@ -157,7 +157,7 @@ const categoryChartOptions = {
                     </p>
                 </div>
                 <div class="hidden sm:flex items-center gap-3">
-                    <div class="px-4 py-2 rounded-lg border border-gray-200 dark:border-[#D4AF37]/20 text-sm font-medium text-gray-700 dark:text-[#F5F5F5] transition-colors duration-300">
+                    <div class="px-4 py-2 rounded-lg border border-gray-200 dark:border-[#D4AF37]/20 text-sm font-medium text-gray-700 dark:text-[#F5F5F5]">
                         Admin Panel
                     </div>
                 </div>
@@ -169,7 +169,7 @@ const categoryChartOptions = {
             <!-- KPI Cards -->
             <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
 
-                <div class="bg-white dark:bg-[#1A1A1A] border border-gray-100 dark:border-[#D4AF37]/20 rounded-lg p-5 transition-all duration-200">
+                <div class="bg-white dark:bg-[#1A1A1A] border border-gray-100 dark:border-[#D4AF37]/20 rounded-lg p-5">
                     <div class="flex items-center justify-between mb-3">
                         <span class="text-xs font-medium uppercase tracking-wider text-gray-400 dark:text-[#A0A0A0]">Revenue</span>
                         <div class="w-9 h-9 rounded-lg bg-gray-50 dark:bg-[#2A2A2A] text-gray-600 dark:text-[#A0A0A0] flex items-center justify-center">
@@ -184,7 +184,7 @@ const categoryChartOptions = {
                     </div>
                 </div>
 
-                <div class="bg-white dark:bg-[#1A1A1A] border border-gray-100 dark:border-[#D4AF37]/20 rounded-lg p-5 transition-all duration-200">
+                <div class="bg-white dark:bg-[#1A1A1A] border border-gray-100 dark:border-[#D4AF37]/20 rounded-lg p-5">
                     <div class="flex items-center justify-between mb-3">
                         <span class="text-xs font-medium uppercase tracking-wider text-gray-400 dark:text-[#A0A0A0]">Orders</span>
                         <div class="w-9 h-9 rounded-lg bg-gray-50 dark:bg-[#2A2A2A] text-gray-600 dark:text-[#A0A0A0] flex items-center justify-center">
@@ -199,7 +199,7 @@ const categoryChartOptions = {
                     </div>
                 </div>
 
-                <div class="bg-white dark:bg-[#1A1A1A] border border-gray-100 dark:border-[#D4AF37]/20 rounded-lg p-5 transition-all duration-200">
+                <div class="bg-white dark:bg-[#1A1A1A] border border-gray-100 dark:border-[#D4AF37]/20 rounded-lg p-5">
                     <div class="flex items-center justify-between mb-3">
                         <span class="text-xs font-medium uppercase tracking-wider text-gray-400 dark:text-[#A0A0A0]">Products</span>
                         <div class="w-9 h-9 rounded-lg bg-gray-50 dark:bg-[#2A2A2A] text-gray-600 dark:text-[#A0A0A0] flex items-center justify-center">
@@ -214,7 +214,7 @@ const categoryChartOptions = {
                     </div>
                 </div>
 
-                <div class="bg-white dark:bg-[#1A1A1A] border border-gray-100 dark:border-[#D4AF37]/20 rounded-lg p-5 transition-all duration-200">
+                <div class="bg-white dark:bg-[#1A1A1A] border border-gray-100 dark:border-[#D4AF37]/20 rounded-lg p-5">
                     <div class="flex items-center justify-between mb-3">
                         <span class="text-xs font-medium uppercase tracking-wider text-gray-400 dark:text-[#A0A0A0]">Customers</span>
                         <div class="w-9 h-9 rounded-lg bg-gray-50 dark:bg-[#2A2A2A] text-gray-600 dark:text-[#A0A0A0] flex items-center justify-center">
@@ -235,7 +235,7 @@ const categoryChartOptions = {
             <div class="grid grid-cols-1 xl:grid-cols-3 gap-5">
 
                 <!-- Revenue Chart -->
-                <div class="xl:col-span-2 bg-white dark:bg-[#1A1A1A] border border-gray-100 dark:border-[#D4AF37]/20 rounded-lg p-5 transition-all duration-200">
+                <div class="xl:col-span-2 bg-white dark:bg-[#1A1A1A] border border-gray-100 dark:border-[#D4AF37]/20 rounded-lg p-5">
                     <div class="flex items-center justify-between mb-4">
                         <div>
                             <h3 class="text-sm font-medium text-[#1A1A1A] dark:text-[#F5F5F5]">Revenue Overview</h3>
@@ -254,7 +254,7 @@ const categoryChartOptions = {
                 </div>
 
                 <!-- Category Distribution -->
-                <div class="bg-white dark:bg-[#1A1A1A] border border-gray-100 dark:border-[#D4AF37]/20 rounded-lg p-5 transition-all duration-200">
+                <div class="bg-white dark:bg-[#1A1A1A] border border-gray-100 dark:border-[#D4AF37]/20 rounded-lg p-5">
                     <div class="flex items-center justify-between mb-2">
                         <div>
                             <h3 class="text-sm font-medium text-[#1A1A1A] dark:text-[#F5F5F5]">Products by Category</h3>
@@ -275,7 +275,7 @@ const categoryChartOptions = {
             <div class="grid grid-cols-1 xl:grid-cols-2 gap-5">
 
                 <!-- Recent Orders -->
-                <div class="bg-white dark:bg-[#1A1A1A] border border-gray-100 dark:border-[#D4AF37]/20 rounded-lg p-5 transition-all duration-200">
+                <div class="bg-white dark:bg-[#1A1A1A] border border-gray-100 dark:border-[#D4AF37]/20 rounded-lg p-5">
                     <div class="flex items-center justify-between mb-4">
                         <div>
                             <h3 class="text-sm font-medium text-[#1A1A1A] dark:text-[#F5F5F5]">Recent Orders</h3>
@@ -310,7 +310,7 @@ const categoryChartOptions = {
                 </div>
 
                 <!-- Pending Reviews -->
-                <div class="bg-white dark:bg-[#1A1A1A] border border-gray-100 dark:border-[#D4AF37]/20 rounded-lg p-5 transition-all duration-200">
+                <div class="bg-white dark:bg-[#1A1A1A] border border-gray-100 dark:border-[#D4AF37]/20 rounded-lg p-5">
                     <div class="flex items-center justify-between mb-4">
                         <div>
                             <h3 class="text-sm font-medium text-[#1A1A1A] dark:text-[#F5F5F5]">Pending Reviews</h3>
@@ -345,27 +345,27 @@ const categoryChartOptions = {
 
             <!-- Quick Stats Bar -->
             <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3">
-                <div class="bg-white dark:bg-[#1A1A1A] border border-gray-100 dark:border-[#D4AF37]/20 rounded-lg px-4 py-3 transition-all duration-200">
+                <div class="bg-white dark:bg-[#1A1A1A] border border-gray-100 dark:border-[#D4AF37]/20 rounded-lg px-4 py-3">
                     <p class="text-xs text-gray-400 dark:text-[#A0A0A0]">Categories</p>
                     <p class="text-lg font-medium text-[#1A1A1A] dark:text-[#F5F5F5] mt-0.5">{{ categoriesCount }}</p>
                 </div>
-                <div class="bg-white dark:bg-[#1A1A1A] border border-gray-100 dark:border-[#D4AF37]/20 rounded-lg px-4 py-3 transition-all duration-200">
+                <div class="bg-white dark:bg-[#1A1A1A] border border-gray-100 dark:border-[#D4AF37]/20 rounded-lg px-4 py-3">
                     <p class="text-xs text-gray-400 dark:text-[#A0A0A0]">Subcategories</p>
                     <p class="text-lg font-medium text-[#1A1A1A] dark:text-[#F5F5F5] mt-0.5">{{ subcategoriesCount }}</p>
                 </div>
-                <div class="bg-white dark:bg-[#1A1A1A] border border-gray-100 dark:border-[#D4AF37]/20 rounded-lg px-4 py-3 transition-all duration-200">
+                <div class="bg-white dark:bg-[#1A1A1A] border border-gray-100 dark:border-[#D4AF37]/20 rounded-lg px-4 py-3">
                     <p class="text-xs text-gray-400 dark:text-[#A0A0A0]">Roles</p>
                     <p class="text-lg font-medium text-[#1A1A1A] dark:text-[#F5F5F5] mt-0.5">{{ rolesCount }}</p>
                 </div>
-                <div class="bg-white dark:bg-[#1A1A1A] border border-gray-100 dark:border-[#D4AF37]/20 rounded-lg px-4 py-3 transition-all duration-200">
+                <div class="bg-white dark:bg-[#1A1A1A] border border-gray-100 dark:border-[#D4AF37]/20 rounded-lg px-4 py-3">
                     <p class="text-xs text-gray-400 dark:text-[#A0A0A0]">Coupons</p>
                     <p class="text-lg font-medium text-[#1A1A1A] dark:text-[#F5F5F5] mt-0.5">{{ couponsCount }}</p>
                 </div>
-                <div class="bg-white dark:bg-[#1A1A1A] border border-gray-100 dark:border-[#D4AF37]/20 rounded-lg px-4 py-3 transition-all duration-200">
+                <div class="bg-white dark:bg-[#1A1A1A] border border-gray-100 dark:border-[#D4AF37]/20 rounded-lg px-4 py-3">
                     <p class="text-xs text-gray-400 dark:text-[#A0A0A0]">Stock Total</p>
                     <p class="text-lg font-medium text-[#1A1A1A] dark:text-[#F5F5F5] mt-0.5">{{ totalStock.toLocaleString() }}</p>
                 </div>
-                <div class="bg-white dark:bg-[#1A1A1A] border border-gray-100 dark:border-[#D4AF37]/20 rounded-lg px-4 py-3 transition-all duration-200">
+                <div class="bg-white dark:bg-[#1A1A1A] border border-gray-100 dark:border-[#D4AF37]/20 rounded-lg px-4 py-3">
                     <p class="text-xs text-gray-400 dark:text-[#A0A0A0]">Low Stock</p>
                     <p class="text-lg font-medium mt-0.5" :class="lowStockCount > 0 ? 'text-red-500 dark:text-[#f85149]' : 'text-emerald-500 dark:text-[#3fb950]'">{{ lowStockCount }}</p>
                 </div>

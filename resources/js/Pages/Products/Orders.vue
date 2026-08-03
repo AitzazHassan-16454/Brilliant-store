@@ -119,7 +119,7 @@ const nextStatuses = (current) => ({
 <template>
   <Head title="Orders" />
 
-  <div class="flex min-h-screen bg-[#FAF7F2] dark:bg-[#0A0A0A] transition-colors duration-300">
+  <div class="flex min-h-screen bg-[#FAF7F2] dark:bg-[#0A0A0A]">
 
     <Sidebar />
 
@@ -188,7 +188,7 @@ const nextStatuses = (current) => ({
               v-for="f in filters" :key="f.key"
               @click="activeFilter = f.key"
               :class="[
-                'px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all duration-200 cursor-pointer',
+                'px-3.5 py-1.5 rounded-lg text-xs font-medium cursor-pointer',
                 activeFilter === f.key
                   ? 'bg-[#1A1A1A] dark:bg-[#D4AF37] text-white shadow-sm'
                   : 'bg-white dark:bg-[#1A1A1A] text-gray-500 dark:text-[#A0A0A0] hover:bg-gray-50 dark:hover:bg-[#21262d] hover:text-gray-700 dark:hover:text-[#c9d1d9] border border-gray-200 dark:border-[#D4AF37]/20'
@@ -204,7 +204,7 @@ const nextStatuses = (current) => ({
               v-model="searchQuery"
               type="text"
               placeholder="Search by name, ID, product..."
-              class="w-full pl-9 pr-4 py-2 rounded-lg text-sm border border-gray-200 dark:border-[#D4AF37]/20 bg-white dark:bg-[#1A1A1A] text-[#1A1A1A] dark:text-[#F5F5F5] placeholder-gray-400 dark:placeholder-[#8b949e] outline-none transition focus:border-gray-400 dark:focus:border-gray-500"
+              class="w-full pl-9 pr-4 py-2 rounded-lg text-sm border border-gray-200 dark:border-[#D4AF37]/20 bg-white dark:bg-[#1A1A1A] text-[#1A1A1A] dark:text-[#F5F5F5] placeholder-gray-400 dark:placeholder-[#8b949e] outline-none focus:border-gray-400 dark:focus:border-gray-500"
             />
           </div>
         </div>
@@ -241,7 +241,7 @@ const nextStatuses = (current) => ({
                   #{{ String(order.id).slice(-3) }}
                 </div>
                 <div class="min-w-0">
-                  <p class="text-sm font-medium text-[#1A1A1A] dark:text-[#F5F5F5] truncate">{{ order.user?.name || "Guest" }}</p>
+                  <p class="text-sm font-medium text-[#1A1A1A] dark:text-[#F5F5F5] truncate">{{ order.user?.name ||"Guest" }}</p>
                   <p class="text-xs text-gray-400 dark:text-[#A0A0A0]" :title="formatTime(order.created_at)">{{ timeAgo(order.created_at) }}</p>
                   <p v-if="order.tracking_code" class="mt-1">
                     <a
@@ -268,7 +268,7 @@ const nextStatuses = (current) => ({
             <div class="px-5 py-2.5">
               <div v-for="item in order.items" :key="item.id" class="flex items-center justify-between py-1.5 text-sm">
                 <div class="flex items-center gap-2.5 min-w-0">
-                  <span class="text-gray-600 dark:text-[#A0A0A0] truncate">{{ item.product?.name || "Product" }}</span>
+                  <span class="text-gray-600 dark:text-[#A0A0A0] truncate">{{ item.product?.name ||"Product" }}</span>
                   <span class="text-gray-400 dark:text-[#A0A0A0] shrink-0">&times;{{ item.quantity }}</span>
                 </div>
                 <span class="text-sm font-medium text-[#1A1A1A] dark:text-[#F5F5F5] shrink-0 ml-3">${{ (item.price * item.quantity).toFixed(2) }}</span>
@@ -304,7 +304,7 @@ const nextStatuses = (current) => ({
             <div class="px-5 py-3 flex items-center justify-between gap-3">
               <button
                 @click="toggleTimeline(order.id)"
-                class="text-xs font-medium text-gray-400 dark:text-[#A0A0A0] hover:text-gray-600 dark:hover:text-[#c9d1d9] transition cursor-pointer flex items-center gap-1.5"
+                class="text-xs font-medium text-gray-400 dark:text-[#A0A0A0] hover:text-gray-600 dark:hover:text-[#c9d1d9] cursor-pointer flex items-center gap-1.5"
               >
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 {{ expandedOrder === order.id ? "Hide" : "View" }} History
@@ -315,7 +315,7 @@ const nextStatuses = (current) => ({
                   <button
                     v-for="ns in nextStatuses(order.status)" :key="ns"
                     @click="requestStatusChange(order.id, ns)"
-                    class="px-3 py-1.5 rounded-lg text-xs font-medium transition cursor-pointer"
+                    class="px-3 py-1.5 rounded-lg text-xs font-medium cursor-pointer"
                     :class="{
                       'bg-amber-50 text-amber-600 hover:bg-amber-100 dark:bg-[#d29922]/10 dark:text-[#d29922] dark:hover:bg-[#d29922]/20': ns === 'pending',
                       'bg-blue-50 text-blue-600 hover:bg-blue-100 dark:bg-[#58a6ff]/10 dark:text-[#58a6ff] dark:hover:bg-[#58a6ff]/20': ns === 'confirmed',
@@ -327,7 +327,7 @@ const nextStatuses = (current) => ({
                 </template>
                 <button
                   @click="confirmDelete(order.id)"
-                  class="px-3 py-1.5 rounded-lg text-xs font-medium transition cursor-pointer bg-red-50 text-red-500 hover:bg-red-100 dark:bg-[#f85149]/10 dark:text-[#f85149] dark:hover:bg-[#f85149]/20"
+                  class="px-3 py-1.5 rounded-lg text-xs font-medium cursor-pointer bg-red-50 text-red-500 hover:bg-red-100 dark:bg-[#f85149]/10 dark:text-[#f85149] dark:hover:bg-[#f85149]/20"
                 >
                   Delete
                 </button>

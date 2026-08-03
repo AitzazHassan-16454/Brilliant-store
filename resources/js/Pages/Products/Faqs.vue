@@ -12,11 +12,11 @@ defineProps({
 <template>
   <Head title="FAQs" />
 
-  <div class="flex min-h-screen bg-[#FAF7F2] dark:bg-[#0A0A0A] transition-colors duration-300">
+  <div class="flex min-h-screen bg-[#FAF7F2] dark:bg-[#0A0A0A]">
     <Sidebar />
 
     <main class="flex-1 p-6 lg:p-10">
-      <div class="mb-8 animate-fade-in-up-sm">
+      <div class="mb-8">
         <h1 class="text-3xl font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">FAQs</h1>
         <p class="text-gray-500 dark:text-[#A0A0A0]">Frequently asked questions shown to customers</p>
       </div>

@@ -111,7 +111,7 @@ const categoryImageUrl = (cat) => {
 <template>
 <Head title="Categories" />
 
-<div class="flex min-h-screen bg-[#FAF7F2] dark:bg-[#0A0A0A] transition-colors duration-300">
+<div class="flex min-h-screen bg-[#FAF7F2] dark:bg-[#0A0A0A]">
 
     <Sidebar />
 
@@ -138,19 +138,19 @@ const categoryImageUrl = (cat) => {
                     v-model="name"
                     type="text"
                     placeholder="Category name"
-                    class="border px-4 py-2.5 rounded-xl dark:bg-[#0A0A0A] dark:border-[#D4AF37]/20 dark:text-[#F5F5F5] outline-none transition focus:border-gray-400 dark:focus:border-gray-500"
+                    class="border px-4 py-2.5 rounded-xl dark:bg-[#0A0A0A] dark:border-[#D4AF37]/20 dark:text-[#F5F5F5] outline-none focus:border-gray-400 dark:focus:border-gray-500"
                 />
 
                 <textarea
                     v-model="description"
                     placeholder="Short description (optional)"
                     rows="2"
-                    class="border px-4 py-2.5 rounded-xl dark:bg-[#0A0A0A] dark:border-[#D4AF37]/20 dark:text-[#F5F5F5] outline-none transition focus:border-gray-400 dark:focus:border-gray-500 resize-none"
+                    class="border px-4 py-2.5 rounded-xl dark:bg-[#0A0A0A] dark:border-[#D4AF37]/20 dark:text-[#F5F5F5] outline-none focus:border-gray-400 dark:focus:border-gray-500 resize-none"
                 />
 
                 <div class="flex items-center gap-4">
                     <label class="cursor-pointer">
-                        <span class="inline-block px-4 py-2 bg-[#FAF7F2] dark:bg-[#0A0A0A] border border-gray-200 dark:border-[#D4AF37]/20 rounded-xl text-sm font-medium text-gray-600 dark:text-[#A0A0A0] hover:border-gray-400 dark:hover:border-gray-500 transition cursor-pointer">
+                        <span class="inline-block px-4 py-2 bg-[#FAF7F2] dark:bg-[#0A0A0A] border border-gray-200 dark:border-[#D4AF37]/20 rounded-xl text-sm font-medium text-gray-600 dark:text-[#A0A0A0] hover:border-gray-400 dark:hover:border-gray-500 cursor-pointer">
                             {{ imageFile ? imageFile.name : "Choose image" }}
                         </span>
                         <input type="file" accept="image/*" class="hidden" @change="onImageSelect" />
@@ -162,14 +162,14 @@ const categoryImageUrl = (cat) => {
                 <div class="flex gap-2">
                     <button
                         @click="save"
-                        class="bg-[#D4AF37] hover:bg-[#B8960F] text-white px-5 py-2.5 rounded-xl font-semibold transition active:scale-95 cursor-pointer"
+                        class="bg-[#D4AF37] hover:bg-[#B8960F] text-white px-5 py-2.5 rounded-xl font-semibold cursor-pointer"
                     >
                         {{ editingUid ? "Update" : "Add" }}
                     </button>
                     <button
                         v-if="editingUid"
                         @click="reset"
-                        class="px-5 py-2.5 rounded-xl font-semibold transition border border-gray-200 dark:border-[#D4AF37]/20 text-gray-600 dark:text-[#A0A0A0] hover:bg-gray-100 dark:hover:bg-[#0A0A0A] cursor-pointer"
+                        class="px-5 py-2.5 rounded-xl font-semibold border border-gray-200 dark:border-[#D4AF37]/20 text-gray-600 dark:text-[#A0A0A0] hover:bg-gray-100 dark:hover:bg-[#0A0A0A] cursor-pointer"
                     >
                         Cancel
                     </button>
@@ -204,7 +204,7 @@ const categoryImageUrl = (cat) => {
                         <tr
                             v-for="cat in categories"
                             :key="cat.uid"
-                            class="border-t border-gray-100 dark:border-[#D4AF37]/20 hover:bg-[#FAF7F2] dark:hover:bg-[#21262d]/50 transition"
+                            class="border-t border-gray-100 dark:border-[#D4AF37]/20 hover:bg-[#FAF7F2] dark:hover:bg-[#21262d]/50"
                         >
                             <td class="p-4">
                                 <img
@@ -235,14 +235,14 @@ const categoryImageUrl = (cat) => {
 
                                     <button
                                         @click="edit(cat)"
-                                        class="px-3 py-1.5 bg-[#FAF7F2] dark:bg-[#0A0A0A] rounded-lg hover:bg-yellow-500 hover:text-white dark:hover:bg-yellow-500 transition cursor-pointer"
+                                        class="px-3 py-1.5 bg-[#FAF7F2] dark:bg-[#0A0A0A] rounded-lg hover:bg-yellow-500 hover:text-white dark:hover:bg-yellow-500 cursor-pointer"
                                     >
                                         Edit
                                     </button>
 
                                     <button
                                         @click="remove(cat.uid)"
-                                        class="px-3 py-1.5 bg-[#FAF7F2] dark:bg-[#0A0A0A] rounded-lg hover:bg-red-500 hover:text-white dark:hover:bg-red-500 transition cursor-pointer"
+                                        class="px-3 py-1.5 bg-[#FAF7F2] dark:bg-[#0A0A0A] rounded-lg hover:bg-red-500 hover:text-white dark:hover:bg-red-500 cursor-pointer"
                                     >
                                         Delete
                                     </button>

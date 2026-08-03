@@ -22,7 +22,7 @@ const decodeLabel = (label) => {
                     v-if="decodeLabel(link.label) === 'Previous'"
                     :disabled="!link.url"
                     @click="link.url && router.visit(link.url, { preserveState: true, replace: true })"
-                    class="inline-flex items-center gap-1 h-8 px-2.5 rounded-md text-xs font-medium transition-all duration-200 active:scale-95 cursor-pointer"
+                    class="inline-flex items-center gap-1 h-8 px-2.5 rounded-md text-xs font-medium cursor-pointer"
                     :class="link.url
                         ? 'text-gray-500 dark:text-[#A0A0A0] hover:bg-gray-100 dark:hover:bg-[#21262d] hover:text-[#1A1A1A] dark:hover:text-[#c9d1d9]'
                         : 'text-gray-300 dark:text-[#A0A0A0] cursor-default'"
@@ -36,7 +36,7 @@ const decodeLabel = (label) => {
                     v-else-if="decodeLabel(link.label) === 'Next'"
                     :disabled="!link.url"
                     @click="link.url && router.visit(link.url, { preserveState: true, replace: true })"
-                    class="inline-flex items-center gap-1 h-8 px-2.5 rounded-md text-xs font-medium transition-all duration-200 active:scale-95 cursor-pointer"
+                    class="inline-flex items-center gap-1 h-8 px-2.5 rounded-md text-xs font-medium cursor-pointer"
                     :class="link.url
                         ? 'text-gray-500 dark:text-[#A0A0A0] hover:bg-gray-100 dark:hover:bg-[#21262d] hover:text-[#1A1A1A] dark:hover:text-[#c9d1d9]'
                         : 'text-gray-300 dark:text-[#A0A0A0] cursor-default'"
@@ -50,7 +50,7 @@ const decodeLabel = (label) => {
                     v-else
                     :disabled="!link.url"
                     @click="link.url && router.visit(link.url, { preserveState: true, replace: true })"
-                    class="min-w-[32px] h-8 flex items-center justify-center px-2 rounded-md text-xs font-medium transition-all duration-200 active:scale-90 cursor-pointer"
+                    class="min-w-[32px] h-8 flex items-center justify-center px-2 rounded-md text-xs font-medium cursor-pointer"
                     :class="link.active
                         ? 'bg-[#1A1A1A] dark:bg-[#D4AF37] text-white shadow-sm'
                         : link.url

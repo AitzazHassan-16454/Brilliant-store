@@ -100,24 +100,22 @@ const statusLabel = (coupon) => {
 <template>
 <Head title="Coupons" />
 
-<div class="flex min-h-screen bg-[#FAF7F2] dark:bg-[#0A0A0A] transition-colors duration-300">
+<div class="flex min-h-screen bg-[#FAF7F2] dark:bg-[#0A0A0A]">
   <Sidebar />
 
   <main class="flex-1 p-8">
 
-    <div class="flex items-center justify-between mb-6 animate-fade-in-up-sm">
+    <div class="flex items-center justify-between mb-6">
       <div>
         <h1 class="text-3xl font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">Coupons</h1>
         <p class="text-gray-500 dark:text-[#A0A0A0]">Manage discount codes</p>
       </div>
     </div>
 
-    <Transition name="flash">
-      <div v-if="$page.props.flash?.success"
-        class="mb-5 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg text-sm font-medium flex items-center gap-2 dark:bg-[#3fb950]/10 dark:border-green-800 dark:text-[#3fb950]">
-        {{ $page.props.flash.success }}
-      </div>
-    </Transition>
+    <div v-if="$page.props.flash?.success"
+      class="mb-5 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg text-sm font-medium flex items-center gap-2 dark:bg-[#3fb950]/10 dark:border-green-800 dark:text-[#3fb950]">
+      {{ $page.props.flash.success }}
+    </div>
 
     <div v-if="can('coupons.create') || can('coupons.update')" class="bg-white border border-gray-200 rounded-lg p-6 mb-6 shadow-sm dark:bg-[#1A1A1A] dark:border-[#D4AF37]/20">
       <h3 class="text-sm font-semibold uppercase tracking-wider text-[#1A1A1A] dark:text-[#F5F5F5] mb-4">
@@ -168,11 +166,11 @@ const statusLabel = (coupon) => {
 
       <div class="flex gap-2 mt-4">
         <button @click="save"
-          class="px-5 py-2.5 bg-[#D4AF37] hover:bg-[#B8960F] text-white text-sm font-semibold rounded-lg transition-all active:scale-95">
+          class="px-5 py-2.5 bg-[#D4AF37] hover:bg-[#B8960F] text-white text-sm font-semibold rounded-lg">
           {{ editingId ? "Update" : "Create" }}
         </button>
         <button v-if="editingId" @click="reset"
-          class="px-5 py-2.5 border border-gray-200 text-gray-600 text-sm font-semibold rounded-lg hover:bg-[#FAF7F2] dark:border-[#D4AF37]/20 dark:text-[#A0A0A0] dark:hover:bg-[#21262d] transition-all active:scale-95">
+          class="px-5 py-2.5 border border-gray-200 text-gray-600 text-sm font-semibold rounded-lg hover:bg-[#FAF7F2] dark:border-[#D4AF37]/20 dark:text-[#A0A0A0] dark:hover:bg-[#21262d]">
           Cancel
         </button>
       </div>
@@ -199,7 +197,7 @@ const statusLabel = (coupon) => {
           </thead>
           <tbody>
             <tr v-for="coupon in coupons" :key="coupon.id"
-              class="border-t border-gray-100 dark:border-[#D4AF37]/20 hover:bg-[#FAF7F2] dark:hover:bg-[#161b22]/50 transition">
+              class="border-t border-gray-100 dark:border-[#D4AF37]/20 hover:bg-[#FAF7F2] dark:hover:bg-[#161b22]/50">
               <td class="p-4 font-semibold text-[#1A1A1A] dark:text-[#F5F5F5] font-mono">{{ coupon.code }}</td>
               <td class="p-4 text-gray-600 dark:text-[#A0A0A0] capitalize">{{ coupon.type }}</td>
               <td class="p-4 font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">
@@ -220,11 +218,11 @@ const statusLabel = (coupon) => {
               <td v-if="can('coupons.update') || can('coupons.delete')" class="p-4">
                 <div class="flex justify-center gap-2">
                   <button v-if="can('coupons.update')" @click="edit(coupon)"
-                    class="px-3 py-1.5 bg-[#FAF7F2] dark:bg-[#1A1A1A] rounded-lg hover:bg-yellow-500 hover:text-white dark:hover:bg-yellow-500 transition text-xs font-semibold">
+                    class="px-3 py-1.5 bg-[#FAF7F2] dark:bg-[#1A1A1A] rounded-lg hover:bg-yellow-500 hover:text-white dark:hover:bg-yellow-500 text-xs font-semibold">
                     Edit
                   </button>
                   <button v-if="can('coupons.delete')" @click="remove(coupon.id)"
-                    class="px-3 py-1.5 bg-[#FAF7F2] dark:bg-[#1A1A1A] rounded-lg hover:bg-red-500 hover:text-white dark:hover:bg-red-500 transition text-xs font-semibold">
+                    class="px-3 py-1.5 bg-[#FAF7F2] dark:bg-[#1A1A1A] rounded-lg hover:bg-red-500 hover:text-white dark:hover:bg-red-500 text-xs font-semibold">
                     Delete
                   </button>
                 </div>

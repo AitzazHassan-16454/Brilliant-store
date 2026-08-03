@@ -44,16 +44,16 @@ const formatDate = (date) => {
 <template>
   <Head :title="`Review #${review.id}`" />
 
-  <div class="flex min-h-screen bg-[#FAF7F2] dark:bg-[#0A0A0A] transition-colors duration-300">
+  <div class="flex min-h-screen bg-[#FAF7F2] dark:bg-[#0A0A0A]">
 
     <Sidebar />
 
     <main class="flex-1 p-6 lg:p-10 overflow-x-hidden">
 
       <!-- HEADER -->
-      <div class="mb-6 animate-fade-in-up-sm flex items-center gap-3">
+      <div class="mb-6 flex items-center gap-3">
         <a href="/reviews"
-          class="w-8 h-8 rounded-lg flex items-center justify-center border border-gray-200 dark:border-[#D4AF37]/20 hover:bg-gray-50 dark:hover:bg-[#30363d]/50 transition cursor-pointer">
+          class="w-8 h-8 rounded-lg flex items-center justify-center border border-gray-200 dark:border-[#D4AF37]/20 hover:bg-gray-50 dark:hover:bg-[#30363d]/50 cursor-pointer">
           <svg class="w-4 h-4 text-gray-500 dark:text-[#A0A0A0]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
           </svg>
@@ -174,7 +174,7 @@ const formatDate = (date) => {
               <button
                 v-if="review.status !== 'approved'"
                 @click="changeStatus('approve')"
-                class="w-full px-4 py-2.5 rounded-lg bg-green-500 hover:bg-green-600 text-white text-xs font-semibold transition-all active:scale-95 cursor-pointer flex items-center justify-center gap-2"
+                class="w-full px-4 py-2.5 rounded-lg bg-green-500 hover:bg-green-600 text-white text-xs font-semibold cursor-pointer flex items-center justify-center gap-2"
               >
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
                 Approve Review
@@ -183,7 +183,7 @@ const formatDate = (date) => {
               <button
                 v-if="review.status !== 'rejected'"
                 @click="changeStatus('reject')"
-                class="w-full px-4 py-2.5 rounded-lg bg-yellow-500 hover:bg-yellow-600 text-white text-xs font-semibold transition-all active:scale-95 cursor-pointer flex items-center justify-center gap-2"
+                class="w-full px-4 py-2.5 rounded-lg bg-yellow-500 hover:bg-yellow-600 text-white text-xs font-semibold cursor-pointer flex items-center justify-center gap-2"
               >
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                 Reject Review
@@ -193,7 +193,7 @@ const formatDate = (date) => {
 
               <button
                 @click="deleteReview"
-                class="w-full px-4 py-2.5 rounded-lg bg-red-500 hover:bg-red-600 text-white text-xs font-semibold transition-all active:scale-95 cursor-pointer flex items-center justify-center gap-2"
+                class="w-full px-4 py-2.5 rounded-lg bg-red-500 hover:bg-red-600 text-white text-xs font-semibold cursor-pointer flex items-center justify-center gap-2"
               >
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6m5 0V4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2"/></svg>
                 Delete Review
@@ -204,7 +204,7 @@ const formatDate = (date) => {
 
           <!-- Back Link -->
           <a href="/reviews"
-            class="block text-center text-xs font-semibold text-gray-500 dark:text-[#A0A0A0] hover:text-[#1A1A1A] dark:hover:text-[#c9d1d9] transition py-2">
+            class="block text-center text-xs font-semibold text-gray-500 dark:text-[#A0A0A0] hover:text-[#1A1A1A] dark:hover:text-[#c9d1d9] py-2">
             &larr; Back to Reviews
           </a>
 

@@ -99,18 +99,18 @@ const submit = () => {
 <template>
     <Head title="Create Role" />
 
-    <div class="flex min-h-screen bg-[#FAF7F2] dark:bg-[#0A0A0A] transition-colors duration-300">
+    <div class="flex min-h-screen bg-[#FAF7F2] dark:bg-[#0A0A0A]">
         <Sidebar />
 
         <main class="flex-1 p-8">
-            <div class="flex items-center justify-between mb-8 animate-fade-in-up-sm">
+            <div class="flex items-center justify-between mb-8">
                 <div>
                     <h2 class="text-3xl font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">Create Role</h2>
                     <p class="text-gray-500 dark:text-[#A0A0A0] mt-2">Create a new role and assign permissions</p>
                 </div>
             </div>
 
-            <div class="bg-white border border-gray-200 rounded-2xl shadow-sm p-8 max-w-5xl animate-fade-in-up-sm dark:bg-[#1A1A1A] dark:border-[#D4AF37]/20" style="animation-delay:0.05s">
+            <div class="bg-white border border-gray-200 rounded-2xl shadow-sm p-8 max-w-5xl dark:bg-[#1A1A1A] dark:border-[#D4AF37]/20">
                 <form @submit.prevent="submit" class="space-y-8">
                     <div>
                         <label class="block text-gray-700 dark:text-[#F5F5F5] font-medium mb-2">
@@ -120,7 +120,7 @@ const submit = () => {
                             type="text"
                             v-model="form.name"
                             placeholder="Enter role name (e.g., Editor, Manager)"
-                            class="w-full border rounded-xl px-4 py-3 outline-none transition focus:border-gray-400 dark:focus:border-gray-500 dark:bg-[#1A1A1A] dark:border-[#D4AF37]/20 dark:text-[#F5F5F5]"
+                            class="w-full border rounded-xl px-4 py-3 outline-none focus:border-gray-400 dark:focus:border-gray-500 dark:bg-[#1A1A1A] dark:border-[#D4AF37]/20 dark:text-[#F5F5F5]"
                         />
                         <p v-if="form.errors.name" class="text-red-500 text-sm mt-1">
                             {{ form.errors.name }}
@@ -133,7 +133,7 @@ const submit = () => {
                             <button
                                 type="button"
                                 @click="toggleAllPermissions"
-                                class="px-4 py-2 text-sm font-semibold text-white bg-[#D4AF37] hover:bg-[#B8960F] rounded-xl transition cursor-pointer"
+                                class="px-4 py-2 text-sm font-semibold text-white bg-[#D4AF37] hover:bg-[#B8960F] rounded-xl cursor-pointer"
                             >
                                 {{ areAllPermissionsSelected ? 'Deselect All' : 'Select All' }}
                             </button>
@@ -191,13 +191,13 @@ const submit = () => {
                         <button
                             type="submit"
                             :disabled="form.processing"
-                            class="px-6 py-2.5 bg-[#D4AF37] hover:bg-[#B8960F] text-white rounded-xl font-semibold transition disabled:opacity-50 disabled:cursor-not-allowed active:scale-95 cursor-pointer"
+                            class="px-6 py-2.5 bg-[#D4AF37] hover:bg-[#B8960F] text-white rounded-xl font-semibold disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                         >
                             {{ form.processing ? 'Creating...' : 'Create Role' }}
                         </button>
                         <Link
                             href="/roles"
-                            class="px-6 py-2.5 border border-gray-200 rounded-xl text-gray-700 hover:bg-[#FAF7F2] transition font-medium dark:border-[#D4AF37]/20 dark:text-[#F5F5F5] dark:hover:bg-[#21262d]"
+                            class="px-6 py-2.5 border border-gray-200 rounded-xl text-gray-700 hover:bg-[#FAF7F2] font-medium dark:border-[#D4AF37]/20 dark:text-[#F5F5F5] dark:hover:bg-[#21262d]"
                         >
                             Cancel
                         </Link>

@@ -80,7 +80,7 @@ const generateWithAI = async () => {
 
 <Head title="Edit Product" />
 
-<div class="flex min-h-screen bg-[#FAF7F2] dark:bg-[#0A0A0A] transition-colors duration-300">
+<div class="flex min-h-screen bg-[#FAF7F2] dark:bg-[#0A0A0A]">
 
     <!-- SIDEBAR -->
      <Sidebar />
@@ -89,7 +89,7 @@ const generateWithAI = async () => {
     <main class="flex-1 p-8">
 
         <!-- PAGE HEADER -->
-        <div class="flex items-center justify-between mb-8 animate-fade-in-up-sm">
+        <div class="flex items-center justify-between mb-8">
 
             <div>
                 <h2 class="text-3xl font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">
@@ -105,7 +105,7 @@ const generateWithAI = async () => {
         </div>
 
         <!-- FORM CARD -->
-        <div class="bg-white dark:bg-[#1A1A1A] border border-gray-200 dark:border-[#D4AF37]/20 rounded-2xl shadow-sm p-8 max-w-3xl animate-fade-in-up-sm" style="animation-delay:0.05s">
+        <div class="bg-white dark:bg-[#1A1A1A] border border-gray-200 dark:border-[#D4AF37]/20 rounded-2xl shadow-sm p-8 max-w-3xl">
 
             <form @submit.prevent="submit">
 
@@ -120,7 +120,7 @@ const generateWithAI = async () => {
                         type="text"
                         v-model="form.name"
                         name="name"
-                        class="w-full border border-gray-200 dark:border-[#D4AF37]/20 rounded-lg px-4 py-3 focus:outline-none transition-all bg-white dark:bg-[#1A1A1A] dark:text-[#F5F5F5]"
+                        class="w-full border border-gray-200 dark:border-[#D4AF37]/20 rounded-lg px-4 py-3 focus:outline-none bg-white dark:bg-[#1A1A1A] dark:text-[#F5F5F5]"
                         placeholder="Enter product name"
                     />
 
@@ -146,7 +146,7 @@ const generateWithAI = async () => {
                             type="button"
                             @click="generateWithAI"
                             :disabled="!form.name.trim() || generating"
-                            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-[#B8960F] dark:text-[#D4AF37] hover:bg-[#D4AF37]/20 transition disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                            class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-[#B8960F] dark:text-[#D4AF37] hover:bg-[#D4AF37]/20 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                         >
                             <svg v-if="generating" class="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path></svg>
                             <svg v-else class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0l2.5 9.5L24 12l-9.5 2.5L12 24l-2.5-9.5L0 12l9.5-2.5z"/></svg>
@@ -159,7 +159,7 @@ const generateWithAI = async () => {
                         v-model="form.description"
                         name="description"
                         rows="3"
-                        class="w-full border border-gray-200 dark:border-[#D4AF37]/20 rounded-lg px-4 py-3 focus:outline-none transition-all bg-white dark:bg-[#1A1A1A] dark:text-[#F5F5F5]"
+                        class="w-full border border-gray-200 dark:border-[#D4AF37]/20 rounded-lg px-4 py-3 focus:outline-none bg-white dark:bg-[#1A1A1A] dark:text-[#F5F5F5]"
                         placeholder="Enter product description"
                     ></textarea>
 
@@ -188,7 +188,7 @@ const generateWithAI = async () => {
 
                     <select
                         v-model="form.category_id"
-                        class="w-full border border-gray-200 dark:border-[#D4AF37]/20 rounded-lg px-4 py-3 focus:outline-none transition-all bg-white dark:bg-[#1A1A1A] dark:text-[#F5F5F5]"
+                        class="w-full border border-gray-200 dark:border-[#D4AF37]/20 rounded-lg px-4 py-3 focus:outline-none bg-white dark:bg-[#1A1A1A] dark:text-[#F5F5F5]"
                     >
 
                         <option value="">
@@ -229,7 +229,7 @@ const generateWithAI = async () => {
                         step="0.01"
                         max="999999.99"
                         inputmode="decimal"
-                        class="w-full border border-gray-200 dark:border-[#D4AF37]/20 rounded-lg px-4 py-3 focus:outline-none transition-all bg-white dark:bg-[#1A1A1A] dark:text-[#F5F5F5]"
+                        class="w-full border border-gray-200 dark:border-[#D4AF37]/20 rounded-lg px-4 py-3 focus:outline-none bg-white dark:bg-[#1A1A1A] dark:text-[#F5F5F5]"
                         placeholder="Enter price"
                     />
 
@@ -256,7 +256,7 @@ const generateWithAI = async () => {
                         min="0"
                         step="1"
                         inputmode="numeric"
-                        class="w-full border border-gray-200 dark:border-[#D4AF37]/20 rounded-lg px-4 py-3 focus:outline-none transition-all bg-white dark:bg-[#1A1A1A] dark:text-[#F5F5F5]"
+                        class="w-full border border-gray-200 dark:border-[#D4AF37]/20 rounded-lg px-4 py-3 focus:outline-none bg-white dark:bg-[#1A1A1A] dark:text-[#F5F5F5]"
                         placeholder="Enter stock quantity"
                     />
 
@@ -273,7 +273,7 @@ const generateWithAI = async () => {
                 <div class="mb-6 flex items-center gap-3">
                     <label class="relative inline-flex cursor-pointer items-center">
                         <input type="checkbox" v-model="form.is_active" class="peer sr-only" />
-                        <div class="h-6 w-11 rounded-full bg-[#D4AF37]/10 after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:bg-white after:transition-all peer-checked:bg-[#D4AF37] peer-checked:after:translate-x-full"></div>
+                        <div class="h-6 w-11 rounded-full bg-[#D4AF37]/10 after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:bg-white peer-checked:bg-[#D4AF37] peer-checked:after:translate-x-full"></div>
                     </label>
                     <span class="text-gray-700 dark:text-[#F5F5F5] font-medium">Active (visible on store)</span>
                 </div>
@@ -323,14 +323,14 @@ const generateWithAI = async () => {
 
                     <button
                         type="submit"
-                        class="bg-[#D4AF37] hover:bg-[#B8960F] text-white px-6 py-3 rounded-xl font-semibold transition active:scale-95 cursor-pointer"
+                        class="bg-[#D4AF37] hover:bg-[#B8960F] text-white px-6 py-3 rounded-xl font-semibold cursor-pointer"
                     >
                         Update Product
                     </button>
 
                     <Link
                         href="/dashboard"
-                        class="bg-[#FAF7F2] dark:bg-[#1A1A1A] text-gray-700 dark:text-[#F5F5F5] px-6 py-3 rounded-xl border border-gray-200 dark:border-[#D4AF37]/20 hover:bg-[#D4AF37]/10 dark:hover:bg-[#21262d] transition active:scale-95"
+                        class="bg-[#FAF7F2] dark:bg-[#1A1A1A] text-gray-700 dark:text-[#F5F5F5] px-6 py-3 rounded-xl border border-gray-200 dark:border-[#D4AF37]/20 hover:bg-[#D4AF37]/10 dark:hover:bg-[#21262d]"
                     >
                         Cancel
                     </Link>

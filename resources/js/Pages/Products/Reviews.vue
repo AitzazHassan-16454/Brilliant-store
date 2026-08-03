@@ -34,14 +34,14 @@ const statusColor = (status) => {
 <template>
   <Head title="Reviews" />
 
-  <div class="flex min-h-screen bg-[#FAF7F2] dark:bg-[#0A0A0A] transition-colors duration-300">
+  <div class="flex min-h-screen bg-[#FAF7F2] dark:bg-[#0A0A0A]">
 
     <Sidebar />
 
     <main class="flex-1 p-6 lg:p-10 overflow-x-hidden">
 
       <!-- HEADER -->
-      <div class="flex items-center justify-between mb-6 animate-fade-in-up-sm">
+      <div class="flex items-center justify-between mb-6">
         <div>
           <h1 class="text-2xl font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">Reviews Management</h1>
           <p class="text-gray-500 dark:text-[#A0A0A0] text-sm">Approve or reject customer product reviews</p>
@@ -77,10 +77,10 @@ const statusColor = (status) => {
               <tr
                 v-for="review in reviews.data"
                 :key="review.id"
-                class="hover:bg-[#FAF7F2] dark:hover:bg-[#30363d]/50 transition-colors"
+                class="hover:bg-[#FAF7F2] dark:hover:bg-[#30363d]/50"
               >
                 <td class="px-4 py-3">
-                  <Link :href="`/reviews/${review.id}`" class="flex items-center gap-2 no-underline hover:opacity-70 transition">
+                  <Link :href="`/reviews/${review.id}`" class="flex items-center gap-2 no-underline hover:opacity-70">
                     <img
                       v-if="review.user?.avatar"
                       :src="`/storage/${review.user.avatar}`"
@@ -128,7 +128,7 @@ const statusColor = (status) => {
                     <button
                       v-if="review.status !== 'approved'"
                       @click="changeStatus(review.id, 'approve')"
-                      class="px-2 py-1 rounded-lg bg-green-500 hover:bg-green-600 text-white text-[10px] font-semibold transition-all active:scale-95 cursor-pointer"
+                      class="px-2 py-1 rounded-lg bg-green-500 hover:bg-green-600 text-white text-[10px] font-semibold cursor-pointer"
                     >
                       Approve
                     </button>
@@ -136,14 +136,14 @@ const statusColor = (status) => {
                     <button
                       v-if="review.status !== 'rejected'"
                       @click="changeStatus(review.id, 'reject')"
-                      class="px-2 py-1 rounded-lg bg-yellow-500 hover:bg-yellow-600 text-white text-[10px] font-semibold transition-all active:scale-95 cursor-pointer"
+                      class="px-2 py-1 rounded-lg bg-yellow-500 hover:bg-yellow-600 text-white text-[10px] font-semibold cursor-pointer"
                     >
                       Reject
                     </button>
 
                     <button
                       @click="deleteReview(review.id)"
-                      class="px-2 py-1 rounded-lg bg-red-500 hover:bg-red-600 text-white text-[10px] font-semibold transition-all active:scale-95 cursor-pointer"
+                      class="px-2 py-1 rounded-lg bg-red-500 hover:bg-red-600 text-white text-[10px] font-semibold cursor-pointer"
                     >
                       Delete
                     </button>
@@ -168,7 +168,7 @@ const statusColor = (status) => {
               :key="page"
               @click="router.get(`/reviews?page=${page}`, {}, { preserveScroll: true })"
               :class="[
-                'px-2.5 py-1 rounded-lg text-[10px] font-semibold transition-all cursor-pointer',
+                'px-2.5 py-1 rounded-lg text-[10px] font-semibold cursor-pointer',
                 page === reviews.current_page
                   ? 'bg-[#D4AF37] text-white'
                   : 'bg-gray-100 dark:bg-[#1A1A1A] text-gray-600 dark:text-[#A0A0A0] hover:bg-gray-200 dark:hover:bg-[#30363d]'

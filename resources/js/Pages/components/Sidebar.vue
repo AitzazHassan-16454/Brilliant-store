@@ -102,41 +102,37 @@ const isVisible = (item) => {
 <template>
   <aside
     :class="[
-      'h-screen sticky top-0 bg-[#FAF7F2] dark:bg-[#0A0A0A] border-r border-gray-200 dark:border-[#D4AF37]/20 flex flex-col shadow-sm transition-all duration-300 shrink-0',
+      'h-screen sticky top-0 bg-[#FAF7F2] dark:bg-[#0A0A0A] border-r border-gray-200 dark:border-[#D4AF37]/20 flex flex-col shadow-sm shrink-0',
       collapsed ? 'w-[68px]' : 'w-64'
     ]"
   >
 
-    <div class="p-5 border-b border-gray-100 dark:border-[#D4AF37]/20 bg-white dark:bg-[#1A1A1A] flex items-center gap-3 min-h-[72px] transition-colors duration-300">
-      <div class="w-9 h-9 rounded-lg bg-[#1A1A1A] dark:bg-[#2A2A2A] text-white flex items-center justify-center text-sm font-bold shrink-0 transition-colors duration-300">
+    <div class="p-5 border-b border-gray-100 dark:border-[#D4AF37]/20 bg-white dark:bg-[#1A1A1A] flex items-center gap-3 min-h-[72px]">
+      <div class="w-9 h-9 rounded-lg bg-[#1A1A1A] dark:bg-[#2A2A2A] text-white flex items-center justify-center text-sm font-bold shrink-0">
         B
       </div>
-      <Transition name="fade">
-        <div v-if="!collapsed" class="overflow-hidden whitespace-nowrap">
-          <h1 class="text-lg font-medium text-[#1A1A1A] dark:text-[#F5F5F5] tracking-wide leading-tight transition-colors duration-300">Brilliant</h1>
-          <p class="text-[10px] text-gray-400 dark:text-[#A0A0A0] transition-colors duration-300">Admin Control Panel</p>
-        </div>
-      </Transition>
+      <div v-if="!collapsed" class="overflow-hidden whitespace-nowrap">
+        <h1 class="text-lg font-medium text-[#1A1A1A] dark:text-[#F5F5F5] tracking-wide leading-tight">Brilliant</h1>
+        <p class="text-[10px] text-gray-400 dark:text-[#A0A0A0]">Admin Control Panel</p>
+      </div>
     </div>
 
-    <div class="px-2 py-2 border-b border-gray-100 dark:border-[#D4AF37]/20 transition-colors duration-300">
+    <div class="px-2 py-2 border-b border-gray-100 dark:border-[#D4AF37]/20">
       <button
         @click="toggle"
         :class="[
-          'w-full flex items-center gap-3 rounded-lg px-4 py-2 text-gray-400 dark:text-[#A0A0A0] hover:bg-white dark:hover:bg-[#21262d] hover:shadow-sm hover:text-[#1A1A1A] dark:hover:text-[#c9d1d9] transition-all duration-200 cursor-pointer',
+          'w-full flex items-center gap-3 rounded-lg px-4 py-2 text-gray-400 dark:text-[#A0A0A0] hover:bg-white dark:hover:bg-[#21262d] hover:shadow-sm hover:text-[#1A1A1A] dark:hover:text-[#c9d1d9] cursor-pointer',
           collapsed ? 'justify-center px-0' : ''
         ]"
       >
         <svg
-          class="w-5 h-5 shrink-0 transition-transform duration-300"
+          class="w-5 h-5 shrink-0"
           :class="collapsed ? 'rotate-180' : ''"
           fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"
         >
           <path stroke-linecap="round" stroke-linejoin="round" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"/>
         </svg>
-        <Transition name="fade">
-          <span v-if="!collapsed" class="text-sm font-medium whitespace-nowrap">Collapse</span>
-        </Transition>
+        <span v-if="!collapsed" class="text-sm font-medium whitespace-nowrap">Collapse</span>
       </button>
     </div>
 
@@ -147,7 +143,7 @@ const isVisible = (item) => {
           v-if="isVisible(item)"
           :href="item.href"
           :class="[
-            'relative flex items-center gap-3 rounded-lg transition-all duration-200 font-medium active:scale-[0.97] group',
+            'relative flex items-center gap-3 rounded-lg font-medium group',
             collapsed ? 'px-0 py-3 justify-center' : 'px-4 py-3',
             isActive(item.href)
               ? 'text-[#1A1A1A] dark:text-[#F5F5F5] font-medium bg-white dark:bg-[#1A1A1A] shadow-sm'
@@ -155,13 +151,11 @@ const isVisible = (item) => {
           ]"
         >
           <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24" v-html="item.icon"></svg>
-          <Transition name="fade">
-            <span v-if="!collapsed" class="whitespace-nowrap text-sm">{{ item.label }}</span>
-          </Transition>
+          <span v-if="!collapsed" class="whitespace-nowrap text-sm">{{ item.label }}</span>
 
           <div
             v-if="collapsed"
-            class="absolute left-full ml-2 px-2.5 py-1.5 rounded-lg bg-[#1A1A1A] text-white text-xs font-medium whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity z-50"
+            class="absolute left-full ml-2 px-2.5 py-1.5 rounded-lg bg-[#1A1A1A] text-white text-xs font-medium whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 z-50"
           >
             {{ item.label }}
           </div>
@@ -172,13 +166,3 @@ const isVisible = (item) => {
 
   </aside>
 </template>
-
-<style scoped>
-.fade-enter-active, .fade-leave-active {
-  transition: opacity 0.15s ease, transform 0.15s ease;
-}
-.fade-enter-from, .fade-leave-to {
-  opacity: 0;
-  transform: translateX(-4px);
-}
-</style>

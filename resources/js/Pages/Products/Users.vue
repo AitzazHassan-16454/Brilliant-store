@@ -18,7 +18,7 @@ const can = (permission) => Boolean(page.props.permissions?.can?.[permission]);
 <template>
   <Head title="Users" />
 
-  <div class="flex min-h-screen bg-[#FAF7F2] dark:bg-[#0A0A0A] transition-colors duration-300">
+  <div class="flex min-h-screen bg-[#FAF7F2] dark:bg-[#0A0A0A]">
 
     <!-- SIDEBAR -->
     <Sidebar />
@@ -27,7 +27,7 @@ const can = (permission) => Boolean(page.props.permissions?.can?.[permission]);
     <main class="flex-1 p-6 lg:p-8 overflow-x-auto">
 
       <!-- HEADER -->
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 animate-fade-in-up-sm">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
         <h1 class="text-2xl font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">
           All Users
         </h1>
@@ -36,7 +36,7 @@ const can = (permission) => Boolean(page.props.permissions?.can?.[permission]);
           <Link
             v-if="can('users.create')"
             href="/users/create"
-            class="inline-flex items-center justify-center rounded-xl bg-[#D4AF37] hover:bg-[#B8960F] px-4 py-2 text-sm font-semibold text-white transition active:scale-95"
+            class="inline-flex items-center justify-center rounded-xl bg-[#D4AF37] hover:bg-[#B8960F] px-4 py-2 text-sm font-semibold text-white"
           >
             Add New User
           </Link>
@@ -75,7 +75,7 @@ const can = (permission) => Boolean(page.props.permissions?.can?.[permission]);
               <tr
                 v-for="user in users"
                 :key="user.id"
-                class="border-t border-gray-100 dark:border-[#D4AF37]/20 hover:bg-[#FAF7F2] dark:hover:bg-[#30363d]/50 transition"
+                class="border-t border-gray-100 dark:border-[#D4AF37]/20 hover:bg-[#FAF7F2] dark:hover:bg-[#30363d]/50"
               >
                 <!-- USER ID -->
                 <td class="p-4 font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">
@@ -103,7 +103,7 @@ const can = (permission) => Boolean(page.props.permissions?.can?.[permission]);
 
                     <Link
                       :href="`/users/${user.id}/edit`"
-                      class="px-3 py-1.5 rounded-lg bg-[#FAF7F2] dark:bg-[#1A1A1A] text-gray-700 dark:text-[#F5F5F5] hover:bg-yellow-500 hover:text-white dark:hover:bg-yellow-500 transition"
+                      class="px-3 py-1.5 rounded-lg bg-[#FAF7F2] dark:bg-[#1A1A1A] text-gray-700 dark:text-[#F5F5F5] hover:bg-yellow-500 hover:text-white dark:hover:bg-yellow-500"
                     >
                       Edit
                     </Link>

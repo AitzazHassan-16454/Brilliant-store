@@ -24,11 +24,11 @@ const canManageRoles = () => can('roles.update') || can('roles.delete')
 <template>
     <Head title="Roles" />
 
-    <div class="flex min-h-screen bg-[#FAF7F2] dark:bg-[#0A0A0A] transition-colors duration-300">
+    <div class="flex min-h-screen bg-[#FAF7F2] dark:bg-[#0A0A0A]">
         <Sidebar />
 
         <main class="flex-1 p-6 lg:p-8 overflow-x-auto">
-            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 animate-fade-in-up-sm">
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
                 <h1 class="text-2xl font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">
                     All Roles
                 </h1>
@@ -37,7 +37,7 @@ const canManageRoles = () => can('roles.update') || can('roles.delete')
                     <Link
                         v-if="can('roles.create')"
                         href="/roles/create"
-                        class="px-5 py-2.5 bg-[#D4AF37] hover:bg-[#B8960F] text-white rounded-xl font-semibold transition shadow-sm active:scale-95"
+                        class="px-5 py-2.5 bg-[#D4AF37] hover:bg-[#B8960F] text-white rounded-xl font-semibold shadow-sm"
                     >
                         + Add Role
                     </Link>
@@ -64,7 +64,7 @@ const canManageRoles = () => can('roles.update') || can('roles.delete')
                             <tr
                                 v-for="role in roles"
                                 :key="role.id"
-                                class="border-t border-gray-100 dark:border-[#D4AF37]/20 hover:bg-[#FAF7F2] dark:hover:bg-[#21262d]/50 transition"
+                                class="border-t border-gray-100 dark:border-[#D4AF37]/20 hover:bg-[#FAF7F2] dark:hover:bg-[#21262d]/50"
                             >
                                 <td class="p-4 font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">
                                     {{ role.name }}
@@ -75,7 +75,7 @@ const canManageRoles = () => can('roles.update') || can('roles.delete')
                                         <Link
                                             v-if="can('roles.update')"
                                             :href="`/roles/${role.id}/edit`"
-                                            class="px-3 py-1.5 rounded-lg bg-[#FAF7F2] dark:bg-[#1A1A1A] text-gray-700 dark:text-[#F5F5F5] hover:bg-yellow-500 hover:text-white transition"
+                                            class="px-3 py-1.5 rounded-lg bg-[#FAF7F2] dark:bg-[#1A1A1A] text-gray-700 dark:text-[#F5F5F5] hover:bg-yellow-500 hover:text-white"
                                         >
                                             Edit
                                         </Link>
@@ -83,7 +83,7 @@ const canManageRoles = () => can('roles.update') || can('roles.delete')
                                         <button
                                             v-if="can('roles.delete')"
                                             @click="deleteRole(role.id)"
-                                            class="px-3 py-1.5 rounded-lg bg-[#FAF7F2] dark:bg-[#1A1A1A] text-gray-700 dark:text-[#F5F5F5] hover:bg-red-500 hover:text-white transition"
+                                            class="px-3 py-1.5 rounded-lg bg-[#FAF7F2] dark:bg-[#1A1A1A] text-gray-700 dark:text-[#F5F5F5] hover:bg-red-500 hover:text-white"
                                         >
                                             Delete
                                         </button>
