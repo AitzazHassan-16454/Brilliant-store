@@ -18,6 +18,10 @@ const deleteProduct = (uid) => {
 const page = usePage();
 const can = (permission) => Boolean(page.props.permissions?.can?.[permission]);
 const canManageProducts = () => can('products.update') || can('products.delete');
+
+const toggleTrending = (product) => {
+  router.post(`/products/${product.uid}/toggle-trending`);
+};
 </script>
 <template>
   <Head title="Products" />
@@ -73,6 +77,7 @@ const canManageProducts = () => can('products.update') || can('products.delete')
                 <th class="p-4">Price</th>
                 <th class="p-4">Stock</th>
                 <th class="p-4">Status</th>
+                <th v-if="can('products.update')" class="p-4 text-center">Trending</th>
                 <th v-if="canManageProducts()" class="p-4 text-center">Actions</th>
               </tr>
             </thead>
@@ -126,6 +131,21 @@ const canManageProducts = () => can('products.update') || can('products.delete')
                   </span>
                 </td>
 
+                <!-- TRENDING -->
+                <td v-if="can('products.update')" class="p-4">
+                  <div class="flex justify-center">
+                    <label class="relative inline-flex cursor-pointer items-center" :title="product.is_trending ? 'Remove from trending' : 'Add to trending'">
+                      <input
+                        type="checkbox"
+                        class="peer sr-only"
+                        :checked="product.is_trending"
+                        @change="toggleTrending(product)"
+                      />
+                      <div class="h-6 w-11 rounded-full bg-[#D4AF37]/10 after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:bg-white after:transition-transform peer-checked:bg-[#D4AF37] peer-checked:after:translate-x-full"></div>
+                    </label>
+                  </div>
+                </td>
+
                 <!-- ACTIONS -->
                 <td v-if="canManageProducts()" class="p-4">
 
@@ -155,7 +175,7 @@ const canManageProducts = () => can('products.update') || can('products.delete')
 
               <!-- EMPTY -->
               <tr v-if="products.data.length === 0">
-                <td colspan="7" class="p-10 text-center text-gray-400 dark:text-[#A0A0A0]">
+                <td colspan="8" class="p-10 text-center text-gray-400 dark:text-[#A0A0A0]">
                   No products found
                 </td>
               </tr>

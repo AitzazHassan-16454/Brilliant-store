@@ -1,6 +1,8 @@
 <script setup>
 import { ref } from "vue"
 import { Link } from "@inertiajs/vue3"
+import { motion } from "motion-v"
+import { motionPresets as m } from "../lib/motion.js"
 
 const props = defineProps({
   product: { type: Object, required: true },
@@ -14,8 +16,9 @@ const imgLoaded = ref(false)
 </script>
 
 <template>
-  <div
-    class="group relative flex h-full flex-col overflow-hidden rounded-2xl md:rounded-lg border border-border bg-card shadow-luxury transition-luxury hover:border-[#D4AF37]/50 hover:shadow-luxury-hover">
+  <motion.div
+    :whileHover="{ y: -6, boxShadow: '0 8px 30px rgba(0,0,0,0.12)', transition: m.spring.gentle }"
+    class="group relative flex h-full flex-col overflow-hidden rounded-2xl md:rounded-lg border border-border bg-card shadow-luxury transition-colors hover:border-[#D4AF37]/50">
 
     <!-- Image -->
     <Link :href="`/products/${product.uid}`" class="relative block aspect-square overflow-hidden bg-gradient-to-br from-[#D4AF37]/25 via-[#D4AF37]/10 to-[#D4AF37]/30 dark:from-[#D4AF37]/20 dark:via-[#D4AF37]/5 dark:to-[#D4AF37]/25">
@@ -38,10 +41,12 @@ const imgLoaded = ref(false)
       </div>
 
       <!-- Wishlist -->
-      <button
+      <motion.button
         @click.prevent="emit('toggle-wishlist')"
+        :whileHover="{ scale: 1.12 }"
+        :whileTap="{ scale: 0.88 }"
         :class="[
-          'absolute top-2.5 right-2.5 md:top-3 md:right-3 z-10 flex h-9 w-9 items-center justify-center rounded-full border border-border bg-card/95 backdrop-blur-sm shadow-sm transition-luxury active:scale-90',
+          'absolute top-2.5 right-2.5 md:top-3 md:right-3 z-10 flex h-9 w-9 items-center justify-center rounded-full border border-border bg-card/95 backdrop-blur-sm shadow-sm transition-luxury',
           isInWishlist
             ? 'hover:bg-red-500 hover:text-white'
             : 'hover:bg-[#D4AF37]',
@@ -57,7 +62,7 @@ const imgLoaded = ref(false)
           viewBox="0 0 24 24">
           <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z" />
         </svg>
-      </button>
+      </motion.button>
     </Link>
 
     <!-- Card body -->
@@ -125,11 +130,12 @@ const imgLoaded = ref(false)
           <span class="text-base font-bold text-[#D4AF37]">${{ Number(product.price).toFixed(2) }}</span>
           <span v-if="product.compare_price" class="text-xs text-muted-foreground line-through">${{ Number(product.compare_price).toFixed(2) }}</span>
         </div>
-        <button
+        <motion.button
           @click="emit('add-to-cart')"
           :disabled="product.stock === 0 || isInCart"
+          :whileTap="{ scale: 0.96 }"
           :class="[
-            'flex h-10 w-full items-center justify-center gap-1.5 rounded-full text-sm font-semibold shadow-sm transition-luxury active:scale-[0.98]',
+            'flex h-10 w-full items-center justify-center gap-1.5 rounded-full text-sm font-semibold shadow-sm transition-luxury',
             product.stock === 0 || isInCart
               ? 'bg-muted text-muted-foreground cursor-not-allowed'
               : 'bg-[#D4AF37] text-[#0A0A0A] hover:bg-[#B8941E]'
@@ -141,15 +147,16 @@ const imgLoaded = ref(false)
             <path d="M20 6 9 17l-5-5"/>
           </svg>
           {{ product.stock === 0 ? 'Sold Out' : isInCart ? 'Added' : 'Add to Cart' }}
-        </button>
+        </motion.button>
       </div>
 
       <!-- Desktop: Price + Cart icon -->
       <div class="mt-auto hidden items-center justify-between md:flex">
         <span class="text-2xl font-bold text-foreground">${{ Number(product.price).toFixed(2) }}</span>
-        <button
+        <motion.button
           @click="emit('add-to-cart')"
           :disabled="product.stock === 0 || isInCart"
+          :whileTap="{ scale: 0.9 }"
           :class="[
             'flex h-10 w-10 items-center justify-center rounded-full shadow-sm transition-luxury',
             product.stock === 0 || isInCart
@@ -162,11 +169,11 @@ const imgLoaded = ref(false)
           <svg v-else-if="isInCart" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
             <path d="M20 6 9 17l-5-5"/>
           </svg>
-        </button>
+        </motion.button>
       </div>
 
     </div>
-  </div>
+  </motion.div>
 </template>
 
 

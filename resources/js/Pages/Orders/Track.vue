@@ -1,6 +1,8 @@
 <script setup>
 import { Link, Head, router } from "@inertiajs/vue3";
 import { ref, watch } from "vue";
+import { motion } from "motion-v";
+import { motionPresets as m } from "../../lib/motion.js";
 
 const props = defineProps({
   order: Object,
@@ -73,20 +75,30 @@ const formatTime = (date) => {
   <div class="max-w-3xl mx-auto px-4 sm:px-6 py-8 sm:py-14">
 
     <!-- HEADER -->
-    <div class="text-center mb-8">
-      <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-[#D4AF37]/10 mb-4">
+    <motion.div
+      :variants="m.staggerContainer(0.12, 0.1)"
+      initial="hidden"
+      animate="visible"
+      class="text-center mb-8"
+    >
+      <motion.div :variants="m.itemScaleIn(0)" class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-[#D4AF37]/10 mb-4">
         <svg class="w-7 h-7" fill="none" stroke="#D4AF37" stroke-width="1.8" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12"/>
         </svg>
-      </div>
-      <h1 class="text-2xl sm:text-3xl font-semibold tracking-tight text-[#1A1A1A] dark:text-[#F5F5F5]">Track Your Order</h1>
-      <p class="text-sm text-gray-500 dark:text-[#A0A0A0] mt-2 max-w-md mx-auto">
+      </motion.div>
+      <h1 :variants="m.itemFadeUp(1)" class="text-2xl sm:text-3xl font-semibold tracking-tight text-[#1A1A1A] dark:text-[#F5F5F5]">Track Your Order</h1>
+      <p :variants="m.itemFadeUp(2)" class="text-sm text-gray-500 dark:text-[#A0A0A0] mt-2 max-w-md mx-auto">
         Enter the tracking code you received after placing your order to see its live status.
       </p>
-    </div>
+    </motion.div>
 
     <!-- SEARCH -->
-    <div class="bg-white dark:bg-[#1A1A1A] border border-gray-200 dark:border-[#D4AF37]/20 rounded-2xl p-5 sm:p-6 shadow-sm">
+    <motion.div
+      :initial="{ opacity: 0, y: 24 }"
+      :animate="{ opacity: 1, y: 0 }"
+      :transition="{ delay: 0.25, duration: 0.5, ease: m.easeOutExpo }"
+      class="bg-white dark:bg-[#1A1A1A] border border-gray-200 dark:border-[#D4AF37]/20 rounded-2xl p-5 sm:p-6 shadow-sm"
+    >
       <form @submit.prevent="trackOrder" class="flex flex-col sm:flex-row gap-3">
         <div class="relative flex-1">
           <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400 dark:text-[#A0A0A0]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
@@ -108,7 +120,7 @@ const formatTime = (date) => {
           {{ searching ? "Searching..." : "Track Order" }}
         </button>
       </form>
-    </div>
+    </motion.div>
 
     <!-- ERROR -->
     <div
@@ -123,7 +135,13 @@ const formatTime = (date) => {
     </div>
 
     <!-- ORDER RESULT -->
-    <div v-if="order" class="mt-6 space-y-4">
+    <motion.div
+      v-if="order"
+      :initial="{ opacity: 0, y: 24 }"
+      :animate="{ opacity: 1, y: 0 }"
+      :transition="{ duration: 0.5, ease: m.easeOutExpo }"
+      class="mt-6 space-y-4"
+    >
 
       <!-- TRACKING CODE BANNER -->
       <div class="bg-white dark:bg-[#1A1A1A] border border-[#D4AF37]/30 dark:border-[#D4AF37]/30 rounded-2xl p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -208,9 +226,15 @@ const formatTime = (date) => {
           <h2 class="text-sm font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">Order Progress</h2>
         </div>
 
-        <div v-if="order.statuses?.length" class="relative ml-2.5">
+        <motion.div
+          v-if="order.statuses?.length"
+          :variants="m.staggerContainer(0.1, 0.05)"
+          initial="hidden"
+          animate="visible"
+          class="relative ml-2.5"
+        >
           <div class="absolute left-0 top-1 bottom-1 w-px bg-gray-200 dark:bg-[#30363d]"></div>
-          <div v-for="(s, idx) in order.statuses" :key="s.id" class="relative flex items-start gap-3 pb-5 last:pb-0">
+          <motion.div v-for="(s, idx) in order.statuses" :key="s.id" :variants="m.itemFadeUp(0)" class="relative flex items-start gap-3 pb-5 last:pb-0">
             <div :class="['w-2.5 h-2.5 rounded-full border-2 border-white dark:border-[#0A0A0A] shrink-0 mt-1 z-10', statusDot(s.status)]"></div>
             <div class="flex-1 min-w-0">
               <div class="flex items-center gap-2 flex-wrap">
@@ -220,8 +244,8 @@ const formatTime = (date) => {
               <p v-if="s.note" class="text-xs text-gray-500 dark:text-[#A0A0A0] mt-0.5">{{ s.note }}</p>
             </div>
             <span v-if="idx === 0" class="px-2 py-0.5 rounded-md text-[9px] font-bold uppercase tracking-wide bg-[#D4AF37]/10 text-[#B8960F] dark:text-[#D4AF37] shrink-0">Latest</span>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
         <p v-else class="text-sm text-gray-400 dark:text-[#A0A0A0]">No tracking updates yet.</p>
       </div>
 
@@ -236,37 +260,40 @@ const formatTime = (date) => {
           My Orders
         </Link>
       </div>
-    </div>
+    </motion.div>
 
     <!-- EMPTY STATE -->
-    <div
-      v-else-if="!error"
-      class="mt-6 bg-white dark:bg-[#1A1A1A] border border-gray-200 dark:border-[#D4AF37]/20 rounded-2xl p-8 sm:p-10"
-    >
+      <motion.div
+        v-else-if="!error"
+        :variants="m.staggerContainer(0.15, 0.05)"
+        initial="hidden"
+        animate="visible"
+        class="mt-6 bg-white dark:bg-[#1A1A1A] border border-gray-200 dark:border-[#D4AF37]/20 rounded-2xl p-8 sm:p-10"
+      >
       <div class="grid sm:grid-cols-3 gap-6 text-center">
-        <div>
+        <motion.div :variants="m.itemFadeUp(0)">
           <div class="w-11 h-11 mx-auto rounded-xl bg-[#D4AF37]/10 flex items-center justify-center mb-3">
             <svg class="w-5 h-5 text-[#B8960F] dark:text-[#D4AF37]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7l9-4 9 4-9 4-9-4zm0 0v10l9 4 9-4V7"/></svg>
           </div>
           <p class="text-sm font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">Place your order</p>
           <p class="text-xs text-gray-400 dark:text-[#A0A0A0] mt-1">You'll get a unique tracking code instantly.</p>
-        </div>
-        <div>
+        </motion.div>
+        <motion.div :variants="m.itemFadeUp(1)">
           <div class="w-11 h-11 mx-auto rounded-xl bg-[#D4AF37]/10 flex items-center justify-center mb-3">
             <svg class="w-5 h-5 text-[#B8960F] dark:text-[#D4AF37]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12"/></svg>
           </div>
           <p class="text-sm font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">Follow its journey</p>
           <p class="text-xs text-gray-400 dark:text-[#A0A0A0] mt-1">Track status updates in real time.</p>
-        </div>
-        <div>
+        </motion.div>
+        <motion.div :variants="m.itemFadeUp(2)">
           <div class="w-11 h-11 mx-auto rounded-xl bg-[#D4AF37]/10 flex items-center justify-center mb-3">
             <svg class="w-5 h-5 text-[#B8960F] dark:text-[#D4AF37]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
           </div>
           <p class="text-sm font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">Get it delivered</p>
           <p class="text-xs text-gray-400 dark:text-[#A0A0A0] mt-1">Receive your order right at your door.</p>
-        </div>
+        </motion.div>
       </div>
-    </div>
+      </motion.div>
 
   </div>
 

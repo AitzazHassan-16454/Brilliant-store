@@ -7,11 +7,31 @@ import { useAuthModal } from "../composables/useAuthModal.js"
 import ThemeToggle from "../Pages/components/ThemeToggle.vue"
 import ChatBot from "../Components/ChatBot.vue"
 import OnboardingTour from "../Components/OnboardingTour.vue"
+import { AnimatePresence, motion } from "motion-v"
+import { motionPresets as m } from "../lib/motion.js"
 
 const page = usePage()
 const { openLogin } = useAuthModal()
 const mobileOpen = ref(false)
 const profileOpen = ref(false)
+
+const dropdownVariants = {
+  hidden: { opacity: 0, y: -8, scale: 0.96 },
+  visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.18, ease: m.easeOutExpo } },
+  exit: { opacity: 0, y: -8, scale: 0.96, transition: { duration: 0.12, ease: "easeIn" } },
+}
+
+const drawerVariants = {
+  hidden: { height: 0, opacity: 0 },
+  visible: { height: "auto", opacity: 1, transition: { duration: 0.28, ease: m.easeOutExpo } },
+  exit: { height: 0, opacity: 0, transition: { duration: 0.2, ease: "easeIn" } },
+}
+
+const pageVariants = {
+  initial: { opacity: 0, y: 14 },
+  enter: { opacity: 1, y: 0, transition: { duration: 0.3, ease: m.easeOutExpo } },
+  exit: { opacity: 0, y: -10, transition: { duration: 0.2, ease: "easeIn" } },
+}
 
 function toggleProfile(event) {
   event.stopPropagation()
@@ -46,7 +66,12 @@ const inactiveMobileNavClasses = 'text-[#1A1A1A] dark:text-[#F5F5F5] bg-transpar
   <div class="min-h-screen bg-[#FAF7F2] dark:bg-[#0A0A0A] text-[#1A1A1A] dark:text-[#F5F5F5]" style="font-family:'Inter',system-ui,sans-serif;">
 
     <!-- HEADER (Sticky) -->
-    <header class="sticky top-0 z-50 transition-all duration-300 bg-[rgba(250,247,242,0.85)] dark:bg-[#1A1A1A]/85 backdrop-blur-xl border-b border-gray-200 dark:border-[#D4AF37]/20 shadow-sm shadow-[#D4AF37]/5 dark:shadow-[#D4AF37]/10">
+    <motion.header
+      :initial="{ y: -60, opacity: 0 }"
+      :animate="{ y: 0, opacity: 1 }"
+      :transition="{ duration: 0.5, ease: m.easeOutExpo }"
+      class="sticky top-0 z-50 transition-all duration-300 bg-[rgba(250,247,242,0.85)] dark:bg-[#1A1A1A]/85 backdrop-blur-xl border-b border-gray-200 dark:border-[#D4AF37]/20 shadow-sm shadow-[#D4AF37]/5 dark:shadow-[#D4AF37]/10"
+    >
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
 
         <!-- Logo -->
@@ -106,7 +131,15 @@ const inactiveMobileNavClasses = 'text-[#1A1A1A] dark:text-[#F5F5F5] bg-transpar
               class="absolute -top-1 -right-1 px-1 py-0.5 text-[9px] font-bold rounded-full leading-none"
               :class="isActive('/cart') ? 'bg-gray-800/15 dark:bg-white/15 text-[#0A0A0A] dark:text-[#F5F5F5]' : 'bg-[#D4AF37] text-white'"
             >
-              {{ page.props.cartCount }}
+              <motion.span
+                :key="page.props.cartCount"
+                :initial="{ scale: 0.4, opacity: 0 }"
+                :animate="{ scale: 1, opacity: 1 }"
+                :transition="{ type: 'spring', stiffness: 500, damping: 18 }"
+                class="block"
+              >
+                {{ page.props.cartCount }}
+              </motion.span>
             </span>
           </Link>
 
@@ -125,15 +158,15 @@ const inactiveMobileNavClasses = 'text-[#1A1A1A] dark:text-[#F5F5F5] bg-transpar
                 class="absolute top-0.5 right-0.5 w-2 h-2 rounded-full bg-red-500"></span>
             </button>
 
-            <transition
-              enter-active-class="transition-all duration-200 ease-out"
-              enter-from-class="opacity-0 translate-y-1 scale-95"
-              enter-to-class="opacity-100 translate-y-0 scale-100"
-              leave-active-class="transition-all duration-150 ease-in"
-              leave-from-class="opacity-100 translate-y-0 scale-100"
-              leave-to-class="opacity-0 translate-y-1 scale-95">
-              <div v-if="profileOpen"
-                class="absolute right-0 mt-2 w-60 rounded-2xl overflow-hidden border border-gray-200 dark:border-[#D4AF37]/20 bg-white dark:bg-[#1A1A1A] shadow-2xl shadow-black/10 z-50">
+            <AnimatePresence>
+              <motion.div
+                v-if="profileOpen"
+                :variants="dropdownVariants"
+                initial="hidden"
+                animate="visible"
+                exit="exit"
+                class="absolute right-0 mt-2 w-60 rounded-2xl overflow-hidden border border-gray-200 dark:border-[#D4AF37]/20 bg-white dark:bg-[#1A1A1A] shadow-2xl shadow-black/10 z-50"
+              >
                 <div class="px-4 py-3 border-b border-gray-100 dark:border-[#D4AF37]/10">
                   <p class="text-sm font-bold text-gray-900 dark:text-[#F5F5F5]">{{ page.props.auth.user.name }}</p>
                   <p class="text-xs text-gray-500 dark:text-[#A0A0A0] truncate">{{ page.props.auth.user.email }}</p>
@@ -164,8 +197,8 @@ const inactiveMobileNavClasses = 'text-[#1A1A1A] dark:text-[#F5F5F5] bg-transpar
                     Edit Profile
                   </Link>
                 </div>
-              </div>
-            </transition>
+              </motion.div>
+            </AnimatePresence>
           </div>
 
           <!-- Admin -->
@@ -205,14 +238,15 @@ const inactiveMobileNavClasses = 'text-[#1A1A1A] dark:text-[#F5F5F5] bg-transpar
       </div>
 
       <!-- Mobile drawer -->
-      <transition
-        enter-active-class="transition-all duration-300 ease-out"
-        enter-from-class="opacity-0 -translate-y-2"
-        enter-to-class="opacity-100 translate-y-0"
-        leave-active-class="transition-all duration-200 ease-in"
-        leave-from-class="opacity-100 translate-y-0"
-        leave-to-class="opacity-0 -translate-y-2">
-        <div v-if="mobileOpen" class="md:hidden px-4 pt-3 pb-5 flex flex-col gap-2 bg-[rgba(250,247,242,0.95)] dark:bg-[#1A1A1A]/95 backdrop-blur-xl border-t border-gray-200 dark:border-[#D4AF37]/20">
+      <AnimatePresence>
+        <motion.div
+          v-if="mobileOpen"
+          :variants="drawerVariants"
+          initial="hidden"
+          animate="visible"
+          exit="exit"
+          class="md:hidden px-4 pt-3 pb-5 flex flex-col gap-2 bg-[rgba(250,247,242,0.95)] dark:bg-[#1A1A1A]/95 backdrop-blur-xl border-t border-gray-200 dark:border-[#D4AF37]/20 overflow-hidden"
+        >
 
           <!-- Mobile Theme Toggle -->
           <div class="px-4 py-2">
@@ -302,13 +336,23 @@ const inactiveMobileNavClasses = 'text-[#1A1A1A] dark:text-[#F5F5F5] bg-transpar
             </svg>
             Sign In
           </button>
-        </div>
-      </transition>
-    </header>
+        </motion.div>
+      </AnimatePresence>
+    </motion.header>
 
     <!-- PAGE CONTENT -->
     <main>
-      <slot />
+      <AnimatePresence mode="wait">
+        <motion.div
+          :key="page.url"
+          :variants="pageVariants"
+          initial="initial"
+          animate="enter"
+          exit="exit"
+        >
+          <slot />
+        </motion.div>
+      </AnimatePresence>
     </main>
 
     <!-- AUTH MODAL -->

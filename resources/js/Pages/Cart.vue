@@ -1,7 +1,8 @@
 <script setup>
 import { computed, ref } from "vue"
 import { router, Link, Head, usePage } from "@inertiajs/vue3"
-import { useInView } from "../composables/useInView.js"
+import { motion } from "motion-v"
+import { motionPresets as m, staggerContainer, staggerItem } from "../lib/motion.js"
 import Modal from "../Components/Modal.vue"
 
 const props = defineProps({
@@ -30,6 +31,13 @@ const shipping = ref({
 })
 
 const shippingErrors = ref({})
+
+const paymentMethod = ref("cod")
+const paymentMethods = [
+    { value: "cod", label: "Cash on Delivery", description: "Pay in cash when your order is delivered." },
+    { value: "bank_transfer", label: "Bank Transfer", description: "Pay by bank transfer and share your proof to confirm." },
+    { value: "whatsapp", label: "Pay via WhatsApp", description: "Pay through WhatsApp and confirm with our team." },
+]
 
 const subtotal = computed(() => {
     return props.cartItems.reduce((sum, item) => {
@@ -101,6 +109,7 @@ const confirmOrder = () => {
         shipping_city: shipping.value.city,
         shipping_postal_code: shipping.value.postal_code,
         notes: shipping.value.notes,
+        payment_method: paymentMethod.value,
     }, {
         preserveScroll: true,
         onError: (errors) => {
@@ -125,7 +134,8 @@ const confirmOrder = () => {
     })
 }
 
-const { target: itemsRef, isInView: itemsVisible } = useInView()
+const listStagger = staggerContainer(0.07, 0.05)
+const listItem = staggerItem
 </script>
 
 <template>
@@ -137,7 +147,12 @@ const { target: itemsRef, isInView: itemsVisible } = useInView()
   <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16 dark:bg-[#0A0A0A]">
 
     <!-- HEADER -->
-    <div class="flex items-center justify-between mb-8 sm:mb-10">
+    <motion.div
+      :initial="{ y: -24, opacity: 0 }"
+      :animate="{ y: 0, opacity: 1 }"
+      :transition="{ duration: 0.5, ease: m.easeOutExpo }"
+      class="flex items-center justify-between mb-8 sm:mb-10"
+    >
       <div class="flex items-center gap-3">
         <div class="w-10 h-10 rounded-xl flex items-center justify-center bg-[#D4AF37]/10">
           <svg class="w-5 h-5" fill="none" stroke="#D4AF37" stroke-width="2" viewBox="0 0 24 24">
@@ -154,7 +169,7 @@ const { target: itemsRef, isInView: itemsVisible } = useInView()
         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
         Continue Shopping
       </Link>
-    </div>
+    </motion.div>
 
     <!-- FLASH -->
     <Transition name="flash">
@@ -188,10 +203,17 @@ const { target: itemsRef, isInView: itemsVisible } = useInView()
     <div v-else class="flex flex-col lg:flex-row gap-6 items-start">
 
       <!-- ITEMS LIST -->
-      <div ref="itemsRef" class="flex-1 flex flex-col gap-3 w-full">
-        <div v-for="(item, index) in cartItems" :key="item.id"
-          :class="['rounded-xl p-4 sm:p-5 flex flex-col sm:flex-row gap-4 items-start sm:items-center transition-all duration-300 hover:-translate-y-0.5 bg-white dark:bg-[#1A1A1A] border border-gray-200 dark:border-[#D4AF37]/20 shadow-lg', itemsVisible ? 'animate-fade-in-up' : 'opacity-0']"
-          :style="itemsVisible ? { animationDelay: `${Math.min(index * 0.06, 0.3)}s`, animationFillMode: 'both' } : {}">
+      <motion.div
+        :variants="listStagger"
+        initial="hidden"
+        animate="visible"
+        class="flex-1 flex flex-col gap-3 w-full"
+      >
+        <motion.div
+          v-for="item in cartItems" :key="item.id"
+          :variants="listItem"
+          class="rounded-xl p-4 sm:p-5 flex flex-col sm:flex-row gap-4 items-start sm:items-center transition-all duration-300 hover:-translate-y-0.5 bg-white dark:bg-[#1A1A1A] border border-gray-200 dark:border-[#D4AF37]/20 shadow-lg"
+        >
 
           <!-- Image -->
           <Link :href="`/products/${item.product.uid}`" class="w-20 h-20 rounded-xl overflow-hidden shrink-0 bg-gray-50 dark:bg-[#1A1A1A] block">
@@ -208,15 +230,26 @@ const { target: itemsRef, isInView: itemsVisible } = useInView()
 
             <!-- Qty controls -->
             <div class="flex items-center gap-2 mt-3">
-              <button @click="decreaseQty(item.id)"
+              <motion.button
+                @click="decreaseQty(item.id)"
+                :whilePress="{ scale: 0.85 }"
+                :whileHover="{ y: -1 }"
                 class="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-base transition-all duration-200 cursor-pointer border border-gray-200 dark:border-[#D4AF37]/20 bg-white dark:bg-[#1A1A1A] text-gray-900 dark:text-[#F5F5F5] hover:bg-stone-50 dark:hover:bg-[#21262d]">
                 −
-              </button>
-              <span class="w-8 text-center font-bold text-sm text-gray-900 dark:text-[#F5F5F5]">{{ item.qty }}</span>
-              <button @click="increaseQty(item.id)"
+              </motion.button>
+              <motion.span
+                :key="item.qty"
+                :initial="{ scale: 0.7, opacity: 0 }"
+                :animate="{ scale: 1, opacity: 1 }"
+                :transition="{ type: 'spring', stiffness: 400, damping: 20 }"
+                class="w-8 text-center font-bold text-sm text-gray-900 dark:text-[#F5F5F5]">{{ item.qty }}</motion.span>
+              <motion.button
+                @click="increaseQty(item.id)"
+                :whilePress="{ scale: 0.85 }"
+                :whileHover="{ y: -1 }"
                 class="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-base transition-all duration-200 cursor-pointer border border-gray-200 dark:border-[#D4AF37]/20 bg-white dark:bg-[#1A1A1A] text-gray-900 dark:text-[#F5F5F5] hover:bg-stone-50 dark:hover:bg-[#21262d]">
                 +
-              </button>
+              </motion.button>
             </div>
           </div>
 
@@ -233,11 +266,16 @@ const { target: itemsRef, isInView: itemsVisible } = useInView()
             </button>
           </div>
 
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
 
       <!-- ORDER SUMMARY SIDEBAR -->
-      <div class="w-full lg:w-80 shrink-0">
+      <motion.div
+        :initial="{ opacity: 0, x: 24 }"
+        :animate="{ opacity: 1, x: 0 }"
+        :transition="{ delay: 0.15, duration: 0.5, ease: m.easeOutExpo }"
+        class="w-full lg:w-80 shrink-0"
+      >
         <div class="rounded-2xl p-6 sticky top-24 bg-white dark:bg-[#1A1A1A] border border-gray-200 dark:border-[#D4AF37]/20 shadow-lg">
 
           <h3 class="font-bold text-base mb-5 text-gray-900 dark:text-[#F5F5F5]">Order Summary</h3>
@@ -273,7 +311,7 @@ const { target: itemsRef, isInView: itemsVisible } = useInView()
             Secure checkout
           </p>
         </div>
-      </div>
+      </motion.div>
 
     </div>
   </div>
@@ -361,6 +399,31 @@ const { target: itemsRef, isInView: itemsVisible } = useInView()
       <textarea v-model="shipping.notes" rows="2" placeholder="Any special instructions for delivery..."
         class="w-full rounded-xl px-3 py-2.5 text-sm outline-none transition-all resize-none border border-gray-200 dark:border-[#D4AF37]/20 bg-white dark:bg-[#1A1A1A] text-gray-900 dark:text-[#F5F5F5] placeholder-gray-400 dark:placeholder-slate-500 focus:border-[#D4AF37]"
         autocomplete="off"></textarea>
+    </div>
+
+    <div>
+      <label class="block text-xs font-semibold mb-1.5 text-gray-900 dark:text-[#F5F5F5]">Payment Method <span class="text-red-600">*</span></label>
+      <div class="space-y-2">
+        <button
+          v-for="method in paymentMethods" :key="method.value"
+          @click="paymentMethod = method.value"
+          type="button"
+          class="w-full flex items-start gap-3 rounded-xl px-3.5 py-3 text-left transition-all border cursor-pointer"
+          :class="paymentMethod === method.value
+            ? 'border-[#D4AF37] bg-[#D4AF37]/5'
+            : 'border-gray-200 dark:border-[#D4AF37]/20 bg-white dark:bg-[#1A1A1A] hover:border-[#D4AF37]/50'"
+        >
+          <span class="mt-0.5 w-4 h-4 rounded-full border-2 shrink-0 flex items-center justify-center transition-colors"
+            :class="paymentMethod === method.value ? 'border-[#D4AF37]' : 'border-gray-300 dark:border-[#A0A0A0]'">
+            <span v-if="paymentMethod === method.value" class="w-2 h-2 rounded-full bg-[#D4AF37]"></span>
+          </span>
+          <span>
+            <span class="block text-sm font-semibold text-gray-900 dark:text-[#F5F5F5]">{{ method.label }}</span>
+            <span class="block text-xs text-gray-500 dark:text-[#A0A0A0] mt-0.5">{{ method.description }}</span>
+          </span>
+        </button>
+      </div>
+      <p v-if="shippingErrors.payment_method" class="text-xs mt-1 text-red-600">{{ shippingErrors.payment_method }}</p>
     </div>
   </div>
 

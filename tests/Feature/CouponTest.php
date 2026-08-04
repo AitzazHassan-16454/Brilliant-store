@@ -4,6 +4,31 @@ use App\Models\Cart;
 use App\Models\Coupon;
 use App\Models\Product;
 use App\Models\User;
+use App\Support\ApplicationPermissions;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
+
+function createCouponAdminRole(): void
+{
+    foreach (ApplicationPermissions::all() as $permission) {
+        Permission::firstOrCreate(['name' => $permission, 'guard_name' => 'web']);
+    }
+
+    $adminRole = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
+    $adminRole->syncPermissions(ApplicationPermissions::all());
+}
+
+function couponCheckoutPayload(array $overrides = []): array
+{
+    return array_merge([
+        'shipping_name' => 'John Doe',
+        'shipping_email' => 'john@example.com',
+        'shipping_phone' => '03001234567',
+        'shipping_address' => '123 Main Street',
+        'shipping_city' => 'Lahore',
+        'payment_method' => 'bank_transfer',
+    ], $overrides);
+}
 
 it('requires authentication to view coupons', function () {
     $this->get('/coupons')->assertRedirect('/login');
@@ -15,6 +40,7 @@ it('requires permission to view coupons', function () {
 });
 
 it('shows coupons page for authorized admin', function () {
+    createCouponAdminRole();
     $user = User::factory()->create();
     $user->assignRole('admin');
 
@@ -22,6 +48,7 @@ it('shows coupons page for authorized admin', function () {
 });
 
 it('can create a coupon', function () {
+    createCouponAdminRole();
     $user = User::factory()->create();
     $user->assignRole('admin');
 
@@ -39,6 +66,7 @@ it('can create a coupon', function () {
 });
 
 it('can update a coupon', function () {
+    createCouponAdminRole();
     $user = User::factory()->create();
     $user->assignRole('admin');
     $coupon = Coupon::factory()->create(['code' => 'OLD']);
@@ -54,6 +82,7 @@ it('can update a coupon', function () {
 });
 
 it('can delete a coupon', function () {
+    createCouponAdminRole();
     $user = User::factory()->create();
     $user->assignRole('admin');
     $coupon = Coupon::factory()->create();
@@ -131,7 +160,7 @@ it('applies coupon during checkout', function () {
 
     Cart::create(['user_id' => $user->id, 'product_id' => $product->id, 'qty' => 1]);
 
-    $this->actingAs($user)->post('/checkout', ['coupon_code' => 'CHECKOUT20']);
+    $this->actingAs($user)->post('/checkout', couponCheckoutPayload(['coupon_code' => 'CHECKOUT20']));
 
     $this->assertDatabaseHas('orders', [
         'user_id' => $user->id,
@@ -155,7 +184,7 @@ it('checkout without coupon has no discount', function () {
 
     Cart::create(['user_id' => $user->id, 'product_id' => $product->id, 'qty' => 2]);
 
-    $this->actingAs($user)->post('/checkout');
+    $this->actingAs($user)->post('/checkout', couponCheckoutPayload());
 
     $this->assertDatabaseHas('orders', [
         'user_id' => $user->id,

@@ -4,23 +4,18 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ChatBotController;
+use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\CouponController;
 use App\Http\Controllers\CustomOrderController;
 use App\Http\Controllers\FaqController;
+use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderTrackingController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SubcategoryController;
 use App\Http\Controllers\WishlistController;
-use App\Models\Cart;
-use App\Models\Coupon;
 use App\Models\Order;
-use App\Models\OrderCoupon;
-use App\Models\OrderItem;
-use App\Models\OrderStatusHistory;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -88,167 +83,15 @@ Route::middleware('auth')->group(function () {
     Route::delete('/reviews/{review}/admin', [ReviewController::class, 'adminDestroy']);
 
     Route::post('/ai/chat', [ChatBotController::class, 'chat']);
+    Route::get('/ai/history', [ChatBotController::class, 'history']);
 
-    Route::get('/orders', function () {
-        return Inertia::render('Orders/Index', [
-            'orders' => Order::with('items.product', 'statuses.user')
-                ->where('user_id', auth()->id())
-                ->latest()
-                ->get(),
-        ]);
-    });
+    Route::get('/orders', [OrderController::class, 'index']);
 
-    Route::post('/checkout', function (Request $request) {
+    Route::post('/checkout', [CheckoutController::class, 'checkout']);
 
-        $user = auth()->user();
+    Route::delete('/orders/{id}', [OrderController::class, 'destroy']);
 
-        $validated = $request->validate([
-            'shipping_name' => ['required', 'string', 'max:255'],
-            'shipping_email' => ['required', 'email', 'max:255'],
-            'shipping_phone' => ['required', 'string', 'max:20'],
-            'shipping_address' => ['required', 'string', 'max:500'],
-            'shipping_city' => ['required', 'string', 'max:255'],
-            'shipping_postal_code' => ['nullable', 'string', 'max:20'],
-            'notes' => ['nullable', 'string', 'max:500'],
-            'coupon_code' => ['nullable', 'string'],
-        ]);
-
-        $cartItems = Cart::with('product')
-            ->where('user_id', $user->id)
-            ->get();
-
-        if ($cartItems->isEmpty()) {
-            return back()->with('error', 'Cart is empty');
-        }
-
-        $outOfStock = $cartItems->first(function ($item) {
-            return $item->product->stock < $item->qty;
-        });
-
-        if ($outOfStock) {
-            return back()->with('error', '"'.$outOfStock->product->name.'" does not have enough stock.');
-        }
-
-        $subtotal = $cartItems->sum(fn ($item) => $item->product->price * $item->qty);
-        $discount = 0;
-        $coupon = null;
-
-        if ($validated['coupon_code'] ?? null) {
-            $coupon = Coupon::where('code', strtoupper($validated['coupon_code']))->first();
-
-            if (! $coupon || ! $coupon->isValid()) {
-                return back()->with('error', 'Invalid or expired coupon code.');
-            }
-
-            if ($subtotal < $coupon->min_order) {
-                return back()->with('error', 'Minimum order of $'.$coupon->min_order.' required for this coupon.');
-            }
-
-            $discount = $coupon->calculateDiscount($subtotal);
-        }
-
-        $total = max(0, $subtotal - $discount);
-
-        $createdOrder = null;
-
-        DB::transaction(function () use ($user, $cartItems, $subtotal, $discount, $total, $coupon, $validated, &$createdOrder) {
-
-            foreach ($cartItems as $item) {
-                $item->product->decrement('stock', $item->qty);
-            }
-
-            $order = Order::create([
-                'user_id' => $user->id,
-                'subtotal' => $subtotal,
-                'discount' => $discount,
-                'total' => $total,
-                'status' => 'pending',
-                'shipping_name' => $validated['shipping_name'],
-                'shipping_email' => $validated['shipping_email'],
-                'shipping_phone' => $validated['shipping_phone'],
-                'shipping_address' => $validated['shipping_address'],
-                'shipping_city' => $validated['shipping_city'],
-                'shipping_postal_code' => $validated['shipping_postal_code'] ?? null,
-                'notes' => $validated['notes'] ?? null,
-            ]);
-
-            foreach ($cartItems as $item) {
-                OrderItem::create([
-                    'order_id' => $order->id,
-                    'product_id' => $item->product_id,
-                    'quantity' => $item->qty,
-                    'price' => $item->product->price,
-                ]);
-            }
-
-            if ($coupon) {
-                OrderCoupon::create([
-                    'order_id' => $order->id,
-                    'coupon_id' => $coupon->id,
-                    'discount_amount' => $discount,
-                ]);
-
-                $coupon->increment('used_count');
-            }
-
-            OrderStatusHistory::create([
-                'order_id' => $order->id,
-                'user_id' => $user->id,
-                'status' => 'pending',
-                'note' => 'Order placed',
-            ]);
-
-            Cart::where('user_id', $user->id)->delete();
-
-            $createdOrder = $order;
-        });
-
-        return redirect('/orders')
-            ->with('success', 'Order placed successfully!')
-            ->with('tracking_code', $createdOrder->tracking_code);
-    });
-
-    Route::delete('/orders/{id}', function ($id) {
-        Order::where('id', $id)
-            ->where('user_id', auth()->id())
-            ->delete();
-
-        return back()->with('success', 'Order deleted successfully!');
-    });
-
-    Route::post('/orders/{id}/reorder', function ($id) {
-        $order = Order::where('id', $id)
-            ->where('user_id', auth()->id())
-            ->with('items.product')
-            ->firstOrFail();
-
-        foreach ($order->items as $item) {
-            if (! $item->product || ! $item->product->is_active) {
-                continue;
-            }
-
-            $cart = Cart::where('user_id', auth()->id())
-                ->where('product_id', $item->product_id)
-                ->first();
-
-            if ($cart) {
-                $newQty = $cart->qty + $item->quantity;
-                if ($newQty <= $item->product->stock) {
-                    $cart->update(['qty' => $newQty]);
-                } else {
-                    $cart->update(['qty' => $item->product->stock]);
-                }
-            } else {
-                Cart::create([
-                    'user_id' => auth()->id(),
-                    'product_id' => $item->product_id,
-                    'qty' => min($item->quantity, $item->product->stock),
-                ]);
-            }
-        }
-
-        return back()->with('success', 'Items added to your cart!');
-    });
+    Route::post('/orders/{id}/reorder', [OrderController::class, 'reorder']);
 
     Route::resource('categories', CategoryController::class)
         ->except(['create', 'edit', 'show']);
@@ -263,36 +106,13 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/CreateProduct', [ProductController::class, 'create']);
 
+    Route::post('/products/{product}/toggle-trending', [ProductController::class, 'toggleTrending']);
+
     Route::post('/logout', [AuthController::class, 'logout']);
 
-    Route::get('/Orders', function () {
-        abort_if(! auth()->user()->can('orders.view'), 403);
+    Route::get('/Orders', [OrderController::class, 'adminIndex']);
 
-        return Inertia::render('Products/Orders', [
-            'orders' => Order::with('user', 'items.product', 'statuses.user')->latest()->get(),
-        ]);
-    });
-
-    Route::post('/orders/{id}/status', function ($id, Request $request) {
-        abort_if(! auth()->user()->can('orders.update'), 403);
-
-        $order = Order::findOrFail($id);
-        $previousStatus = $order->status;
-        $newStatus = $request->status;
-
-        $order->update(['status' => $newStatus]);
-
-        OrderStatusHistory::create([
-            'order_id' => $order->id,
-            'user_id' => auth()->id(),
-            'status' => $newStatus,
-            'note' => $previousStatus !== $newStatus
-                ? "Status changed from \"{$previousStatus}\" to \"{$newStatus}\""
-                : "Status re-set to \"{$newStatus}\"",
-        ]);
-
-        return back();
-    });
+    Route::post('/orders/{id}/status', [OrderController::class, 'updateStatus']);
 
     Route::get('/dashboard', [ProductController::class, 'dashboard']);
 

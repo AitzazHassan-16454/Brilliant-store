@@ -4,6 +4,8 @@ import { router, usePage, Link, Head } from "@inertiajs/vue3"
 import { useNotification } from "../composables/useNotification.js"
 import { useAuthModal } from "../composables/useAuthModal.js"
 import AppFooter from "./components/AppFooter.vue"
+import { AnimatePresence, motion } from "motion-v"
+import { motionPresets as m } from "../lib/motion.js"
 
 const page = usePage()
 const { success } = useNotification()
@@ -82,25 +84,36 @@ const submit = () => {
     <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
 
       <!-- Section Header -->
-      <div class="text-center mb-8">
-        <div class="inline-flex items-center gap-2 rounded-full border border-[#D4AF37]/30 bg-[#D4AF37]/10 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-[#D4AF37] dark:text-[#D4AF37] mb-4">
+      <motion.div
+        :variants="m.staggerContainer(0.12, 0.1)"
+        initial="hidden"
+        animate="visible"
+        class="text-center mb-8"
+      >
+        <div :variants="m.itemFadeUp(0)" class="inline-flex items-center gap-2 rounded-full border border-[#D4AF37]/30 bg-[#D4AF37]/10 px-4 py-2 text-xs font-semibold uppercase tracking-widest text-[#D4AF37] dark:text-[#D4AF37] mb-4">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M9.53 16.122a3 3 0 00-5.78 1.128 2.25 2.25 0 01-2.4 2.245 4.5 4.5 0 008.4-2.245c0-.399-.078-.78-.22-1.128zm0 0a15.998 15.998 0 003.388-1.62m-5.043-.025a15.994 15.994 0 011.622-3.395m3.42 3.42a15.995 15.995 0 004.764-4.648l3.876-5.814a1.151 1.151 0 00-1.597-1.597L14.146 6.32a15.996 15.996 0 00-4.649 4.763m3.42 3.42a6.776 6.776 0 00-3.42-3.42"/>
           </svg>
           Custom Order
         </div>
-        <h1 class="text-3xl sm:text-4xl font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">Bring Your Vision to Life</h1>
-        <p class="mt-2 text-base text-gray-500 dark:text-[#A0A0A0] max-w-xl mx-auto">
+        <h1 :variants="m.itemFadeUp(1)" class="text-3xl sm:text-4xl font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">Bring Your Vision to Life</h1>
+        <p :variants="m.itemFadeUp(2)" class="mt-2 text-base text-gray-500 dark:text-[#A0A0A0] max-w-xl mx-auto">
           Start a conversation on WhatsApp for the fastest response, or fill out the form below.
         </p>
-      </div>
+      </motion.div>
 
       <!-- Main Card: Split Layout -->
       <div class="mb-8 overflow-hidden rounded-2xl border border-gray-200 dark:border-[#D4AF37]/20 bg-white dark:bg-[#1A1A1A] shadow-sm">
         <div class="grid gap-6 lg:grid-cols-[1.15fr_0.85fr] lg:gap-0">
 
           <!-- Left: Hero -->
-          <div class="relative overflow-hidden p-8 sm:p-10 lg:p-12">
+          <motion.div
+            :variants="m.fadeUp"
+            initial="hidden"
+            whileInView="visible"
+            :viewport="m.viewport.once"
+            class="relative overflow-hidden p-8 sm:p-10 lg:p-12"
+          >
             <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(212,175,55,0.12),transparent_40%),linear-gradient(135deg,rgba(212,175,55,0.06),transparent_55%)]"></div>
 
             <div class="relative">
@@ -132,34 +145,46 @@ const submit = () => {
               </div>
 
               <!-- Feature Cards -->
-              <div class="mt-10 grid gap-4 sm:grid-cols-3">
-                <div class="rounded-2xl border border-gray-200 dark:border-[#D4AF37]/20 bg-[#FAF7F2] dark:bg-[#0A0A0A] p-5">
+              <motion.div
+                :variants="m.staggerContainer(0.1, 0.05)"
+                initial="hidden"
+                whileInView="visible"
+                :viewport="m.viewport.once"
+                class="mt-10 grid gap-4 sm:grid-cols-3"
+              >
+                <motion.div :variants="m.itemFadeUp(0)" class="rounded-2xl border border-gray-200 dark:border-[#D4AF37]/20 bg-[#FAF7F2] dark:bg-[#0A0A0A] p-5">
                   <svg class="mb-3 h-6 w-6 text-[#D4AF37] dark:text-[#D4AF37]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M9.53 16.122a3 3 0 00-5.78 1.128 2.25 2.25 0 01-2.4 2.245 4.5 4.5 0 008.4-2.245c0-.399-.078-.78-.22-1.128zm0 0a15.998 15.998 0 003.388-1.62m-5.043-.025a15.994 15.994 0 011.622-3.395m3.42 3.42a15.995 15.995 0 004.764-4.648l3.876-5.814a1.151 1.151 0 00-1.597-1.597L14.146 6.32a15.996 15.996 0 00-4.649 4.763m3.42 3.42a6.776 6.776 0 00-3.42-3.42"/>
                   </svg>
                   <h3 class="font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">Style Guidance</h3>
                   <p class="mt-2 text-sm leading-6 text-gray-500 dark:text-[#A0A0A0]">Abstract, portraits, landscapes, luxury wall pieces, and more.</p>
-                </div>
-                <div class="rounded-2xl border border-gray-200 dark:border-[#D4AF37]/20 bg-[#FAF7F2] dark:bg-[#0A0A0A] p-5">
+                </motion.div>
+                <motion.div :variants="m.itemFadeUp(1)" class="rounded-2xl border border-gray-200 dark:border-[#D4AF37]/20 bg-[#FAF7F2] dark:bg-[#0A0A0A] p-5">
                   <svg class="mb-3 h-6 w-6 text-[#D4AF37] dark:text-[#D4AF37]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16.5 12"/>
                   </svg>
                   <h3 class="font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">Fast Response</h3>
                   <p class="mt-2 text-sm leading-6 text-gray-500 dark:text-[#A0A0A0]">Quick replies on WhatsApp to discuss sizes, timing, and revisions.</p>
-                </div>
-                <div class="rounded-2xl border border-gray-200 dark:border-[#D4AF37]/20 bg-[#FAF7F2] dark:bg-[#0A0A0A] p-5">
+                </motion.div>
+                <motion.div :variants="m.itemFadeUp(2)" class="rounded-2xl border border-gray-200 dark:border-[#D4AF37]/20 bg-[#FAF7F2] dark:bg-[#0A0A0A] p-5">
                   <svg class="mb-3 h-6 w-6 text-[#D4AF37] dark:text-[#D4AF37]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/>
                   </svg>
                   <h3 class="font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">Personal Follow-Up</h3>
                   <p class="mt-2 text-sm leading-6 text-gray-500 dark:text-[#A0A0A0]">Direct human conversation instead of a long form workflow.</p>
-                </div>
-              </div>
+                </motion.div>
+              </motion.div>
             </div>
-          </div>
+          </motion.div>
 
           <!-- Right: Sidebar -->
-          <div class="border-t border-gray-200 dark:border-[#D4AF37]/20 bg-[#FAF7F2] dark:bg-[#0A0A0A] p-8 sm:p-10 lg:border-l lg:border-t-0">
+          <motion.div
+            :variants="m.fadeRight"
+            initial="hidden"
+            whileInView="visible"
+            :viewport="m.viewport.once"
+            class="border-t border-gray-200 dark:border-[#D4AF37]/20 bg-[#FAF7F2] dark:bg-[#0A0A0A] p-8 sm:p-10 lg:border-l lg:border-t-0"
+          >
             <div class="rounded-2xl border border-gray-200 dark:border-[#D4AF37]/20 bg-white dark:bg-[#1A1A1A] p-6 shadow-sm">
               <p class="text-sm font-semibold uppercase tracking-widest text-[#D4AF37] dark:text-[#D4AF37]">What to Share</p>
               <h2 class="mt-3 text-xl font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">Make your message more effective</h2>
@@ -203,21 +228,21 @@ const submit = () => {
                 </div>
               </div>
             </div>
-          </div>
+          </motion.div>
 
         </div>
       </div>
 
       <!-- Collapsible Form -->
-      <transition
-        enter-active-class="transition-all duration-300 ease-out"
-        enter-from-class="opacity-0 -translate-y-3 max-h-0 overflow-hidden"
-        enter-to-class="opacity-100 translate-y-0 max-h-[2000px]"
-        leave-active-class="transition-all duration-200 ease-in"
-        leave-from-class="opacity-100 translate-y-0 max-h-[2000px]"
-        leave-to-class="opacity-0 -translate-y-3 max-h-0 overflow-hidden"
-      >
-        <div v-if="showForm" class="mb-8">
+      <AnimatePresence initial="false">
+        <motion.div
+          v-if="showForm"
+          :initial="{ opacity: 0, height: 0, y: -16 }"
+          :animate="{ opacity: 1, height: 'auto', y: 0 }"
+          :exit="{ opacity: 0, height: 0, y: -16 }"
+          :transition="{ duration: 0.35, ease: m.easeOutExpo }"
+          class="mb-8 overflow-hidden"
+        >
           <form @submit.prevent="submit" class="bg-white dark:bg-[#1A1A1A] border border-gray-200 dark:border-[#D4AF37]/20 rounded-2xl p-6 sm:p-8 space-y-5">
             <h3 class="text-lg font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">Or submit a request here</h3>
 
@@ -297,33 +322,39 @@ const submit = () => {
               </button>
             </div>
           </form>
-        </div>
-      </transition>
+        </motion.div>
+      </AnimatePresence>
 
       <!-- 3-Step Process -->
-      <div class="grid gap-6 md:grid-cols-3">
-        <div class="rounded-2xl border border-gray-200 dark:border-[#D4AF37]/20 bg-white dark:bg-[#1A1A1A] p-6 shadow-sm">
+      <motion.div
+        :variants="m.staggerContainer(0.12, 0.05)"
+        initial="hidden"
+        whileInView="visible"
+        :viewport="m.viewport.once"
+        class="grid gap-6 md:grid-cols-3"
+      >
+        <motion.div :variants="m.itemFadeUp(0)" class="rounded-2xl border border-gray-200 dark:border-[#D4AF37]/20 bg-white dark:bg-[#1A1A1A] p-6 shadow-sm">
           <div class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[#D4AF37]/10 text-[#D4AF37] dark:text-[#D4AF37]">
             <span class="text-lg font-bold">1</span>
           </div>
           <h3 class="text-lg font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">Share Your Vision</h3>
           <p class="mt-2 text-sm leading-6 text-gray-500 dark:text-[#A0A0A0]">Start via WhatsApp or the form above. Tell us about the style, concept, colors, and size you want.</p>
-        </div>
-        <div class="rounded-2xl border border-gray-200 dark:border-[#D4AF37]/20 bg-white dark:bg-[#1A1A1A] p-6 shadow-sm">
+        </motion.div>
+        <motion.div :variants="m.itemFadeUp(1)" class="rounded-2xl border border-gray-200 dark:border-[#D4AF37]/20 bg-white dark:bg-[#1A1A1A] p-6 shadow-sm">
           <div class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[#D4AF37]/10 text-[#D4AF37] dark:text-[#D4AF37]">
             <span class="text-lg font-bold">2</span>
           </div>
           <h3 class="text-lg font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">Get Proposal & Quote</h3>
           <p class="mt-2 text-sm leading-6 text-gray-500 dark:text-[#A0A0A0]">We discuss details, guide the direction, and share pricing or execution options.</p>
-        </div>
-        <div class="rounded-2xl border border-gray-200 dark:border-[#D4AF37]/20 bg-white dark:bg-[#1A1A1A] p-6 shadow-sm">
+        </motion.div>
+        <motion.div :variants="m.itemFadeUp(2)" class="rounded-2xl border border-gray-200 dark:border-[#D4AF37]/20 bg-white dark:bg-[#1A1A1A] p-6 shadow-sm">
           <div class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-[#D4AF37]/10 text-[#D4AF37] dark:text-[#D4AF37]">
             <span class="text-lg font-bold">3</span>
           </div>
           <h3 class="text-lg font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">Move Into Production</h3>
           <p class="mt-2 text-sm leading-6 text-gray-500 dark:text-[#A0A0A0]">Once details are confirmed, your custom piece moves forward with personal follow-up.</p>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
 
     </div>
   </div>

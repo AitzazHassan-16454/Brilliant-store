@@ -106,7 +106,7 @@ it('passes wishlist data to home page', function () {
     $this->actingAs($user)
         ->get('/')
         ->assertSuccessful()
-        ->assertInertiaProps(fn ($props) => $props->has('wishlistProductIds'));
+        ->assertInertia(fn ($page) => $page->has('wishlistProductIds'));
 });
 
 it('shares wishlist count in shared props', function () {
@@ -121,5 +121,5 @@ it('shares wishlist count in shared props', function () {
     $this->actingAs($user)
         ->get('/')
         ->assertSuccessful()
-        ->assertInertiaProps(fn ($props) => $props->get('wishlistCount') === 1);
+        ->assertInertia(fn ($page) => $page->where('wishlistCount', 1));
 });

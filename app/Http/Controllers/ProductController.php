@@ -94,21 +94,11 @@ class ProductController extends Controller
             'orders' => Order::count(),
         ];
 
-        // Get trending products (products with 5-star reviews, sorted by review count)
+        // Get the products the admin has chosen to feature in the trending section
         $trendingProducts = Product::with('category')
             ->where('is_active', true)
-            ->whereHas('reviews', function ($query) {
-                $query->where('status', 'approved');
-            })
-            ->withCount(['reviews' => function ($query) {
-                $query->where('status', 'approved');
-            }])
-            ->withAvg(['reviews' => function ($query) {
-                $query->where('status', 'approved');
-            }], 'rating')
-            ->having('reviews_avg_rating', '=', 5)
-            ->orderByDesc('reviews_count')
-            ->take(8)
+            ->where('is_trending', true)
+            ->orderByDesc('updated_at')
             ->get();
 
         return Inertia::render('Home', [
@@ -373,6 +363,9 @@ class ProductController extends Controller
         // Convert the is_active checkbox to a boolean
         $validatedData['is_active'] = $request->boolean('is_active');
 
+        // Convert the is_trending checkbox to a boolean
+        $validatedData['is_trending'] = $request->boolean('is_trending');
+
         // If an image was uploaded, save it
         if ($request->hasFile('image')) {
             $validatedData['image'] = $request->file('image')->store('products', 'public');
@@ -424,6 +417,9 @@ class ProductController extends Controller
         // Convert the is_active checkbox to a boolean
         $validatedData['is_active'] = $request->boolean('is_active');
 
+        // Convert the is_trending checkbox to a boolean
+        $validatedData['is_trending'] = $request->boolean('is_trending');
+
         // If a new image was uploaded, replace the old one
         if ($request->hasFile('image')) {
             // Delete the old image if it exists
@@ -437,6 +433,22 @@ class ProductController extends Controller
 
         // Update the product
         $product->update($validatedData);
+
+        return redirect()->route('products.index');
+    }
+
+    /**
+     * Admin: Toggle whether a product appears in the trending section.
+     */
+    public function toggleTrending(Product $product)
+    {
+        if (! auth()->user()->can('products.update')) {
+            abort(403);
+        }
+
+        $product->update([
+            'is_trending' => ! $product->is_trending,
+        ]);
 
         return redirect()->route('products.index');
     }

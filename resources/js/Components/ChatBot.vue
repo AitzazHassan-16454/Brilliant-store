@@ -15,7 +15,28 @@ const imagePreview = computed(() => {
   return URL.createObjectURL(selectedImage.value);
 });
 
-const loadHistory = () => {
+const cleanContent = (content) =>
+  (content || "")
+    .replace(/\*\*/g, "")
+    .replace(/<\/?[^>]+(>|$)/g, "")
+    .replace(/\s{2,}/g, " ")
+    .trim();
+
+const loadHistory = async () => {
+  try {
+    const res = await fetch("/ai/history");
+    if (res.ok) {
+      const data = await res.json();
+      if (data.messages?.length) {
+        messages.value = data.messages;
+        conversationId.value = data.conversation_id || null;
+        return;
+      }
+    }
+  } catch {
+    // Fall through to localStorage
+  }
+
   try {
     const saved = localStorage.getItem("chat_history");
     if (saved) {
@@ -268,7 +289,7 @@ const clearChat = () => {
                   class="max-w-full rounded-lg mb-1.5 max-h-32 object-cover"
                   alt="Uploaded"
                 />
-                <span v-if="msg.content || loading" class="whitespace-pre-wrap">{{ msg.content }}</span>
+                <span v-if="msg.content || loading" class="whitespace-pre-wrap">{{ cleanContent(msg.content) }}</span>
                 <span
                   v-if="i === messages.length - 1 && msg.role === 'assistant' && loading"
                   class="inline-flex gap-0.5 ml-0.5"
@@ -287,7 +308,16 @@ const clearChat = () => {
                     :href="`/products/${p.uid}`"
                     class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium no-underline transition-all bg-white dark:bg-[#1A1A1A] border border-gray-200 dark:border-[#D4AF37]/15 hover:border-[#D4AF37] dark:hover:border-[#D4AF37] text-gray-700 dark:text-[#F5F5F5] shadow-sm hover:shadow-md"
                   >
-                    <span class="w-6 h-6 rounded-lg shrink-0 flex items-center justify-center bg-[#D4AF37]/10 text-[#D4AF37] text-[10px] font-bold">#</span>
+                    <span class="w-8 h-8 rounded-lg shrink-0 overflow-hidden flex items-center justify-center bg-[#D4AF37]/10 text-[#D4AF37] text-[10px] font-bold">
+                      <img
+                        v-if="p.image"
+                        :src="`/storage/${p.image}`"
+                        :alt="p.name"
+                        loading="lazy"
+                        class="w-full h-full object-cover"
+                      />
+                      <span v-else class="px-0.5">{{ p.name.charAt(0) }}</span>
+                    </span>
                     <span class="truncate font-medium">{{ p.name }}</span>
                     <span class="ml-auto shrink-0 font-bold text-[#D4AF37]">${{ p.price }}</span>
                   </a>
@@ -321,13 +351,13 @@ const clearChat = () => {
                 accept="image/*"
                 class="hidden"
               />
-              <input
+              <textarea
                 v-model="input"
-                @keydown.enter="send"
-                type="text"
+                @keydown.enter.exact.prevent="send"
+                rows="1"
                 placeholder="Type a message..."
                 :disabled="loading"
-                class="flex-1 rounded-xl px-3.5 py-2 text-sm outline-none border border-gray-200 dark:border-[#D4AF37]/20 bg-gray-50 dark:bg-[#0A0A0A] text-gray-900 dark:text-[#F5F5F5] placeholder-gray-400 dark:placeholder-[#8b949e] focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]/20 disabled:opacity-50 transition"
+                class="flex-1 resize-none rounded-xl px-3.5 py-2 text-sm outline-none border border-gray-200 dark:border-[#D4AF37]/20 bg-gray-50 dark:bg-[#0A0A0A] text-gray-900 dark:text-[#F5F5F5] placeholder-gray-400 dark:placeholder-[#8b949e] focus:border-[#D4AF37] focus:ring-1 focus:ring-[#D4AF37]/20 disabled:opacity-50 transition"
               />
               <button
                 @click="send"

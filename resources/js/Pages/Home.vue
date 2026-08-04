@@ -5,6 +5,11 @@ import { useNotification } from "../composables/useNotification.js"
 import { useAuthModal } from "../composables/useAuthModal.js"
 import AppFooter from "./components/AppFooter.vue"
 import ProductCard from "../Components/ProductCard.vue"
+import { motion } from "motion-v"
+import { motionPresets as m, staggerContainer, staggerItem, itemFadeUp, GESTURE } from "../lib/motion.js"
+
+const heroStagger = staggerContainer(0.12, 0.15)
+const heroItem = staggerItem
 
 const page = usePage()
 const { success } = useNotification()
@@ -60,33 +65,44 @@ const toggleWishlist = (product) => {
       <div class="grid items-center gap-10 md:gap-16 lg:grid-cols-2 lg:gap-20">
 
         <!-- Left: Content -->
-        <div class="space-y-4 md:space-y-5 lg:space-y-6">
+        <motion.div
+          :variants="heroStagger"
+          initial="hidden"
+          animate="visible"
+          class="space-y-4 md:space-y-5 lg:space-y-6"
+        >
 
           <div class="space-y-3 md:space-y-4">
 
             <!-- Badge -->
-            <div class="hero-badge">
+            <motion.div :variants="heroItem" class="hero-badge">
               <span class="hero-badge-dot">
                 <span class="hero-badge-dot-ring"></span>
                 <span class="hero-badge-dot-core"></span>
               </span>
               Premium Handmade Art
-            </div>
+            </motion.div>
 
             <!-- Heading -->
-            <h1 class="text-2xl font-bold leading-tight sm:text-3xl lg:text-4xl xl:text-5xl">
+            <motion.h1
+              :variants="heroItem"
+              class="text-2xl font-bold leading-tight sm:text-3xl lg:text-4xl xl:text-5xl"
+            >
               <span class="text-[#1A1A1A] dark:text-[#F5F5F5]">Where Precision Meets</span>
               <span class="block mt-1 text-gold-gradient">Elegance</span>
-            </h1>
+            </motion.h1>
 
             <!-- Subtitle -->
-            <p class="max-w-lg text-sm leading-relaxed sm:text-base lg:text-lg text-[#6B6B6B] dark:text-[#A0A0A0]">
+            <motion.p
+              :variants="heroItem"
+              class="max-w-lg text-sm leading-relaxed sm:text-base lg:text-lg text-[#6B6B6B] dark:text-[#A0A0A0]"
+            >
               Discover exclusive luxury products crafted with passion, precision, and excellence. Every collection is carefully curated to feel timeless.
-            </p>
+            </motion.p>
           </div>
 
           <!-- CTA Buttons -->
-          <div class="flex flex-col gap-3 sm:flex-row sm:gap-4">
+          <motion.div :variants="heroItem" class="flex flex-col gap-3 sm:flex-row sm:gap-4">
             <a href="#categories" class="btn-premium group">
               Explore Collection
               <svg class="btn-arrow h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
@@ -95,27 +111,35 @@ const toggleWishlist = (product) => {
               Custom Order
               <svg class="btn-arrow h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </Link>
-          </div>
+          </motion.div>
 
           <!-- Stats -->
-          <div class="hidden md:grid md:grid-cols-3 gap-4 pt-2">
-            <div class="hero-stat-card">
-              <div class="hero-stat-value">{{ stats.products }}+</div>
-              <div class="hero-stat-label">Products</div>
-            </div>
-            <div class="hero-stat-card">
-              <div class="hero-stat-value">{{ stats.categories }}+</div>
-              <div class="hero-stat-label">Categories</div>
-            </div>
-            <div class="hero-stat-card">
-              <div class="hero-stat-value">{{ stats.orders }}+</div>
-              <div class="hero-stat-label">Orders</div>
-            </div>
-          </div>
-        </div>
+          <motion.div :variants="heroItem" class="hidden md:grid md:grid-cols-3 gap-4 pt-2">
+            <motion.div
+              v-for="(stat, i) in [
+                { value: stats.products + '+', label: 'Products' },
+                { value: stats.categories + '+', label: 'Categories' },
+                { value: stats.orders + '+', label: 'Orders' },
+              ]"
+              :key="stat.label"
+              :variants="itemFadeUp(i * 0.1)"
+              initial="hidden"
+              animate="visible"
+              class="hero-stat-card"
+            >
+              <div class="hero-stat-value">{{ stat.value }}</div>
+              <div class="hero-stat-label">{{ stat.label }}</div>
+            </motion.div>
+          </motion.div>
+        </motion.div>
 
         <!-- Right: Hero Image -->
-        <div class="relative flex justify-center lg:justify-end">
+        <motion.div
+          :initial="{ opacity: 0, scale: 0.9, y: 24 }"
+          :animate="{ opacity: 1, scale: 1, y: 0 }"
+          :transition="{ duration: 0.8, ease: m.easeOutExpo, delay: 0.25 }"
+          class="relative flex justify-center lg:justify-end"
+        >
           <div class="hero-image-group">
 
             <!-- Breathing glow -->
@@ -169,7 +193,7 @@ const toggleWishlist = (product) => {
             </div>
 
           </div>
-        </div>
+        </motion.div>
 
       </div>
     </div>
@@ -181,14 +205,32 @@ const toggleWishlist = (product) => {
   <section id="categories" class="py-12 sm:py-20 bg-[#FAF7F2] dark:bg-[#0A0A0A] border-t border-gray-200/50 dark:border-[#D4AF37]/10 shadow-xl">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-      <div class="text-center mb-8 sm:mb-12">
-        <h2 class="text-3xl sm:text-4xl font-bold tracking-tight text-[#1A1A1A] dark:text-[#F5F5F5]">Browse by Category</h2>
-        <p class="mt-3 text-base sm:text-lg text-[#6B6B6B] dark:text-[#A0A0A0]">Explore featured collections curated from the current catalog.</p>
-      </div>
+      <motion.div
+        :variants="staggerContainer(0.15)"
+        initial="hidden"
+        whileInView="visible"
+        :viewport="m.viewport.once"
+        class="text-center mb-8 sm:mb-12"
+      >
+        <motion.h2 :variants="staggerItem" class="text-3xl sm:text-4xl font-bold tracking-tight text-[#1A1A1A] dark:text-[#F5F5F5]">Browse by Category</motion.h2>
+        <motion.p :variants="staggerItem" class="mt-3 text-base sm:text-lg text-[#6B6B6B] dark:text-[#A0A0A0]">Explore featured collections curated from the current catalog.</motion.p>
+      </motion.div>
 
-      <div v-if="categories.length" class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-        <Link v-for="cat in categories" :key="cat.id" :href="`/categories/${cat.uid}`"
-          class="group relative overflow-hidden rounded-2xl transition-all duration-500 hover:-translate-y-2 no-underline border border-[#D4AF37]/20 bg-white dark:bg-[#1A1A1A] shadow-md shadow-[#D4AF37]/5 dark:shadow-[#D4AF37]/10 hover:shadow-xl hover:shadow-[#D4AF37]/15 dark:hover:shadow-[#D4AF37]/20">
+      <motion.div
+        v-if="categories.length"
+        :variants="staggerContainer(0.08)"
+        initial="hidden"
+        whileInView="visible"
+        :viewport="m.viewport.onceLight"
+        class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
+      >
+        <motion.div
+          v-for="cat in categories" :key="cat.id"
+          :variants="staggerItem"
+          :whileHover="{ y: -8, transition: m.spring.gentle }"
+          class="group relative overflow-hidden rounded-2xl no-underline border border-[#D4AF37]/20 bg-white dark:bg-[#1A1A1A] shadow-md shadow-[#D4AF37]/5 dark:shadow-[#D4AF37]/10 hover:shadow-xl hover:shadow-[#D4AF37]/15 dark:hover:shadow-[#D4AF37]/20"
+        >
+          <Link :href="`/categories/${cat.uid}`" class="block no-underline">
 
           <div v-if="cat.image" class="aspect-[4/3] relative overflow-hidden">
             <img :src="`/storage/${cat.image}`" :alt="cat.name" loading="lazy"
@@ -220,13 +262,14 @@ const toggleWishlist = (product) => {
             </div>
           </div>
         </Link>
-      </div>
+      </motion.div>
+    </motion.div>
 
-      <div v-else class="rounded-2xl p-8 text-center border border-gray-200 dark:border-[#D4AF37]/15 bg-white dark:bg-[#1A1A1A] text-[#6B6B6B] dark:text-[#A0A0A0]">
-        Categories will appear here once featured collections are active.
-      </div>
+    <div v-else class="rounded-2xl p-8 text-center border border-gray-200 dark:border-[#D4AF37]/15 bg-white dark:bg-[#1A1A1A] text-[#6B6B6B] dark:text-[#A0A0A0]">
+      Categories will appear here once featured collections are active.
     </div>
-  </section>
+  </div>
+</section>
 
   <!-- ══════════════════════════════
        TRENDING PRODUCTS
@@ -234,23 +277,36 @@ const toggleWishlist = (product) => {
   <section id="products" class="py-12 sm:py-20 hero-gradient-static dark:hero-gradient-static border-t border-[#D4AF37]/10 shadow-xl">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-      <div class="mb-8 sm:mb-12 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
+      <motion.div
+        :variants="staggerContainer(0.15)"
+        initial="hidden"
+        whileInView="visible"
+        :viewport="m.viewport.once"
+        class="mb-8 sm:mb-12 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center"
+      >
         <div>
-          <h2 class="text-3xl sm:text-4xl font-bold tracking-tight text-[#1A1A1A] dark:text-[#F5F5F5]">Trending Products</h2>
-          <p class="mt-2 text-base text-[#6B6B6B] dark:text-[#A0A0A0]">A quick look at featured pieces from the live collection.</p>
+          <motion.h2 :variants="staggerItem" class="text-3xl sm:text-4xl font-bold tracking-tight text-[#1A1A1A] dark:text-[#F5F5F5]">Trending Products</motion.h2>
+          <motion.p :variants="staggerItem" class="mt-2 text-base text-[#6B6B6B] dark:text-[#A0A0A0]">A quick look at featured pieces from the live collection.</motion.p>
         </div>
-      </div>
+      </motion.div>
 
-      <div v-if="trendingProducts?.length" class="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4">
-        <ProductCard
-          v-for="product in trendingProducts"
-          :key="product.id"
-          :product="product"
-          :is-in-wishlist="isInWishlist(product)"
-          :is-in-cart="isInCart(product)"
-          @add-to-cart="addToCart(product)"
-          @toggle-wishlist="toggleWishlist(product)" />
-      </div>
+      <motion.div
+        v-if="trendingProducts?.length"
+        :variants="staggerContainer(0.08)"
+        initial="hidden"
+        whileInView="visible"
+        :viewport="m.viewport.onceLight"
+        class="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4"
+      >
+        <motion.div v-for="product in trendingProducts" :key="product.id" :variants="staggerItem">
+          <ProductCard
+            :product="product"
+            :is-in-wishlist="isInWishlist(product)"
+            :is-in-cart="isInCart(product)"
+            @add-to-cart="addToCart(product)"
+            @toggle-wishlist="toggleWishlist(product)" />
+        </motion.div>
+      </motion.div>
 
       <div v-else class="rounded-2xl p-8 text-center border border-gray-200 dark:border-[#D4AF37]/15 bg-white dark:bg-[#1A1A1A] text-[#6B6B6B] dark:text-[#A0A0A0]">
         Featured products will appear here once they are available.
@@ -265,37 +321,49 @@ const toggleWishlist = (product) => {
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="grid grid-cols-2 gap-6 sm:gap-8 lg:grid-cols-4">
 
-        <div class="text-center">
-          <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#D4AF37]/10 dark:bg-[#D4AF37]/15">
+        <motion.div
+          :whileHover="{ y: -4, transition: m.spring.gentle }"
+          class="text-center"
+        >
+          <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#D4AF37]/10 dark:bg-[#D4AF37]/15 transition-all duration-300 group-hover:bg-[#D4AF37]">
             <svg class="w-7 h-7" fill="none" stroke="#D4AF37" stroke-width="1.5" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
           </div>
           <h3 class="mb-2 font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">Handcrafted</h3>
           <p class="text-sm text-[#6B6B6B] dark:text-[#A0A0A0]">Every piece is created with careful finishing and a human touch.</p>
-        </div>
+        </motion.div>
 
-        <div class="text-center">
-          <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#D4AF37]/10 dark:bg-[#D4AF37]/15">
+        <motion.div
+          :whileHover="{ y: -4, transition: m.spring.gentle }"
+          class="text-center"
+        >
+          <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#D4AF37]/10 dark:bg-[#D4AF37]/15 transition-all duration-300 group-hover:bg-[#D4AF37]">
             <svg class="w-7 h-7" fill="none" stroke="#D4AF37" stroke-width="1.5" viewBox="0 0 24 24"><path d="M12 15l-2 5-6-2 2-6-5-2 5-2-2-6 6 2 2-5 2 5 6-2-2 6 5 2-5 2 2 6-6-2-2 5z"/></svg>
           </div>
           <h3 class="mb-2 font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">Premium Quality</h3>
           <p class="text-sm text-[#6B6B6B] dark:text-[#A0A0A0]">Materials and detailing stay aligned with a polished final result.</p>
-        </div>
+        </motion.div>
 
-        <div class="text-center">
-          <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#D4AF37]/10 dark:bg-[#D4AF37]/15">
+        <motion.div
+          :whileHover="{ y: -4, transition: m.spring.gentle }"
+          class="text-center"
+        >
+          <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#D4AF37]/10 dark:bg-[#D4AF37]/15 transition-all duration-300 group-hover:bg-[#D4AF37]">
             <svg class="w-7 h-7" fill="none" stroke="#D4AF37" stroke-width="1.5" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
           </div>
           <h3 class="mb-2 font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">Made with Care</h3>
           <p class="text-sm text-[#6B6B6B] dark:text-[#A0A0A0]">Each item is shaped with attention to detail, balance, and precision.</p>
-        </div>
+        </motion.div>
 
-        <div class="text-center">
-          <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#D4AF37]/10 dark:bg-[#D4AF37]/15">
+        <motion.div
+          :whileHover="{ y: -4, transition: m.spring.gentle }"
+          class="text-center"
+        >
+          <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#D4AF37]/10 dark:bg-[#D4AF37]/15 transition-all duration-300 group-hover:bg-[#D4AF37]">
             <svg class="w-7 h-7" fill="none" stroke="#D4AF37" stroke-width="1.5" viewBox="0 0 24 24"><path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707"/><circle cx="12" cy="12" r="4"/></svg>
           </div>
           <h3 class="mb-2 font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">Curated Collection</h3>
           <p class="text-sm text-[#6B6B6B] dark:text-[#A0A0A0]">Featured works reflect the active products and categories in your catalog.</p>
-        </div>
+        </motion.div>
 
       </div>
     </div>
@@ -307,18 +375,34 @@ const toggleWishlist = (product) => {
   <section class="py-12 sm:py-20 hero-gradient-static dark:hero-gradient-static border-t border-gray-200/50 dark:border-[#D4AF37]/10 shadow-xl">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
-      <div class="mb-10 sm:mb-12 text-center">
-        <h2 class="mb-3 text-3xl font-bold leading-tight text-foreground sm:mb-4 sm:text-4xl">
+      <motion.div
+        :variants="staggerContainer(0.15)"
+        initial="hidden"
+        whileInView="visible"
+        :viewport="m.viewport.once"
+        class="mb-10 sm:mb-12 text-center"
+      >
+        <motion.h2 :variants="staggerItem" class="mb-3 text-3xl font-bold leading-tight text-foreground sm:mb-4 sm:text-4xl">
           <span class="inline-flex flex-wrap items-baseline gap-x-[0.24em] gap-y-1 justify-center">
             <span>Client</span>
             <span class="text-gold-gradient">Testimonials</span>
           </span>
-        </h2>
-        <p class="max-w-2xl text-muted-foreground leading-7 sm:text-lg mx-auto">Recent feedback from collectors and watch enthusiasts.</p>
-      </div>
+        </motion.h2>
+        <motion.p :variants="staggerItem" class="max-w-2xl text-muted-foreground leading-7 sm:text-lg mx-auto">Recent feedback from collectors and watch enthusiasts.</motion.p>
+      </motion.div>
 
-      <div class="grid gap-6 md:grid-cols-3">
-        <div class="rounded-xl border border-border bg-[#F5F1E8] dark:bg-[#1A1A1A] p-6 shadow-luxury transition-luxury hover:shadow-luxury-hover">
+      <motion.div
+        :variants="staggerContainer(0.15)"
+        initial="hidden"
+        whileInView="visible"
+        :viewport="m.viewport.onceLight"
+        class="grid gap-6 md:grid-cols-3"
+      >
+        <motion.div
+          :variants="staggerItem"
+          :whileHover="{ y: -6, transition: m.spring.gentle }"
+          class="rounded-xl border border-border bg-[#F5F1E8] dark:bg-[#1A1A1A] p-6 shadow-luxury transition-luxury hover:shadow-luxury-hover"
+        >
           <div class="mb-4 flex items-center space-x-1">
             <svg v-for="i in 5" :key="i" class="w-5 h-5 fill-[#D4AF37] text-[#D4AF37]" viewBox="0 0 20 20">
               <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
@@ -326,9 +410,13 @@ const toggleWishlist = (product) => {
           </div>
           <p class="mb-4 italic text-muted-foreground">"The finishing, accuracy, and presentation were even better in person. It instantly became my daily wear."</p>
           <p class="font-semibold text-foreground">Sarah Johnson</p>
-        </div>
+        </motion.div>
 
-        <div class="rounded-xl border border-border bg-[#F5F1E8] dark:bg-[#1A1A1A] p-6 shadow-luxury transition-luxury hover:shadow-luxury-hover">
+        <motion.div
+          :variants="staggerItem"
+          :whileHover="{ y: -6, transition: m.spring.gentle }"
+          class="rounded-xl border border-border bg-[#F5F1E8] dark:bg-[#1A1A1A] p-6 shadow-luxury transition-luxury hover:shadow-luxury-hover"
+        >
           <div class="mb-4 flex items-center space-x-1">
             <svg v-for="i in 5" :key="i" class="w-5 h-5 fill-[#D4AF37] text-[#D4AF37]" viewBox="0 0 20 20">
               <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
@@ -336,9 +424,13 @@ const toggleWishlist = (product) => {
           </div>
           <p class="mb-4 italic text-muted-foreground">"A premium experience. The craftsmanship and packaging worked perfectly for a luxury gift."</p>
           <p class="font-semibold text-foreground">Michael Chen</p>
-        </div>
+        </motion.div>
 
-        <div class="rounded-xl border border-border bg-[#F5F1E8] dark:bg-[#1A1A1A] p-6 shadow-luxury transition-luxury hover:shadow-luxury-hover">
+        <motion.div
+          :variants="staggerItem"
+          :whileHover="{ y: -6, transition: m.spring.gentle }"
+          class="rounded-xl border border-border bg-[#F5F1E8] dark:bg-[#1A1A1A] p-6 shadow-luxury transition-luxury hover:shadow-luxury-hover"
+        >
           <div class="mb-4 flex items-center space-x-1">
             <svg v-for="i in 5" :key="i" class="w-5 h-5 fill-[#D4AF37] text-[#D4AF37]" viewBox="0 0 20 20">
               <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
@@ -346,8 +438,8 @@ const toggleWishlist = (product) => {
           </div>
           <p class="mb-4 italic text-muted-foreground">"The design direction feels thoughtful and consistent. Every collection looks professionally curated."</p>
           <p class="font-semibold text-foreground">Emma Williams</p>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </div>
   </section>
 
@@ -356,12 +448,38 @@ const toggleWishlist = (product) => {
   ══════════════════════════════ -->
   <section id="custom-order" class="py-12 sm:py-20 bg-[#FAF7F2] dark:bg-[#0A0A0A] border-t border-gray-200/50 dark:border-[#D4AF37]/10 shadow-xl">
     <div class="max-w-4xl mx-auto px-4 text-center sm:px-6 lg:px-8">
-      <div class="rounded-2xl p-8 sm:p-12 border border-gray-200 dark:border-[#D4AF37]/20 bg-gradient-to-br from-[#D4AF37]/10 to-slate-900/5 dark:from-[#D4AF37]/10 dark:to-[#1A1A1A]/50 shadow-lg shadow-[#D4AF37]/10 dark:shadow-[#D4AF37]/20 hover:shadow-xl hover:shadow-[#D4AF37]/20 dark:hover:shadow-[#D4AF37]/25 transition-shadow duration-300">
+      <motion.div
+        :variants="m.scaleIn"
+        initial="hidden"
+        whileInView="visible"
+        :viewport="m.viewport.once"
+        class="rounded-2xl p-8 sm:p-12 border border-gray-200 dark:border-[#D4AF37]/20 bg-gradient-to-br from-[#D4AF37]/10 to-slate-900/5 dark:from-[#D4AF37]/10 dark:to-[#1A1A1A]/50 shadow-lg shadow-[#D4AF37]/10 dark:shadow-[#D4AF37]/20 hover:shadow-xl hover:shadow-[#D4AF37]/20 dark:hover:shadow-[#D4AF37]/25 transition-shadow duration-300"
+      >
 
-        <h2 class="mb-4 text-3xl font-bold sm:text-4xl text-[#1A1A1A] dark:text-[#F5F5F5]">Ready to Commission Your Custom Order?</h2>
-        <p class="mx-auto mb-8 max-w-2xl text-lg text-[#6B6B6B] dark:text-[#A0A0A0]">Share your idea with us and we will help shape the right piece for your space, gift, or collection.</p>
+        <motion.h2
+          :variants="m.fadeUp"
+          initial="hidden"
+          whileInView="visible"
+          :viewport="m.viewport.once"
+          class="mb-4 text-3xl font-bold sm:text-4xl text-[#1A1A1A] dark:text-[#F5F5F5]"
+        >Ready to Commission Your Custom Order?</motion.h2>
+        <motion.p
+          :variants="m.fadeUp"
+          initial="hidden"
+          whileInView="visible"
+          :viewport="m.viewport.once"
+          :transition="{ duration: m.duration.base, ease: m.easeOutExpo, delay: 0.1 }"
+          class="mx-auto mb-8 max-w-2xl text-lg text-[#6B6B6B] dark:text-[#A0A0A0]"
+        >Share your idea with us and we will help shape the right piece for your space, gift, or collection.</motion.p>
 
-        <div class="flex flex-col justify-center gap-4 sm:flex-row">
+        <motion.div
+          :variants="m.fadeUp"
+          initial="hidden"
+          whileInView="visible"
+          :viewport="m.viewport.once"
+          :transition="{ duration: m.duration.base, ease: m.easeOutExpo, delay: 0.2 }"
+          class="flex flex-col justify-center gap-4 sm:flex-row"
+        >
           <Link href="/custom-order"
             class="inline-flex items-center justify-center rounded-lg px-6 py-3 text-base font-medium transition-all duration-300 sm:px-8 sm:py-4 sm:text-lg no-underline bg-[#D4AF37] dark:bg-[#D4AF37] text-white dark:text-[#0A0A0A] hover:bg-[#C9A032] dark:hover:bg-[#C9A032] shadow-lg shadow-[#D4AF37]/20 dark:shadow-[#D4AF37]/30 hover:shadow-xl hover:shadow-[#D4AF37]/30 dark:hover:shadow-[#D4AF37]/40">
             Start Custom Order
@@ -371,8 +489,8 @@ const toggleWishlist = (product) => {
             class="inline-flex items-center justify-center rounded-lg px-6 py-3 text-base font-medium transition-all duration-300 sm:px-8 sm:py-4 sm:text-lg no-underline border border-gray-200 dark:border-[#D4AF37]/25 bg-white dark:bg-[#1A1A1A] text-[#1A1A1A] dark:text-[#F5F5F5] shadow-sm shadow-[#D4AF37]/5 dark:shadow-[#D4AF37]/10 hover:shadow-md hover:shadow-[#D4AF37]/10 dark:hover:shadow-[#D4AF37]/20">
             Contact Us
           </Link>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </div>
   </section>
 

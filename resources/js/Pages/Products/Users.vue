@@ -65,7 +65,6 @@ const can = (permission) => Boolean(page.props.permissions?.can?.[permission]);
                 <th class="p-4">Name</th>
                 <th class="p-4">Email</th>
                 <th class="p-4">Role</th>
-                <th class="p-4 text-center">Actions</th>
               </tr>
             </thead>
 
@@ -97,25 +96,11 @@ const can = (permission) => Boolean(page.props.permissions?.can?.[permission]);
                   {{ user.role }}
                 </td>
 
-                <!-- ACTIONS -->
-                <td class="p-4">
-                  <div class="flex justify-center gap-2">
-
-                    <Link
-                      :href="`/users/${user.id}/edit`"
-                      class="px-3 py-1.5 rounded-lg bg-[#FAF7F2] dark:bg-[#1A1A1A] text-gray-700 dark:text-[#F5F5F5] hover:bg-yellow-500 hover:text-white dark:hover:bg-yellow-500"
-                    >
-                      Edit
-                    </Link>
-
-                  </div>
-                </td>
-
               </tr>
 
               <!-- EMPTY -->
               <tr v-if="users.length === 0">
-                <td colspan="5" class="p-10 text-center text-gray-400 dark:text-[#A0A0A0]">
+                <td colspan="4" class="p-10 text-center text-gray-400 dark:text-[#A0A0A0]">
                   No Users found
                 </td>
               </tr>

@@ -1,9 +1,10 @@
 <script setup>
 import { router, usePage, Head, Link, useForm } from "@inertiajs/vue3"
 import { ref, computed } from "vue"
-import { useInView } from "../composables/useInView.js"
 import { useAuthModal } from "../composables/useAuthModal.js"
 import { useNotification } from "../composables/useNotification.js"
+import { motion, AnimatePresence } from "motion-v"
+import { motionPresets as m, staggerContainer, staggerItem } from "../lib/motion.js"
 
 const props = defineProps({
   product: Object,
@@ -110,8 +111,6 @@ const toggleWishlist = () => {
   })
 }
 
-const { target: contentRef, isInView: contentVisible } = useInView()
-
 const imgLoaded = ref(false)
 const imgError = ref(false)
 
@@ -123,6 +122,9 @@ function onImgError() {
   imgError.value = true
   imgLoaded.value = true
 }
+
+const productStagger = staggerContainer(0.1, 0.1)
+const detailItems = staggerItem
 </script>
 
 <template>
@@ -134,7 +136,12 @@ function onImgError() {
 >
 
   <!-- HEADER -->
-  <div class="sticky top-0 z-50 border-b border-border bg-card/90 backdrop-blur-md">
+  <motion.div
+    :initial="{ y: -56, opacity: 0 }"
+    :animate="{ y: 0, opacity: 1 }"
+    :transition="{ duration: 0.5, ease: m.easeOutExpo }"
+    class="sticky top-0 z-50 border-b border-border bg-card/90 backdrop-blur-md"
+  >
     <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
 
       <Link
@@ -165,19 +172,25 @@ function onImgError() {
       </Link>
 
     </div>
-  </div>
+  </motion.div>
 
   <!-- PRODUCT SECTION -->
-  <div ref="contentRef" class="max-w-7xl mx-auto px-4 sm:px-6 py-6 md:py-10">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 py-6 md:py-10">
 
-    <div
-      :class="['border border-border bg-card rounded-3xl overflow-hidden shadow-luxury', contentVisible ? 'animate-fade-in-up' : 'opacity-0']"
+    <motion.div
+      :variants="productStagger"
+      initial="hidden"
+      animate="visible"
+      class="border border-border bg-card rounded-3xl overflow-hidden shadow-luxury"
     >
 
       <div class="grid lg:grid-cols-2 gap-0">
 
         <!-- IMAGE SECTION -->
-        <div class="relative bg-[#FAF7F2] dark:bg-[#111] border-b lg:border-b-0 lg:border-r border-border p-8 sm:p-12 flex items-center justify-center">
+        <motion.div
+          :variants="m.scaleIn"
+          class="relative bg-[#FAF7F2] dark:bg-[#111] border-b lg:border-b-0 lg:border-r border-border p-8 sm:p-12 flex items-center justify-center"
+        >
 
           <div class="relative w-full max-w-lg">
 
@@ -235,10 +248,13 @@ function onImgError() {
 
           </div>
 
-        </div>
+        </motion.div>
 
         <!-- DETAILS SECTION -->
-        <div class="p-6 sm:p-8 lg:p-10 flex flex-col justify-between">
+        <motion.div
+          :variants="m.fadeRight"
+          class="p-6 sm:p-8 lg:p-10 flex flex-col justify-between"
+        >
 
           <div>
 
@@ -344,11 +360,11 @@ function onImgError() {
             </Link>
           </div>
 
-        </div>
+        </motion.div>
 
       </div>
 
-    </div>
+    </motion.div>
 
     <!-- REVIEWS SECTION -->
     <div class="mt-10 md:mt-14">
@@ -377,10 +393,15 @@ function onImgError() {
       </div>
 
       <!-- REVIEW FORM -->
-      <div
-        v-if="showReviewForm && !userReview"
-        class="border border-border bg-card rounded-2xl p-6 mb-8 shadow-luxury"
-      >
+      <AnimatePresence>
+        <motion.div
+          v-if="showReviewForm && !userReview"
+          :initial="{ opacity: 0, height: 0, y: -12 }"
+          :animate="{ opacity: 1, height: 'auto', y: 0 }"
+          :exit="{ opacity: 0, height: 0, y: -12 }"
+          :transition="{ duration: 0.3, ease: m.easeOutExpo }"
+          class="border border-border bg-card rounded-2xl p-6 mb-8 shadow-luxury overflow-hidden"
+        >
         <h3 class="text-sm font-bold uppercase tracking-wider text-foreground mb-4">Your Review</h3>
 
         <form @submit.prevent="submitReview">
@@ -428,7 +449,8 @@ function onImgError() {
             </button>
           </div>
         </form>
-      </div>
+      </motion.div>
+      </AnimatePresence>
 
       <!-- LOGIN PROMPT -->
       <div
@@ -450,10 +472,18 @@ function onImgError() {
       </div>
 
       <!-- REVIEW LIST -->
-      <div v-if="reviews.length > 0" class="space-y-4">
-        <div
+      <motion.div
+        v-if="reviews.length > 0"
+        :variants="m.staggerContainer(0.08, 0.05)"
+        initial="hidden"
+        whileInView="visible"
+        :viewport="m.viewport.once"
+        class="space-y-4"
+      >
+        <motion.div
           v-for="review in reviews"
           :key="review.id"
+          :variants="m.itemFadeUp()"
           class="border border-border bg-card rounded-2xl p-6 shadow-luxury"
         >
           <div class="flex items-start justify-between">
@@ -550,8 +580,8 @@ function onImgError() {
               {{ new Date(review.created_at).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' }) }}
             </p>
           </div>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
 
       <!-- EMPTY STATE -->
       <div
@@ -572,7 +602,12 @@ function onImgError() {
   </div>
 
   <!-- MOBILE STICKY BOTTOM BAR -->
-  <div class="md:hidden fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-card/95 backdrop-blur-md px-4 py-3 flex items-center justify-between gap-4 shadow-luxury">
+  <motion.div
+    :initial="{ y: 80, opacity: 0 }"
+    :animate="{ y: 0, opacity: 1 }"
+    :transition="{ delay: 0.3, type: 'spring', stiffness: 320, damping: 28 }"
+    class="md:hidden fixed bottom-0 left-0 right-0 z-50 border-t border-border bg-card/95 backdrop-blur-md px-4 py-3 flex items-center justify-between gap-4 shadow-luxury"
+  >
     <div class="flex flex-col">
       <span class="text-2xl font-extrabold text-[#D4AF37]">${{ product.price }}</span>
       <span
@@ -599,7 +634,7 @@ function onImgError() {
       <span v-else-if="isInCart">Added</span>
       <span v-else>Add to Cart</span>
     </button>
-  </div>
+  </motion.div>
 
   <!-- Spacer for mobile bottom bar -->
   <div class="md:hidden h-20" />

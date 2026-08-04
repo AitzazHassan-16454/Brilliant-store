@@ -17,6 +17,7 @@ class Product extends Model
         'price',
         'stock',
         'is_active',
+        'is_trending',
         'image',
         'description',
         'embedding',
@@ -29,6 +30,7 @@ class Product extends Model
         return [
             'price' => 'decimal:2',
             'is_active' => 'boolean',
+            'is_trending' => 'boolean',
             'embedding' => 'array',
         ];
     }

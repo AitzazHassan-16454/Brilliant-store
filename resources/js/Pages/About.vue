@@ -1,14 +1,8 @@
 <script setup>
 import { Head, Link } from "@inertiajs/vue3"
 import AppFooter from "./components/AppFooter.vue"
-import { useInView } from "../composables/useInView.js"
-
-const { target: heroRef, isInView: heroVisible } = useInView()
-const { target: whoRef, isInView: whoVisible } = useInView()
-const { target: storyRef, isInView: storyVisible } = useInView()
-const { target: missionRef, isInView: missionVisible } = useInView()
-const { target: valuesRef, isInView: valuesVisible } = useInView()
-const { target: reasonsRef, isInView: reasonsVisible } = useInView()
+import { motion } from "motion-v"
+import { motionPresets as m, staggerContainer } from "../lib/motion.js"
 
 const values = [
   {
@@ -71,22 +65,26 @@ const reasons = [
   <div class="min-h-screen bg-[#FAF7F2] dark:bg-[#0A0A0A] text-[#1A1A1A] dark:text-[#F5F5F5]" style="font-family:'Inter',system-ui,sans-serif;">
 
     <!-- HERO -->
-    <section ref="heroRef" class="relative overflow-hidden border-b border-gray-200 dark:border-[#D4AF37]/20">
+    <section class="relative overflow-hidden border-b border-gray-200 dark:border-[#D4AF37]/20">
       <div class="absolute inset-0 pointer-events-none" style="background:radial-gradient(ellipse at top right,rgba(212,175,55,0.12),transparent 55%),radial-gradient(ellipse at bottom left,rgba(212,175,55,0.06),transparent 55%);"></div>
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16 sm:py-24 text-center relative">
-        <div :class="[heroVisible ? 'animate-fade-in-up' : 'opacity-0']">
-          <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold uppercase tracking-widest border border-[#D4AF37]/30 bg-[#D4AF37]/10 text-[#B8960F] dark:text-[#D4AF37]">
+        <motion.div
+          :variants="m.staggerContainer(0.12, 0.15)"
+          initial="hidden"
+          animate="visible"
+        >
+          <span :variants="m.itemFadeUp(0)" class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-semibold uppercase tracking-widest border border-[#D4AF37]/30 bg-[#D4AF37]/10 text-[#B8960F] dark:text-[#D4AF37]">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 3h12l4 6-10 13L2 9z"/><path d="M2 9h20"/><path d="M12 22L6 9"/><path d="M12 22l6-13"/></svg>
             About Us
           </span>
-          <h1 class="mt-5 text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-gray-900 dark:text-[#F5F5F5]">
+          <h1 :variants="m.itemFadeUp(1)" class="mt-5 text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-gray-900 dark:text-[#F5F5F5]">
             About <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] via-[#B8960F] to-[#D4AF37]">Brilliant</span>
           </h1>
-          <p class="mt-5 max-w-2xl mx-auto text-base sm:text-lg leading-relaxed text-gray-500 dark:text-[#A0A0A0]">
+          <p :variants="m.itemFadeUp(2)" class="mt-5 max-w-2xl mx-auto text-base sm:text-lg leading-relaxed text-gray-500 dark:text-[#A0A0A0]">
             A premium store built on a simple idea: everyday products made exceptionally well.
             Here's who we are, what drives us, and why customers choose us.
           </p>
-          <div class="mt-8 flex flex-wrap items-center justify-center gap-3">
+          <div :variants="m.itemFadeUp(3)" class="mt-8 flex flex-wrap items-center justify-center gap-3">
             <Link href="/" class="inline-flex items-center gap-2 text-sm font-semibold px-6 py-3 rounded-xl transition-all duration-300 hover:-translate-y-0.5 no-underline text-white bg-gradient-to-br from-[#D4AF37] via-[#B8960F] to-[#D4AF37] shadow-lg shadow-[#D4AF37]/30">
               Browse the Store
               <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
@@ -95,14 +93,19 @@ const reasons = [
               Track an Order
             </Link>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
 
     <!-- WHO WE ARE -->
-    <section ref="whoRef" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-20">
-      <div :class="[whoVisible ? 'animate-fade-in-up' : 'opacity-0']" class="grid gap-8 sm:gap-10 lg:grid-cols-2 items-center">
-        <div>
+    <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-20">
+      <div class="grid gap-8 sm:gap-10 lg:grid-cols-2 items-center">
+        <motion.div
+          :variants="m.fadeRight"
+          initial="hidden"
+          whileInView="visible"
+          :viewport="m.viewport.once"
+        >
           <p class="text-xs font-bold uppercase tracking-widest text-[#D4AF37]">Who We Are</p>
           <h2 class="mt-2 text-3xl sm:text-4xl font-extrabold tracking-tight text-gray-900 dark:text-[#F5F5F5]">Premium products, thoughtfully delivered</h2>
           <div class="mt-5 space-y-4 text-sm sm:text-base leading-relaxed text-gray-500 dark:text-[#A0A0A0]">
@@ -116,36 +119,48 @@ const reasons = [
               at Brilliant is designed with the customer in mind.
             </p>
           </div>
-        </div>
-        <div class="grid grid-cols-2 gap-4 sm:gap-5">
-          <div class="rounded-2xl p-6 text-center border border-gray-200 dark:border-[#D4AF37]/20 bg-white dark:bg-[#1A1A1A]/60 shadow-xl">
+        </motion.div>
+        <motion.div
+          :variants="m.staggerContainer(0.08, 0.1)"
+          initial="hidden"
+          whileInView="visible"
+          :viewport="m.viewport.once"
+          class="grid grid-cols-2 gap-4 sm:gap-5"
+        >
+          <motion.div :variants="m.itemScaleIn(0)" class="rounded-2xl p-6 text-center border border-gray-200 dark:border-[#D4AF37]/20 bg-white dark:bg-[#1A1A1A]/60 shadow-xl">
             <p class="text-3xl sm:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-[#D4AF37] to-[#B8960F]">100%</p>
             <p class="mt-2 text-xs font-semibold uppercase tracking-widest text-gray-500 dark:text-[#A0A0A0]">Curated Products</p>
-          </div>
-          <div class="rounded-2xl p-6 text-center border border-gray-200 dark:border-[#D4AF37]/20 bg-white dark:bg-[#1A1A1A]/60 shadow-xl">
+          </motion.div>
+          <motion.div :variants="m.itemScaleIn(1)" class="rounded-2xl p-6 text-center border border-gray-200 dark:border-[#D4AF37]/20 bg-white dark:bg-[#1A1A1A]/60 shadow-xl">
             <p class="text-3xl sm:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-[#D4AF37] to-[#B8960F]">24/7</p>
             <p class="mt-2 text-xs font-semibold uppercase tracking-widest text-gray-500 dark:text-[#A0A0A0]">Customer Support</p>
-          </div>
-          <div class="rounded-2xl p-6 text-center border border-gray-200 dark:border-[#D4AF37]/20 bg-white dark:bg-[#1A1A1A]/60 shadow-xl">
+          </motion.div>
+          <motion.div :variants="m.itemScaleIn(2)" class="rounded-2xl p-6 text-center border border-gray-200 dark:border-[#D4AF37]/20 bg-white dark:bg-[#1A1A1A]/60 shadow-xl">
             <p class="text-3xl sm:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-[#D4AF37] to-[#B8960F]">Tracked</p>
             <p class="mt-2 text-xs font-semibold uppercase tracking-widest text-gray-500 dark:text-[#A0A0A0]">Every Order</p>
-          </div>
-          <div class="rounded-2xl p-6 text-center border border-gray-200 dark:border-[#D4AF37]/20 bg-white dark:bg-[#1A1A1A]/60 shadow-xl">
+          </motion.div>
+          <motion.div :variants="m.itemScaleIn(3)" class="rounded-2xl p-6 text-center border border-gray-200 dark:border-[#D4AF37]/20 bg-white dark:bg-[#1A1A1A]/60 shadow-xl">
             <p class="text-3xl sm:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-[#D4AF37] to-[#B8960F]">Easy</p>
             <p class="mt-2 text-xs font-semibold uppercase tracking-widest text-gray-500 dark:text-[#A0A0A0]">Returns &amp; Exchanges</p>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </div>
     </section>
 
     <!-- OUR STORY -->
     <section class="bg-white/60 dark:bg-[#1A1A1A]/40 border-y border-gray-200 dark:border-[#D4AF37]/20">
-      <div ref="storyRef" :class="[storyVisible ? 'animate-fade-in-up' : 'opacity-0']" class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-20">
-        <div class="text-center mb-8">
+      <motion.div
+        :variants="m.staggerContainer(0.12, 0.05)"
+        initial="hidden"
+        whileInView="visible"
+        :viewport="m.viewport.once"
+        class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-20"
+      >
+        <div :variants="m.itemFadeUp(0)" class="text-center mb-8">
           <p class="text-xs font-bold uppercase tracking-widest text-[#D4AF37]">Our Story</p>
           <h2 class="mt-2 text-3xl sm:text-4xl font-extrabold tracking-tight text-gray-900 dark:text-[#F5F5F5]">How Brilliant came to be</h2>
         </div>
-        <div class="space-y-4 text-sm sm:text-base leading-relaxed text-gray-500 dark:text-[#A0A0A0] text-center max-w-2xl mx-auto">
+        <div :variants="m.itemFadeUp(1)" class="space-y-4 text-sm sm:text-base leading-relaxed text-gray-500 dark:text-[#A0A0A0] text-center max-w-2xl mx-auto">
           <p>
             Brilliant started with a frustration with disposable goods — products that look great for a week
             and then fall apart. So we set out to build a store where quality comes first: curated collections,
@@ -156,13 +171,18 @@ const reasons = [
             dependable shipping and support that treats every customer like a person, not a number.
           </p>
         </div>
-      </div>
+      </motion.div>
     </section>
 
     <!-- OUR MISSION -->
-    <section ref="missionRef" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-20">
-      <div :class="[missionVisible ? 'animate-fade-in-up' : 'opacity-0']"
-        class="relative overflow-hidden rounded-3xl p-8 sm:p-14 text-center border border-[#D4AF37]/30 bg-gradient-to-br from-[#0A0A0A] to-[#1A1A1A]">
+    <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-20">
+      <motion.div
+        :variants="m.scaleIn"
+        initial="hidden"
+        whileInView="visible"
+        :viewport="m.viewport.once"
+        class="relative overflow-hidden rounded-3xl p-8 sm:p-14 text-center border border-[#D4AF37]/30 bg-gradient-to-br from-[#0A0A0A] to-[#1A1A1A]"
+      >
         <div class="absolute inset-0 pointer-events-none" style="background:radial-gradient(circle at center,rgba(212,175,55,0.18),transparent 60%);"></div>
         <div class="relative">
           <p class="text-xs font-bold uppercase tracking-widest text-[#D4AF37]">Our Mission</p>
@@ -172,19 +192,29 @@ const reasons = [
             honest, and enjoyable — so every order feels like a gift, even when it's for you.
           </p>
         </div>
-      </div>
+      </motion.div>
     </section>
 
     <!-- OUR VALUES -->
-    <section ref="valuesRef" class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-14 sm:pb-20">
+    <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pb-14 sm:pb-20">
       <div class="text-center mb-10">
         <p class="text-xs font-bold uppercase tracking-widest text-[#D4AF37]">Our Values</p>
         <h2 class="mt-2 text-3xl sm:text-4xl font-extrabold tracking-tight text-gray-900 dark:text-[#F5F5F5]">What we stand for</h2>
       </div>
 
-      <div :class="[valuesVisible ? 'animate-fade-in-up' : 'opacity-0']" class="grid grid-cols-1 sm:grid-cols-3 gap-5">
-        <div v-for="value in values" :key="value.title"
-          class="rounded-2xl p-6 text-center border border-gray-200 dark:border-[#D4AF37]/20 bg-white dark:bg-[#1A1A1A]/60 shadow-xl transition-all duration-300 hover:-translate-y-1">
+      <motion.div
+        :variants="m.staggerContainer(0.1, 0.1)"
+        initial="hidden"
+        whileInView="visible"
+        :viewport="m.viewport.once"
+        class="grid grid-cols-1 sm:grid-cols-3 gap-5"
+      >
+        <motion.div
+          v-for="(value, index) in values" :key="value.title"
+          :variants="m.itemScaleIn(index)"
+          :whileHover="{ y: -6, transition: m.spring.gentle }"
+          class="rounded-2xl p-6 text-center border border-gray-200 dark:border-[#D4AF37]/20 bg-white dark:bg-[#1A1A1A]/60 shadow-xl transition-all duration-300"
+        >
           <div class="w-11 h-11 rounded-xl flex items-center justify-center mx-auto mb-4 bg-[#D4AF37]/10">
             <svg class="w-5 h-5 text-[#D4AF37]" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" :d="value.icon"/>
@@ -192,8 +222,8 @@ const reasons = [
           </div>
           <p class="text-base font-bold text-gray-900 dark:text-[#F5F5F5]">{{ value.title }}</p>
           <p class="text-sm mt-2 leading-relaxed text-gray-500 dark:text-[#A0A0A0]">{{ value.text }}</p>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </section>
 
     <!-- WHY CHOOSE US -->
@@ -204,11 +234,19 @@ const reasons = [
           <h2 class="mt-2 text-3xl sm:text-4xl font-extrabold tracking-tight text-gray-900 dark:text-[#F5F5F5]">The Brilliant difference</h2>
         </div>
 
-        <div ref="reasonsRef" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          <div v-for="(reason, index) in reasons" :key="reason.title"
-            :class="[reasonsVisible ? 'animate-fade-in-up' : 'opacity-0']"
-            class="group rounded-2xl p-6 border border-gray-200 dark:border-[#D4AF37]/20 bg-[#FAF7F2] dark:bg-[#0A0A0A] shadow-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-[#D4AF37]/10"
-            :style="{ animationDelay: `${index * 0.05}s`, animationFillMode: 'both' }">
+        <motion.div
+          :variants="m.staggerContainer(0.07, 0.05)"
+          initial="hidden"
+          whileInView="visible"
+          :viewport="m.viewport.once"
+          class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"
+        >
+          <motion.div
+            v-for="(reason, index) in reasons" :key="reason.title"
+            :variants="m.itemFadeUp(index * 0.05)"
+            :whileHover="{ y: -6, boxShadow: '0 16px 40px rgba(212,175,55,0.15)', transition: m.spring.gentle }"
+            class="group rounded-2xl p-6 border border-gray-200 dark:border-[#D4AF37]/20 bg-[#FAF7F2] dark:bg-[#0A0A0A] shadow-xl transition-all duration-300"
+          >
             <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-4 bg-[#D4AF37]/10 transition group-hover:bg-[#D4AF37]">
               <svg class="w-5 h-5 text-[#D4AF37] transition group-hover:text-white" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" :d="reason.icon"/>
@@ -216,8 +254,8 @@ const reasons = [
             </div>
             <p class="text-base font-bold text-gray-900 dark:text-[#F5F5F5]">{{ reason.title }}</p>
             <p class="text-sm mt-2 leading-relaxed text-gray-500 dark:text-[#A0A0A0]">{{ reason.description }}</p>
-          </div>
-        </div>
+          </motion.div>
+        </motion.div>
       </div>
     </section>
 

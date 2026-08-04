@@ -13,6 +13,7 @@ function trackingCheckoutPayload(): array
         'shipping_phone' => '03001234567',
         'shipping_address' => '123 Main Street',
         'shipping_city' => 'Lahore',
+        'payment_method' => 'cod',
     ];
 }
 

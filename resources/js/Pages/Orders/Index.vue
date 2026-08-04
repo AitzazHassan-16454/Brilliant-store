@@ -2,8 +2,13 @@
 import { Link, Head, router, usePage } from "@inertiajs/vue3";
 import { ref, computed, watch } from "vue";
 import { debounce } from "lodash";
+import { motion } from "motion-v";
+import { motionPresets as m, staggerContainer, staggerItem } from "../../lib/motion.js";
 import Payment from "../components/Payment.vue";
 import Modal from "../../Components/Modal.vue";
+
+const listStagger = staggerContainer(0.07, 0.05);
+const listItem = staggerItem;
 
 const props = defineProps({
   orders: Array,
@@ -175,6 +180,12 @@ const statusMeta = (s) => ({
 const statusColor = (s) => statusMeta(s).bg;
 const statusDot = (s) => statusMeta(s).dot;
 
+const paymentMethodLabel = (method) => ({
+  cod: "Cash on Delivery",
+  bank_transfer: "Bank Transfer",
+  whatsapp: "WhatsApp",
+}[method] || method || "—");
+
 const formatTime = (date) => {
   return new Date(date).toLocaleString("en-US", {
     month: "short", day: "numeric", year: "numeric", hour: "numeric", minute: "2-digit",
@@ -203,7 +214,12 @@ const timeAgo = (date) => {
   <div class="max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
 
     <!-- HEADER -->
-    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8">
+    <motion.div
+      :initial="{ y: -20, opacity: 0 }"
+      :animate="{ y: 0, opacity: 1 }"
+      :transition="{ duration: 0.5, ease: m.easeOutExpo }"
+      class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-8"
+    >
       <div>
         <h1 class="text-2xl font-medium tracking-tight text-[#1A1A1A] dark:text-[#F5F5F5]">My Orders</h1>
         <p class="text-sm text-gray-500 dark:text-[#A0A0A0] mt-0.5">Track your purchases and order history</p>
@@ -215,7 +231,7 @@ const timeAgo = (date) => {
         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
         Back to Shopping
       </Link>
-    </div>
+    </motion.div>
 
     <!-- FLASH -->
     <Transition name="modal">
@@ -258,20 +274,26 @@ const timeAgo = (date) => {
     </Transition>
 
     <!-- STATS -->
-    <div v-if="orders.length > 0" class="grid grid-cols-3 gap-4 mb-8">
-      <div class="bg-white dark:bg-[#1A1A1A] border border-gray-100 dark:border-[#D4AF37]/20 rounded-lg p-4">
+    <motion.div
+      v-if="orders.length > 0"
+      :variants="m.staggerContainer(0.1, 0.05)"
+      initial="hidden"
+      animate="visible"
+      class="grid grid-cols-3 gap-4 mb-8"
+    >
+      <motion.div :variants="m.itemFadeUp(0)" class="bg-white dark:bg-[#1A1A1A] border border-gray-100 dark:border-[#D4AF37]/20 rounded-lg p-4">
         <p class="text-xs font-medium uppercase tracking-wider text-gray-400 dark:text-[#A0A0A0]">Total Orders</p>
         <p class="text-2xl font-medium text-[#1A1A1A] dark:text-[#F5F5F5] mt-1">{{ stats.totalOrders }}</p>
-      </div>
-      <div class="bg-white dark:bg-[#1A1A1A] border border-gray-100 dark:border-[#D4AF37]/20 rounded-lg p-4">
+      </motion.div>
+      <motion.div :variants="m.itemFadeUp(1)" class="bg-white dark:bg-[#1A1A1A] border border-gray-100 dark:border-[#D4AF37]/20 rounded-lg p-4">
         <p class="text-xs font-medium uppercase tracking-wider text-gray-400 dark:text-[#A0A0A0]">Total Spent</p>
         <p class="text-2xl font-medium mt-1 text-emerald-600 dark:text-[#3fb950]">${{ stats.totalSpent }}</p>
-      </div>
-      <div class="bg-white dark:bg-[#1A1A1A] border border-gray-100 dark:border-[#D4AF37]/20 rounded-lg p-4">
+      </motion.div>
+      <motion.div :variants="m.itemFadeUp(2)" class="bg-white dark:bg-[#1A1A1A] border border-gray-100 dark:border-[#D4AF37]/20 rounded-lg p-4">
         <p class="text-xs font-medium uppercase tracking-wider text-gray-400 dark:text-[#A0A0A0]">Pending</p>
         <p class="text-2xl font-medium mt-1 text-amber-600 dark:text-[#d29922]">{{ stats.pendingCount }}</p>
-      </div>
-    </div>
+      </motion.div>
+    </motion.div>
 
     <Payment />
 
@@ -344,10 +366,17 @@ const timeAgo = (date) => {
     </div>
 
     <!-- ORDERS -->
-    <div v-else class="space-y-4">
+    <motion.div
+      v-else
+      :variants="listStagger"
+      initial="hidden"
+      animate="visible"
+      class="space-y-4"
+    >
 
-      <div
+      <motion.div
         v-for="order in filteredOrders" :key="order.id"
+        :variants="listItem"
         class="bg-white dark:bg-[#1A1A1A] border border-gray-100 dark:border-[#D4AF37]/20 rounded-xl overflow-hidden transition hover:shadow-sm"
       >
 
@@ -383,6 +412,9 @@ const timeAgo = (date) => {
           <div class="flex items-center gap-3">
             <span class="px-2.5 py-1 rounded-md text-[10px] font-semibold uppercase tracking-wide leading-none" :class="statusColor(order.status)">
               {{ order.status }}
+            </span>
+            <span v-if="order.payment_method" class="px-2.5 py-1 rounded-md text-[10px] font-semibold uppercase tracking-wide leading-none bg-[#D4AF37]/10 text-[#D4AF37] dark:text-[#D4AF37] border border-[#D4AF37]/20">
+              {{ paymentMethodLabel(order.payment_method) }}
             </span>
             <span class="text-sm font-medium text-[#1A1A1A] dark:text-[#F5F5F5]">${{ order.total }}</span>
           </div>
@@ -518,9 +550,9 @@ const timeAgo = (date) => {
           </div>
         </div>
 
-      </div>
+      </motion.div>
 
-    </div>
+    </motion.div>
 
   </div>
 

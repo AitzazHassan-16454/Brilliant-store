@@ -23,6 +23,7 @@ const form = useForm({
     price: '',
     stock: 0,
     is_active: true,
+    is_trending: false,
     image: null,
     description: '',
 })
@@ -196,6 +197,15 @@ const generateWithAI = async () => {
                         <div class="h-6 w-11 rounded-full bg-[#D4AF37]/10 after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:bg-white peer-checked:bg-[#D4AF37] peer-checked:after:translate-x-full"></div>
                     </label>
                     <span class="text-gray-700 dark:text-[#F5F5F5] font-medium">Active (visible on store)</span>
+                </div>
+
+                <!-- TRENDING -->
+                <div class="flex items-center gap-3">
+                    <label class="relative inline-flex cursor-pointer items-center">
+                        <input type="checkbox" v-model="form.is_trending" class="peer sr-only" />
+                        <div class="h-6 w-11 rounded-full bg-[#D4AF37]/10 after:absolute after:left-[2px] after:top-[2px] after:h-5 after:w-5 after:rounded-full after:bg-white peer-checked:bg-[#D4AF37] peer-checked:after:translate-x-full"></div>
+                    </label>
+                    <span class="text-gray-700 dark:text-[#F5F5F5] font-medium">Trending (featured on homepage)</span>
                 </div>
 
                 <!-- IMAGE -->

@@ -1,6 +1,8 @@
 <script setup>
 import { computed } from "vue"
 import { Link } from "@inertiajs/vue3"
+import { motion } from "motion-v"
+import { motionPresets as m } from "../lib/motion.js"
 
 const props = defineProps({
   category: { type: Object, required: true },
@@ -27,8 +29,12 @@ const imageUrl = computed(() => {
 </script>
 
 <template>
-  <Link :href="`/categories/${category.uid}`"
-    class="group relative block overflow-hidden rounded-2xl border border-border bg-card shadow-luxury transition-luxury hover:border-[#D4AF37]/50 hover:shadow-luxury-hover no-underline">
+  <motion.div
+    :whileHover="{ y: -6, boxShadow: '0 8px 30px rgba(0,0,0,0.12)', transition: m.spring.gentle }"
+    class="h-full"
+  >
+    <Link :href="`/categories/${category.uid}`"
+      class="group relative block h-full overflow-hidden rounded-2xl border border-border bg-card shadow-luxury transition-colors hover:border-[#D4AF37]/50 no-underline">
 
     <div class="aspect-[4/3] relative overflow-hidden">
       <!-- Image background -->
@@ -71,4 +77,5 @@ const imageUrl = computed(() => {
     </div>
 
   </Link>
+  </motion.div>
 </template>

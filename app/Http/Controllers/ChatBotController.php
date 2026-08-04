@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Ai\Agents\OrderSupportAgent;
 use Illuminate\Http\Request;
 use Laravel\Ai\Exceptions\RateLimitedException;
+use Laravel\Ai\Models\Conversation;
+use Laravel\Ai\Models\ConversationMessage;
 use Laravel\Ai\Streaming\Events\TextDelta;
 use Laravel\Ai\Streaming\Events\ToolResult;
 
@@ -127,6 +129,86 @@ class ChatBotController extends Controller
     }
 
     /**
+     * Return the most recent conversation for the authenticated user
+     * so the chat history between the user and the assistant can be restored.
+     */
+    public function history(Request $request)
+    {
+        $user = $request->user();
+
+        if (! $user) {
+            return response()->json([
+                'messages' => [],
+                'conversation_id' => null,
+            ]);
+        }
+
+        $conversation = Conversation::query()
+            ->where('user_id', $user->getAuthIdentifier())
+            ->orderByDesc('updated_at')
+            ->first();
+
+        if (! $conversation) {
+            return response()->json([
+                'messages' => [],
+                'conversation_id' => null,
+            ]);
+        }
+
+        $messages = $conversation->messages()
+            ->where('user_id', $user->getAuthIdentifier())
+            ->orderByDesc('created_at')
+            ->orderByDesc('id')
+            ->limit(50)
+            ->get()
+            ->reverse()
+            ->values()
+            ->map(function (ConversationMessage $record) {
+                if ($record->role === 'user') {
+                    return [
+                        'role' => 'user',
+                        'content' => $record->content,
+                    ];
+                }
+
+                return [
+                    'role' => 'assistant',
+                    'content' => $record->content,
+                    'products' => $this->extractProductsFromToolResults($record->tool_results),
+                ];
+            })
+            ->all();
+
+        return response()->json([
+            'conversation_id' => $conversation->id,
+            'messages' => $messages,
+        ]);
+    }
+
+    /**
+     * Extract product data from stored tool results (assistant messages).
+     */
+    private function extractProductsFromToolResults(array $toolResults): array
+    {
+        $products = [];
+        $validToolNames = ['GetCategoryProducts', 'GetProductInfo', 'GetTrendingProducts'];
+
+        foreach ($toolResults as $toolResult) {
+            if (! is_array($toolResult) || ! in_array($toolResult['name'] ?? null, $validToolNames)) {
+                continue;
+            }
+
+            $decodedData = json_decode((string) ($toolResult['result'] ?? ''), true);
+
+            if (is_array($decodedData) && isset($decodedData['products'])) {
+                $products = array_merge($products, $decodedData['products']);
+            }
+        }
+
+        return $products;
+    }
+
+    /**
      * Extract product data from a tool result event.
      * The AI agent uses tools to look up products, and this method
      * pulls the product information out of the tool's response.
@@ -155,7 +237,7 @@ class ChatBotController extends Controller
 
         // Only extract products from certain tool types
         $toolName = $toolResult->name;
-        $validToolNames = ['GetCategoryProducts', 'GetProductInfo'];
+        $validToolNames = ['GetCategoryProducts', 'GetProductInfo', 'GetTrendingProducts'];
 
         if (in_array($toolName, $validToolNames) && isset($decodedData['products'])) {
             return $decodedData['products'];

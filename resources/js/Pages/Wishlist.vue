@@ -1,7 +1,8 @@
 <script setup>
 import { ref } from "vue"
 import { router, usePage, Head, Link } from "@inertiajs/vue3"
-import { useInView } from "../composables/useInView.js"
+import { motion } from "motion-v"
+import { motionPresets as m, staggerContainer, staggerItem } from "../lib/motion.js"
 import { useAuthModal } from "../composables/useAuthModal.js"
 import { useNotification } from "../composables/useNotification.js"
 
@@ -35,7 +36,8 @@ const addToCart = (product) => {
   })
 }
 
-const { target: contentRef, isInView: contentVisible } = useInView()
+const gridStagger = staggerContainer(0.07, 0.05)
+const gridItem = staggerItem
 </script>
 
 <template>
@@ -44,10 +46,12 @@ const { target: contentRef, isInView: contentVisible } = useInView()
   <meta name="description" content="Your saved favorite products." />
 </Head>
 
-  <div ref="contentRef" class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16">
 
-    <div
-      :class="['transition-all duration-500', contentVisible ? 'animate-fade-in-up' : 'opacity-0']"
+    <motion.div
+      :initial="{ opacity: 0, y: 20 }"
+      :animate="{ opacity: 1, y: 0 }"
+      :transition="{ duration: 0.5, ease: m.easeOutExpo }"
     >
 
       <!-- TITLE -->
@@ -66,12 +70,19 @@ const { target: contentRef, isInView: contentVisible } = useInView()
       </div>
 
       <!-- ITEMS GRID -->
-      <div v-if="wishlistItems.length > 0" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-        <div
-          v-for="(item, index) in wishlistItems"
+      <motion.div
+        v-if="wishlistItems.length > 0"
+        :variants="gridStagger"
+        initial="hidden"
+        animate="visible"
+        class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6"
+      >
+        <motion.div
+          v-for="item in wishlistItems"
           :key="item.id"
-          class="group relative flex h-full flex-col overflow-hidden rounded-2xl md:rounded-lg border border-border bg-card shadow-luxury transition-luxury hover:border-[#D4AF37]/50 hover:shadow-luxury-hover"
-          :style="{ animationDelay: `${Math.min(index * 0.04, 0.4)}s`, animationFillMode: 'both' }"
+          :variants="gridItem"
+          :whileHover="{ y: -6, boxShadow: '0 12px 40px rgba(0,0,0,0.14)', transition: m.spring.gentle }"
+          class="group relative flex h-full flex-col overflow-hidden rounded-2xl md:rounded-lg border border-border bg-card shadow-luxury transition-luxury hover:border-[#D4AF37]/50"
         >
 
           <!-- Image -->
@@ -92,8 +103,11 @@ const { target: contentRef, isInView: contentVisible } = useInView()
             <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-luxury" />
 
             <!-- Remove from wishlist -->
-            <button
+            <motion.button
               @click.prevent="removeFromWishlist(item)"
+              :whilePress="{ scale: 0.85 }"
+              :whileHover="{ rotate: 90, scale: 1.05 }"
+              :transition="m.spring.gentle"
               :class="[
                 'absolute top-2.5 right-2.5 md:top-3 md:right-3 z-10 flex h-9 w-9 items-center justify-center rounded-full border border-border bg-card/95 backdrop-blur-sm shadow-sm transition-luxury hover:bg-red-500 hover:text-white active:scale-90',
                 'translate-y-0 opacity-100 md:translate-y-2 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100'
@@ -101,7 +115,7 @@ const { target: contentRef, isInView: contentVisible } = useInView()
               <svg class="w-4 h-4 fill-red-500 text-red-500" stroke="none" viewBox="0 0 24 24">
                 <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
               </svg>
-            </button>
+            </motion.button>
 
             <!-- Quick view overlay -->
             <div class="absolute inset-x-0 bottom-0 flex justify-center pb-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
@@ -144,11 +158,12 @@ const { target: contentRef, isInView: contentVisible } = useInView()
               <div class="mb-2.5 flex flex-wrap items-baseline gap-x-1.5">
                 <span class="text-base font-bold text-[#D4AF37]">${{ Number(item.product.price).toFixed(2) }}</span>
               </div>
-              <button
+              <motion.button
                 @click="addToCart(item.product)"
                 :disabled="item.product.stock === 0 || isInCart(item.product)"
+                :whilePress="{ scale: 0.96 }"
                 :class="[
-                  'flex h-10 w-full items-center justify-center gap-1.5 rounded-full text-sm font-semibold shadow-sm transition-luxury active:scale-[0.98]',
+                  'flex h-10 w-full items-center justify-center gap-1.5 rounded-full text-sm font-semibold shadow-sm transition-luxury',
                   item.product.stock === 0 || isInCart(item.product)
                     ? 'bg-muted text-muted-foreground cursor-not-allowed'
                     : 'bg-[#D4AF37] text-[#0A0A0A] hover:bg-[#B8941E]'
@@ -160,15 +175,18 @@ const { target: contentRef, isInView: contentVisible } = useInView()
                   <path d="M20 6 9 17l-5-5"/>
                 </svg>
                 {{ item.product.stock === 0 ? 'Sold Out' : isInCart(item.product) ? 'Added' : 'Add to Cart' }}
-              </button>
+              </motion.button>
             </div>
 
             <!-- Desktop: Price + Cart -->
             <div class="mt-auto hidden items-center justify-between md:flex">
               <span class="text-2xl font-bold text-foreground">${{ Number(item.product.price).toFixed(2) }}</span>
-              <button
+              <motion.button
                 @click="addToCart(item.product)"
                 :disabled="item.product.stock === 0 || isInCart(item.product)"
+                :whilePress="{ scale: 0.88 }"
+                :whileHover="{ scale: 1.08 }"
+                :transition="m.spring.snappy"
                 :class="[
                   'flex h-10 w-10 items-center justify-center rounded-full shadow-sm transition-luxury',
                   item.product.stock === 0 || isInCart(item.product)
@@ -181,13 +199,13 @@ const { target: contentRef, isInView: contentVisible } = useInView()
                 <svg v-else class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
                   <path d="M20 6 9 17l-5-5"/>
                 </svg>
-              </button>
+              </motion.button>
             </div>
 
           </div>
 
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
 
       <!-- Empty state -->
       <div v-else class="text-center py-20 sm:py-28 flex flex-col items-center gap-4">
@@ -207,7 +225,7 @@ const { target: contentRef, isInView: contentVisible } = useInView()
         </Link>
       </div>
 
-    </div>
+    </motion.div>
 
   </div>
 </template>
