@@ -45,6 +45,7 @@ const minPrice = ref(props.filters?.min_price || "")
 const maxPrice = ref(props.filters?.max_price || "")
 const sortBy = ref(props.filters?.sortBy || "")
 const selectedSubcategory = ref(props.filters?.subcategory_id || "")
+const perPage = ref(Number(props.filters?.per_page || props.products?.per_page || 12))
 
 const applyFilters = () => {
   router.get(`/categories/${props.category.uid}`, {
@@ -53,6 +54,7 @@ const applyFilters = () => {
     max_price: maxPrice.value,
     sortBy: sortBy.value,
     subcategory_id: selectedSubcategory.value,
+    per_page: perPage.value || undefined,
   }, { preserveState: true, replace: true })
 }
 
@@ -67,6 +69,7 @@ const filterBySubcategory = (subcategoryId) => {
 
 watch(search, debounce(applyFilters, 400))
 watch(sortBy, applyFilters)
+watch(perPage, applyFilters)
 
 const categoryIcons = {
   fashion:     "M20.38 3.46L16 2 12 5.69 8 2l-4.38 1.46a2 2 0 00-1.34 1.89v13.3a2 2 0 002.66 1.89L8 17l4 3.69L16 17l4.38 1.46a2 2 0 002.66-1.89V5.35a2 2 0 00-1.34-1.89z",
@@ -299,13 +302,13 @@ const getCategoryIcon = (name) => categoryIcons[name?.toLowerCase()] || defaultI
             </svg>
           </div>
           <p class="text-gray-500 dark:text-[#A0A0A0] text-sm mb-4">No products in this category yet.</p>
-          <Link href="/" class="inline-flex items-center gap-2 bg-[#D4AF37] dark:bg-[#D4AF37] hover:bg-[#B8960F] dark:hover:bg-[#C9A032] text-white text-sm font-bold px-6 py-3 rounded-xl transition-all no-underline active:scale-95">
+          <Link href="/all-products" class="inline-flex items-center gap-2 bg-[#D4AF37] dark:bg-[#D4AF37] hover:bg-[#B8960F] dark:hover:bg-[#C9A032] text-white text-sm font-bold px-6 py-3 rounded-xl transition-all no-underline active:scale-95">
             Browse All Products
           </Link>
         </motion.div>
 
         <!-- Pagination -->
-        <Pagination v-if="products.data.length" :links="products.links" />
+        <Pagination v-if="products.data.length" :links="products.links" :meta="products" :per-page-options="[8, 12, 24, 48]" item-label="products" />
 
       </div>
 

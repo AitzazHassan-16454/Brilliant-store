@@ -115,18 +115,119 @@ class ProductController extends Controller
     }
 
     /**
+     * Show the public catalog page with all active products across all categories.
+     */
+    public function allProducts(Request $request)
+    {
+        $productQuery = Product::with(['category', 'subcategory'])
+            ->where('is_active', true)
+            ->withCount(['reviews' => function ($query) {
+                $query->where('status', 'approved');
+            }])
+            ->withAvg(['reviews' => function ($query) {
+                $query->where('status', 'approved');
+            }], 'rating');
+
+        // Rank results semantically if a search keyword was entered
+        $semanticIds = null;
+        if ($request->search) {
+            $categoryId = null;
+            if ($request->category && $request->category !== 'All') {
+                $catModel = is_numeric($request->category)
+                    ? Category::find($request->category)
+                    : Category::where('uid', $request->category)->first();
+                $categoryId = $catModel?->id;
+            }
+
+            $semanticIds = app(SemanticSearchService::class)->rankedIds($request->search, $categoryId);
+        }
+
+        if ($semanticIds !== null) {
+            $productQuery->whereIn('id', $semanticIds);
+
+            if (! empty($semanticIds)) {
+                $productQuery->orderByRaw('FIELD(id, '.implode(',', array_map('intval', $semanticIds)).')');
+            }
+        } elseif ($request->search) {
+            $productQuery->where('name', 'like', '%'.$request->search.'%');
+        }
+
+        // Filter by category (by id or uid)
+        if ($request->category && $request->category !== 'All') {
+            if (is_numeric($request->category)) {
+                $productQuery->where('category_id', $request->category);
+            } else {
+                $productQuery->whereHas('category', function ($query) use ($request) {
+                    $query->where('uid', $request->category);
+                });
+            }
+        }
+
+        // Price range filters
+        if ($request->min_price !== null && $request->min_price !== '') {
+            $productQuery->where('price', '>=', $request->min_price);
+        }
+
+        if ($request->max_price !== null && $request->max_price !== '') {
+            $productQuery->where('price', '<=', $request->max_price);
+        }
+
+        // Sort order
+        if ($semanticIds === null) {
+            if ($request->sortBy === 'low-to-high') {
+                $productQuery->orderBy('price', 'asc');
+            } elseif ($request->sortBy === 'high-to-low') {
+                $productQuery->orderBy('price', 'desc');
+            } else {
+                $productQuery->latest();
+            }
+        }
+
+        $cartProductIds = [];
+        $wishlistProductIds = [];
+        if (auth()->check()) {
+            $cartProductIds = Cart::where('user_id', auth()->id())
+                ->pluck('product_id')
+                ->toArray();
+
+            $wishlistProductIds = Wishlist::where('user_id', auth()->id())
+                ->pluck('product_id')
+                ->toArray();
+        }
+
+        $categories = Category::select('id', 'uid', 'name')
+            ->withCount(['products' => function ($query) {
+                $query->where('is_active', true);
+            }])
+            ->get();
+
+        $perPage = max(4, min(100, (int) $request->input('per_page', 12)));
+
+        return Inertia::render('Products/All', [
+            'products' => $productQuery->paginate($perPage)->withQueryString(),
+            'categories' => $categories,
+            'filters' => $request->only(['search', 'category', 'min_price', 'max_price', 'sortBy', 'per_page']),
+            'cartProductIds' => $cartProductIds,
+            'wishlistProductIds' => $wishlistProductIds,
+        ]);
+    }
+
+    /**
      * Admin: Show all products (including inactive ones).
      */
-    public function index()
+    public function index(Request $request)
     {
         // Only allow users with permission to view products
         if (! auth()->user()->can('products.view')) {
             abort(403);
         }
 
+        $perPage = max(5, min(100, (int) $request->input('per_page', 10)));
+
         return Inertia::render('Products/Index', [
-            'products' => Product::with('category')->latest()->paginate(10),
+            'products' => Product::with('category')->latest()->paginate($perPage)->withQueryString(),
             'categories' => Category::select('id', 'uid', 'name')->get(),
+            'filters' => $request->only(['per_page']),
         ]);
     }
 

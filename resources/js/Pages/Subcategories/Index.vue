@@ -232,7 +232,7 @@ const remove = (uid) => {
 
         </div>
 
-        <Pagination :links="subcategories.links" />
+        <Pagination :links="subcategories.links" :meta="subcategories" :per-page-options="[10, 25, 50, 100]" item-label="subcategories" />
 
     </main>
 

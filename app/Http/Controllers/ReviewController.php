@@ -85,17 +85,21 @@ class ReviewController extends Controller
     /**
      * Admin: Show all reviews with pagination.
      */
-    public function index()
+    public function index(Request $request)
     {
         // Only allow users with permission to view reviews
         if (! auth()->user()->can('reviews.view')) {
             abort(403);
         }
 
+        $perPage = max(5, min(100, (int) $request->input('per_page', 15)));
+
         return Inertia::render('Products/Reviews', [
             'reviews' => Review::with('user', 'product')
                 ->latest()
-                ->paginate(15),
+                ->paginate($perPage)
+                ->withQueryString(),
+            'filters' => $request->only(['per_page']),
         ]);
     }
 

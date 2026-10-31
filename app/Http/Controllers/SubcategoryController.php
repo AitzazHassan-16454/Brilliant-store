@@ -27,10 +27,12 @@ class SubcategoryController extends Controller
             $subcategoryQuery->where('category_id', $request->category_id);
         }
 
+        $perPage = max(5, min(100, (int) $request->input('per_page', 10)));
+
         return Inertia::render('Subcategories/Index', [
-            'subcategories' => $subcategoryQuery->paginate(10)->withQueryString(),
+            'subcategories' => $subcategoryQuery->paginate($perPage)->withQueryString(),
             'categories' => Category::select('id', 'uid', 'name')->get(),
-            'filters' => $request->only(['category_id']),
+            'filters' => $request->only(['category_id', 'per_page']),
         ]);
     }
 

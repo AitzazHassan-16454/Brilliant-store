@@ -184,9 +184,9 @@ const toggleTrending = (product) => {
 
           </table>
 
-           <div v-if="products.last_page > 1" class="max-w-7xl mx-auto px-4 sm:px-6 pb-12">
-    <Pagination :links="products.links" />
-  </div>
+          <div v-if="products.data?.length" class="max-w-7xl mx-auto px-4 sm:px-6 pb-12">
+            <Pagination :links="products.links" :meta="products" :per-page-options="[10, 25, 50, 100]" item-label="products" />
+          </div>
 
         </div>
 

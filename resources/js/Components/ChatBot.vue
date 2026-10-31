@@ -1,6 +1,8 @@
 <script setup>
 import { ref, nextTick, onMounted, watch, computed } from "vue";
+import { usePage } from "@inertiajs/vue3";
 
+const page = usePage();
 const isOpen = ref(false);
 const messages = ref([]);
 const input = ref("");
@@ -9,6 +11,11 @@ const conversationId = ref(null);
 const chatRef = ref(null);
 const fileInputRef = ref(null);
 const selectedImage = ref(null);
+
+const isProductDetailPage = computed(() => {
+  const url = page.url || "";
+  return url.startsWith("/products/") || url.startsWith("/product/");
+});
 
 const imagePreview = computed(() => {
   if (!selectedImage.value) return null;
@@ -199,7 +206,10 @@ const clearChat = () => {
         @click="toggle"
       ></div>
     </Transition>
-    <div class="fixed bottom-6 right-6 z-[60] flex flex-col items-end gap-3">
+    <div
+      class="fixed right-6 z-[60] flex flex-col items-end gap-3 transition-all duration-300"
+      :class="isProductDetailPage ? 'bottom-20 md:bottom-6' : 'bottom-6'"
+    >
       <Transition name="chat-slide">
         <div
           v-if="isOpen"

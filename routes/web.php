@@ -22,6 +22,9 @@ use Inertia\Inertia;
 
 Route::get('/', [ProductController::class, 'home'])->name('home');
 
+Route::get('/all-products', [ProductController::class, 'allProducts'])->name('products.all');
+Route::get('/shop', fn () => redirect()->route('products.all'));
+
 Route::get('/login', fn () => redirect('/'))->name('login');
 
 Route::get('/custom-order', [CustomOrderController::class, 'create'])->name('custom-order.create');

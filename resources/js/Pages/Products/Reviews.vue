@@ -1,6 +1,7 @@
 <script setup>
 import { router, Head, Link } from "@inertiajs/vue3";
 import Sidebar from "../components/Sidebar.vue";
+import Pagination from "../components/Pagination.vue";
 
 defineOptions({ layout: false });
 
@@ -158,25 +159,8 @@ const statusColor = (status) => {
         </div>
 
         <!-- PAGINATION -->
-        <div v-if="reviews.last_page > 1" class="px-4 py-3 border-t border-gray-100 dark:border-[#D4AF37]/20 flex items-center justify-between text-xs text-gray-500 dark:text-[#A0A0A0]">
-          <span>
-            Showing {{ reviews.from }} to {{ reviews.to }} of {{ reviews.total }} reviews
-          </span>
-          <div class="flex gap-1">
-            <button
-              v-for="page in reviews.last_page"
-              :key="page"
-              @click="router.get(`/reviews?page=${page}`, {}, { preserveScroll: true })"
-              :class="[
-                'px-2.5 py-1 rounded-lg text-[10px] font-semibold cursor-pointer',
-                page === reviews.current_page
-                  ? 'bg-[#D4AF37] text-white'
-                  : 'bg-gray-100 dark:bg-[#1A1A1A] text-gray-600 dark:text-[#A0A0A0] hover:bg-gray-200 dark:hover:bg-[#30363d]'
-              ]"
-            >
-              {{ page }}
-            </button>
-          </div>
+        <div v-if="reviews.data?.length" class="px-4 py-2 border-t border-gray-100 dark:border-[#D4AF37]/20">
+          <Pagination :links="reviews.links" :meta="reviews" :per-page-options="[10, 15, 25, 50, 100]" item-label="reviews" />
         </div>
 
       </div>

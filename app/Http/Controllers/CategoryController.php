@@ -108,10 +108,12 @@ class CategoryController extends Controller
             ->withCount('products')
             ->get();
 
+        $perPage = max(4, min(100, (int) $request->input('per_page', 12)));
+
         return Inertia::render('Categories/Show', [
             'category' => $category,
-            'products' => $productQuery->paginate(10)->withQueryString(),
-            'filters' => $request->only(['search', 'min_price', 'max_price', 'sortBy', 'subcategory_id']),
+            'products' => $productQuery->paginate($perPage)->withQueryString(),
+            'filters' => $request->only(['search', 'min_price', 'max_price', 'sortBy', 'subcategory_id', 'per_page']),
             'subcategories' => $subcategories,
             'cartProductIds' => $cartProductIds,
             'wishlistProductIds' => $wishlistProductIds,

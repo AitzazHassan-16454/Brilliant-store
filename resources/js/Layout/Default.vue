@@ -98,7 +98,7 @@ const inactiveMobileNavClasses = 'text-[#1A1A1A] dark:text-[#F5F5F5] bg-transpar
 
           <!-- Home -->
           <Link href="/"
-            class="hidden sm:inline-flex items-center justify-center gap-2 px-3 py-2 rounded-xl transition-all duration-200 no-underline"
+            class="hidden lg:inline-flex items-center justify-center gap-2 px-3 py-2 rounded-xl transition-all duration-200 no-underline"
             :class="isActive('/') && !isActive('/dashboard') ? activeNavClasses : inactiveNavClasses"
           >
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -107,9 +107,20 @@ const inactiveMobileNavClasses = 'text-[#1A1A1A] dark:text-[#F5F5F5] bg-transpar
             <span class="text-sm font-semibold">Home</span>
           </Link>
 
+          <!-- Products -->
+          <Link href="/all-products"
+            class="hidden lg:inline-flex items-center justify-center gap-2 px-3 py-2 rounded-xl transition-all duration-200 no-underline"
+            :class="isActive('/all-products') ? activeNavClasses : inactiveNavClasses"
+          >
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+            </svg>
+            <span class="text-sm font-semibold">Products</span>
+          </Link>
+
           <!-- Custom Order -->
           <Link href="/custom-order"
-            class="hidden sm:inline-flex items-center justify-center gap-2 px-3 py-2 rounded-xl transition-all duration-200 no-underline"
+            class="hidden lg:inline-flex items-center justify-center gap-2 px-3 py-2 rounded-xl transition-all duration-200 no-underline"
             :class="isActive('/custom-order') ? activeNavClasses : inactiveNavClasses"
           >
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -120,7 +131,7 @@ const inactiveMobileNavClasses = 'text-[#1A1A1A] dark:text-[#F5F5F5] bg-transpar
 
           <!-- Cart -->
           <Link v-if="page.props.auth.user" href="/cart"
-            class="hidden sm:inline-flex items-center justify-center gap-2 px-3 py-2 rounded-xl transition-all duration-200 no-underline group relative"
+            class="hidden lg:inline-flex items-center justify-center gap-2 px-3 py-2 rounded-xl transition-all duration-200 no-underline group relative"
             :class="isActive('/cart') ? activeNavClasses : inactiveNavClasses"
           >
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -144,7 +155,7 @@ const inactiveMobileNavClasses = 'text-[#1A1A1A] dark:text-[#F5F5F5] bg-transpar
           </Link>
 
           <!-- Profile dropdown -->
-          <div v-if="page.props.auth.user" class="relative hidden sm:block"
+          <div v-if="page.props.auth.user" class="relative hidden lg:block"
             @mouseenter="profileOpen = true"
             @mouseleave="profileOpen = false">
             <button @click.stop="toggleProfile"
@@ -203,7 +214,7 @@ const inactiveMobileNavClasses = 'text-[#1A1A1A] dark:text-[#F5F5F5] bg-transpar
 
           <!-- Admin -->
           <Link v-if="page.props.permissions?.canViewDashboard" href="/dashboard"
-            class="hidden sm:inline-flex items-center gap-2 px-3.5 py-2 text-sm font-semibold rounded-xl transition-all duration-200 no-underline"
+            class="hidden lg:inline-flex items-center gap-2 px-3.5 py-2 text-sm font-semibold rounded-xl transition-all duration-200 no-underline"
             :class="isActive('/dashboard') ? activeNavClasses : inactiveNavClasses"
           >
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -214,14 +225,14 @@ const inactiveMobileNavClasses = 'text-[#1A1A1A] dark:text-[#F5F5F5] bg-transpar
 
           <!-- Logout / Sign In -->
           <Link v-if="page.props.auth.user" href="/logout" method="post" as="button"
-            class="hidden sm:inline-flex items-center justify-center gap-2 px-3 py-2 rounded-xl transition-all duration-200 cursor-pointer border-none text-[#DC2626] dark:text-[#f87171] bg-red-500/6 dark:bg-red-500/10">
+            class="hidden lg:inline-flex items-center justify-center gap-2 px-3 py-2 rounded-xl transition-all duration-200 cursor-pointer border-none text-[#DC2626] dark:text-[#f87171] bg-red-500/6 dark:bg-red-500/10">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/>
             </svg>
             <span class="text-sm font-semibold">Logout</span>
           </Link>
           <button v-else @click="openLogin"
-            class="hidden sm:inline-flex items-center justify-center px-3 py-2 rounded-xl transition-all duration-200 cursor-pointer bg-[#0A0A0A] dark:bg-[#1A1A1A] text-white shadow-sm shadow-[#D4AF37]/10 dark:shadow-[#D4AF37]/10 hover:shadow-md hover:shadow-[#D4AF37]/20 dark:hover:shadow-[#D4AF37]/20">
+            class="hidden lg:inline-flex items-center justify-center px-3 py-2 rounded-xl transition-all duration-200 cursor-pointer bg-[#0A0A0A] dark:bg-[#1A1A1A] text-white shadow-sm shadow-[#D4AF37]/10 dark:shadow-[#D4AF37]/10 hover:shadow-md hover:shadow-[#D4AF37]/20 dark:hover:shadow-[#D4AF37]/20">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/><path d="M17 11l4-4m0 0l-4-4m4 4H9"/>
             </svg>
@@ -229,7 +240,7 @@ const inactiveMobileNavClasses = 'text-[#1A1A1A] dark:text-[#F5F5F5] bg-transpar
 
           <!-- Mobile hamburger -->
           <button @click="mobileOpen = !mobileOpen"
-            class="md:hidden flex flex-col gap-[5px] justify-center items-center w-10 h-10 rounded-xl border border-gray-200 dark:border-[#D4AF37]/20 bg-white dark:bg-[#1A1A1A] hover:shadow-sm hover:shadow-[#D4AF37]/10 dark:hover:shadow-[#D4AF37]/10 transition-shadow">
+            class="lg:hidden flex flex-col gap-[5px] justify-center items-center w-10 h-10 rounded-xl border border-gray-200 dark:border-[#D4AF37]/20 bg-white dark:bg-[#1A1A1A] hover:shadow-sm hover:shadow-[#D4AF37]/10 dark:hover:shadow-[#D4AF37]/10 transition-shadow">
             <span :class="['block w-5 h-[2px] rounded transition-all duration-300', mobileOpen ? 'translate-y-[7px] rotate-45' : '']" class="bg-[#1A1A1A] dark:bg-[#F5F5F5]"></span>
             <span :class="['block w-5 h-[2px] rounded transition-all duration-300', mobileOpen ? 'opacity-0' : '']" class="bg-[#1A1A1A] dark:bg-[#F5F5F5]"></span>
             <span :class="['block w-5 h-[2px] rounded transition-all duration-300', mobileOpen ? '-translate-y-[7px] -rotate-45' : '']" class="bg-[#1A1A1A] dark:bg-[#F5F5F5]"></span>
@@ -245,7 +256,7 @@ const inactiveMobileNavClasses = 'text-[#1A1A1A] dark:text-[#F5F5F5] bg-transpar
           initial="hidden"
           animate="visible"
           exit="exit"
-          class="md:hidden px-4 pt-3 pb-5 flex flex-col gap-2 bg-[rgba(250,247,242,0.95)] dark:bg-[#1A1A1A]/95 backdrop-blur-xl border-t border-gray-200 dark:border-[#D4AF37]/20 overflow-hidden"
+          class="lg:hidden px-4 pt-3 pb-5 flex flex-col gap-2 bg-[rgba(250,247,242,0.95)] dark:bg-[#1A1A1A]/95 backdrop-blur-xl border-t border-gray-200 dark:border-[#D4AF37]/20 overflow-hidden"
         >
 
           <!-- Mobile Theme Toggle -->
@@ -262,6 +273,15 @@ const inactiveMobileNavClasses = 'text-[#1A1A1A] dark:text-[#F5F5F5] bg-transpar
               <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
             </svg>
             Home
+          </Link>
+
+          <Link href="/all-products" @click="mobileOpen=false"
+            class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold no-underline transition-all"
+            :class="isActive('/all-products') ? activeMobileNavClasses : inactiveMobileNavClasses">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+            </svg>
+            Products
           </Link>
 
           <Link href="/custom-order" @click="mobileOpen=false"

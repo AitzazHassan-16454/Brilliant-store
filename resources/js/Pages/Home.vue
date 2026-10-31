@@ -288,6 +288,18 @@ const toggleWishlist = (product) => {
           <motion.h2 :variants="staggerItem" class="text-3xl sm:text-4xl font-bold tracking-tight text-[#1A1A1A] dark:text-[#F5F5F5]">Trending Products</motion.h2>
           <motion.p :variants="staggerItem" class="mt-2 text-base text-[#6B6B6B] dark:text-[#A0A0A0]">A quick look at featured pieces from the live collection.</motion.p>
         </div>
+
+        <motion.div :variants="staggerItem">
+          <Link
+            href="/all-products"
+            class="group inline-flex items-center gap-2 rounded-xl border border-[#D4AF37]/30 bg-white/70 dark:bg-[#1A1A1A]/80 px-4 py-2.5 text-sm font-semibold text-[#1A1A1A] dark:text-[#F5F5F5] backdrop-blur-sm transition-all duration-300 hover:border-[#D4AF37] hover:bg-[#D4AF37]/10 hover:text-[#D4AF37] dark:hover:text-[#D4AF37] shadow-sm hover:shadow-md hover:shadow-[#D4AF37]/10 no-underline"
+          >
+            <span>View all products</span>
+            <svg class="h-4 w-4 text-[#D4AF37] transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+            </svg>
+          </Link>
+        </motion.div>
       </motion.div>
 
       <motion.div
