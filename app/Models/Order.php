@@ -26,7 +26,13 @@ class Order extends Model
         'shipping_city',
         'shipping_postal_code',
         'payment_method',
+        'payment_slip',
+        'payment_slip_uploaded_at',
         'notes',
+    ];
+
+    protected $appends = [
+        'payment_slip_url',
     ];
 
     protected function casts(): array
@@ -35,7 +41,13 @@ class Order extends Model
             'subtotal' => 'decimal:2',
             'total' => 'decimal:2',
             'discount' => 'decimal:2',
+            'payment_slip_uploaded_at' => 'datetime',
         ];
+    }
+
+    public function getPaymentSlipUrlAttribute(): ?string
+    {
+        return $this->payment_slip ? asset('storage/'.$this->payment_slip) : null;
     }
 
     protected static function booted(): void

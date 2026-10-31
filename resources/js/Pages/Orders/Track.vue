@@ -1,5 +1,5 @@
 <script setup>
-import { Link, Head, router } from "@inertiajs/vue3";
+import { Link, Head, router, useForm } from "@inertiajs/vue3";
 import { ref, watch } from "vue";
 import { motion } from "motion-v";
 import { motionPresets as m } from "../../lib/motion.js";
@@ -13,6 +13,61 @@ const props = defineProps({
 const searchCode = ref(props.code || "");
 const searching = ref(false);
 const copied = ref(false);
+const copiedBankField = ref("");
+
+const fileInput = ref(null);
+const filePreview = ref(null);
+const isPdf = ref(false);
+const showUploadSection = ref(false);
+
+const slipForm = useForm({
+  payment_slip: null,
+});
+
+const copyBankDetail = async (text, fieldName) => {
+  try {
+    await navigator.clipboard.writeText(text);
+    copiedBankField.value = fieldName;
+    setTimeout(() => (copiedBankField.value = ""), 1500);
+  } catch {}
+};
+
+const onFileSelected = (e) => {
+  const file = e.target.files?.[0];
+  if (!file) return;
+  slipForm.payment_slip = file;
+  slipForm.clearErrors("payment_slip");
+  isPdf.value = file.type === "application/pdf" || file.name.toLowerCase().endsWith(".pdf");
+
+  if (!isPdf.value && file.type.startsWith("image/")) {
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      filePreview.value = ev.target.result;
+    };
+    reader.readAsDataURL(file);
+  } else {
+    filePreview.value = null;
+  }
+};
+
+const cancelSelectedFile = () => {
+  slipForm.payment_slip = null;
+  filePreview.value = null;
+  isPdf.value = false;
+  if (fileInput.value) fileInput.value.value = "";
+};
+
+const uploadSlip = () => {
+  if (!slipForm.payment_slip || !props.order?.tracking_code) return;
+  slipForm.post(`/track-order/${props.order.tracking_code}/payment-slip`, {
+    preserveScroll: true,
+    forceFormData: true,
+    onSuccess: () => {
+      cancelSelectedFile();
+      showUploadSection.value = false;
+    },
+  });
+};
 
 watch(
   () => props.code,
@@ -217,6 +272,202 @@ const formatTime = (date) => {
             </span>
           </div>
         </div>
+      </div>
+
+      <!-- PAYMENT SLIP / BANK TRANSFER SECTION -->
+      <div
+        v-if="order.payment_method === 'bank_transfer' || order.payment_slip_url"
+        class="bg-white dark:bg-[#1A1A1A] border border-gray-200 dark:border-[#D4AF37]/20 rounded-2xl p-5 sm:p-6"
+      >
+        <div class="flex items-center justify-between gap-3 mb-4">
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-lg bg-[#D4AF37]/15 flex items-center justify-center text-[#D4AF37] shrink-0">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm6 3.75h.008v.008H21v-.008zm0-3h.008v.008H21v-.008zm0-3h.008v.008H21v-.008z"/></svg>
+            </div>
+            <div>
+              <h2 class="text-sm font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">Bank Transfer Payment Verification</h2>
+              <p class="text-xs text-gray-400 dark:text-[#A0A0A0]">Complete payment and attach your receipt to confirm your order.</p>
+            </div>
+          </div>
+
+          <span
+            v-if="order.payment_slip_url"
+            class="px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider shrink-0"
+            :class="order.status === 'pending'
+              ? 'bg-amber-100 text-amber-800 dark:bg-amber-500/10 dark:text-amber-400'
+              : 'bg-emerald-100 text-emerald-800 dark:bg-emerald-500/10 dark:text-emerald-400'"
+          >
+            {{ order.status === 'pending' ? 'Slip Under Review' : 'Payment Verified' }}
+          </span>
+        </div>
+
+        <!-- BANK ACCOUNT INFO CARD -->
+        <div v-if="!order.payment_slip_url || showUploadSection" class="p-4 rounded-xl bg-gray-50 dark:bg-[#0A0A0A] border border-gray-100 dark:border-[#D4AF37]/15 mb-4">
+          <p class="text-xs font-bold uppercase tracking-wider text-[#D4AF37] mb-2">Store Bank Account Details</p>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
+            <div class="flex items-center justify-between p-2 rounded-lg bg-white dark:bg-[#1A1A1A] border border-gray-200/60 dark:border-white/5">
+              <span class="text-gray-400 dark:text-[#A0A0A0]">Bank:</span>
+              <span class="font-semibold text-[#1A1A1A] dark:text-white">Meezan Bank</span>
+            </div>
+            <div class="flex items-center justify-between p-2 rounded-lg bg-white dark:bg-[#1A1A1A] border border-gray-200/60 dark:border-white/5">
+              <span class="text-gray-400 dark:text-[#A0A0A0]">Account Title:</span>
+              <span class="font-semibold text-[#1A1A1A] dark:text-white">Brilliant Store</span>
+            </div>
+            <div class="flex items-center justify-between p-2 rounded-lg bg-white dark:bg-[#1A1A1A] border border-gray-200/60 dark:border-white/5">
+              <span class="text-gray-400 dark:text-[#A0A0A0]">Account No:</span>
+              <div class="flex items-center gap-1.5">
+                <span class="font-mono font-semibold text-[#1A1A1A] dark:text-white">01020103456789</span>
+                <button
+                  type="button"
+                  @click="copyBankDetail('01020103456789', 'acc')"
+                  class="text-[10px] text-[#D4AF37] hover:underline cursor-pointer bg-transparent border-none p-0"
+                >
+                  {{ copiedBankField === 'acc' ? 'Copied' : 'Copy' }}
+                </button>
+              </div>
+            </div>
+            <div class="flex items-center justify-between p-2 rounded-lg bg-white dark:bg-[#1A1A1A] border border-gray-200/60 dark:border-white/5">
+              <span class="text-gray-400 dark:text-[#A0A0A0]">IBAN:</span>
+              <div class="flex items-center gap-1.5">
+                <span class="font-mono font-semibold text-[#1A1A1A] dark:text-white">PK36MEZN01020103456789</span>
+                <button
+                  type="button"
+                  @click="copyBankDetail('PK36MEZN01020103456789', 'iban')"
+                  class="text-[10px] text-[#D4AF37] hover:underline cursor-pointer bg-transparent border-none p-0"
+                >
+                  {{ copiedBankField === 'iban' ? 'Copied' : 'Copy' }}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- UPLOADED SLIP PREVIEW -->
+        <div v-if="order.payment_slip_url && !showUploadSection" class="p-4 rounded-xl border border-gray-100 dark:border-[#D4AF37]/15 bg-gray-50/50 dark:bg-[#0A0A0A]/50 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div class="flex items-center gap-3">
+            <div class="w-12 h-12 rounded-lg overflow-hidden bg-black/5 dark:bg-white/5 flex items-center justify-center shrink-0 border border-gray-200 dark:border-[#D4AF37]/20">
+              <img
+                v-if="order.payment_slip_url.match(/\.(jpg|jpeg|png|webp)$/i)"
+                :src="order.payment_slip_url"
+                alt="Payment Slip"
+                class="w-full h-full object-cover cursor-pointer hover:scale-105 transition"
+                @click="window.open(order.payment_slip_url, '_blank')"
+              />
+              <svg v-else class="w-6 h-6 text-[#D4AF37]" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/>
+              </svg>
+            </div>
+            <div>
+              <p class="text-xs font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">Payment receipt uploaded</p>
+              <p v-if="order.payment_slip_uploaded_at" class="text-[11px] text-gray-400 dark:text-[#A0A0A0] mt-0.5">
+                Uploaded on {{ formatTime(order.payment_slip_uploaded_at) }}
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2 w-full sm:w-auto">
+            <a
+              :href="order.payment_slip_url"
+              target="_blank"
+              class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border border-gray-200 dark:border-[#D4AF37]/20 text-[#1A1A1A] dark:text-[#F5F5F5] hover:bg-gray-100 dark:hover:bg-[#21262d] transition no-underline"
+            >
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 003 8.25v10.5A2.25 2.25 0 005.25 21h10.5A2.25 2.25 0 0018 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25"/></svg>
+              View Document
+            </a>
+            <button
+              v-if="order.status === 'pending'"
+              type="button"
+              @click="showUploadSection = true"
+              class="flex-1 sm:flex-initial px-3 py-1.5 rounded-lg text-xs font-semibold border border-[#D4AF37]/30 text-[#D4AF37] hover:bg-[#D4AF37]/10 transition cursor-pointer bg-transparent"
+            >
+              Re-upload Slip
+            </button>
+          </div>
+        </div>
+
+        <!-- UPLOAD DROPZONE / FORM -->
+        <div v-if="!order.payment_slip_url || showUploadSection" class="mt-2">
+          <form @submit.prevent="uploadSlip" class="space-y-3">
+            <div
+              class="border-2 border-dashed rounded-xl p-5 text-center transition cursor-pointer"
+              :class="filePreview || slipForm.payment_slip
+                ? 'border-[#D4AF37] bg-[#D4AF37]/5'
+                : 'border-gray-200 dark:border-[#D4AF37]/20 hover:border-[#D4AF37]/50 bg-white dark:bg-[#0A0A0A]'"
+              @click="fileInput?.click()"
+            >
+              <input
+                ref="fileInput"
+                type="file"
+                accept="image/jpeg,image/png,image/webp,application/pdf"
+                class="hidden"
+                @change="onFileSelected"
+              />
+
+              <!-- FILE SELECTED PREVIEW -->
+              <div v-if="filePreview || slipForm.payment_slip" class="flex flex-col items-center">
+                <img
+                  v-if="filePreview"
+                  :src="filePreview"
+                  class="max-h-36 rounded-lg shadow-sm border border-gray-200 dark:border-white/10 mb-2 object-contain"
+                />
+                <div v-else class="w-12 h-12 rounded-xl bg-red-500/10 text-red-500 flex items-center justify-center mb-2">
+                  <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg>
+                </div>
+                <p class="text-xs font-semibold text-[#1A1A1A] dark:text-[#F5F5F5] truncate max-w-xs">
+                  {{ slipForm.payment_slip?.name }}
+                </p>
+                <p class="text-[10px] text-gray-400 dark:text-[#A0A0A0] mt-0.5">
+                  {{ (slipForm.payment_slip?.size / (1024 * 1024)).toFixed(2) }} MB
+                </p>
+                <button
+                  type="button"
+                  @click.stop="cancelSelectedFile"
+                  class="mt-2 text-xs font-semibold text-red-500 hover:underline cursor-pointer bg-transparent border-none p-0"
+                >
+                  Choose different file
+                </button>
+              </div>
+
+              <!-- EMPTY DROPZONE -->
+              <div v-else class="flex flex-col items-center">
+                <div class="w-10 h-10 rounded-xl bg-[#D4AF37]/10 flex items-center justify-center text-[#D4AF37] mb-2">
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/></svg>
+                </div>
+                <p class="text-xs font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">
+                  Click or drag and drop your payment receipt
+                </p>
+                <p class="text-[10px] text-gray-400 dark:text-[#A0A0A0] mt-1">
+                  Supports JPG, PNG, WEBP, or PDF (up to 5MB)
+                </p>
+              </div>
+            </div>
+
+            <p v-if="slipForm.errors.payment_slip" class="text-xs font-medium text-red-600">
+              {{ slipForm.errors.payment_slip }}
+            </p>
+
+            <div class="flex items-center gap-2">
+              <button
+                type="submit"
+                :disabled="!slipForm.payment_slip || slipForm.processing"
+                class="flex-1 inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold text-white transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed bg-gradient-to-br from-[#D4AF37] via-[#B8960F] to-[#D4AF37] shadow-md shadow-[#D4AF37]/20 hover:brightness-105"
+              >
+                <svg v-if="slipForm.processing" class="w-3.5 h-3.5 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
+                {{ slipForm.processing ? 'Uploading receipt...' : 'Upload Payment Slip' }}
+              </button>
+
+              <button
+                v-if="order.payment_slip_url && showUploadSection"
+                type="button"
+                @click="showUploadSection = false; cancelSelectedFile()"
+                class="px-4 py-2.5 rounded-xl text-xs font-semibold border border-gray-200 dark:border-[#D4AF37]/20 text-gray-600 dark:text-[#A0A0A0] hover:bg-gray-50 dark:hover:bg-[#21262d] transition cursor-pointer"
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
+
       </div>
 
       <!-- TIMELINE -->

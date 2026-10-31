@@ -14,9 +14,14 @@ export function useAuthModal() {
     isOpen.value = true
   }
 
+  function openForgot() {
+    defaultTab.value = "forgot"
+    isOpen.value = true
+  }
+
   function close() {
     isOpen.value = false
   }
 
-  return { isOpen, defaultTab, openLogin, openRegister, close }
+  return { isOpen, defaultTab, openLogin, openRegister, openForgot, close }
 }

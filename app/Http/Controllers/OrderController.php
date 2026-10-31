@@ -9,6 +9,7 @@ use App\Models\OrderStatusHistory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Throwable;
 
@@ -98,13 +99,19 @@ class OrderController extends Controller
 
         $order->update(['status' => $newStatus]);
 
+        $note = $previousStatus !== $newStatus
+            ? "Status changed from \"{$previousStatus}\" to \"{$newStatus}\""
+            : "Status re-set to \"{$newStatus}\"";
+
+        if ($newStatus === 'confirmed' && $order->payment_slip && $previousStatus !== 'confirmed') {
+            $note = "Payment verified & status changed from \"{$previousStatus}\" to \"confirmed\"";
+        }
+
         OrderStatusHistory::create([
             'order_id' => $order->id,
             'user_id' => auth()->id(),
             'status' => $newStatus,
-            'note' => $previousStatus !== $newStatus
-                ? "Status changed from \"{$previousStatus}\" to \"{$newStatus}\""
-                : "Status re-set to \"{$newStatus}\"",
+            'note' => $note,
         ]);
 
         if ($order->shipping_email) {
@@ -116,5 +123,33 @@ class OrderController extends Controller
         }
 
         return back();
+    }
+
+    /**
+     * Remove an uploaded payment slip from an order.
+     */
+    public function removeSlip($id)
+    {
+        abort_if(! auth()->user()->can('orders.update'), 403);
+
+        $order = Order::findOrFail($id);
+
+        if ($order->payment_slip) {
+            Storage::disk('public')->delete($order->payment_slip);
+
+            $order->update([
+                'payment_slip' => null,
+                'payment_slip_uploaded_at' => null,
+            ]);
+
+            OrderStatusHistory::create([
+                'order_id' => $order->id,
+                'user_id' => auth()->id(),
+                'status' => $order->status,
+                'note' => 'Payment slip removed by admin',
+            ]);
+        }
+
+        return back()->with('success', 'Payment slip removed successfully.');
     }
 }

@@ -1,7 +1,30 @@
 <script setup>
+import { watch } from "vue"
+import { usePage } from "@inertiajs/vue3"
 import { useNotification } from "../composables/useNotification.js"
 
-const { isVisible, message, type, close } = useNotification()
+const page = usePage()
+const { isVisible, message, type, close, success, error } = useNotification()
+
+watch(
+  () => page.props.flash?.success,
+  (val) => {
+    if (val) {
+      success(val)
+    }
+  },
+  { immediate: true }
+)
+
+watch(
+  () => page.props.flash?.error,
+  (val) => {
+    if (val) {
+      error(val)
+    }
+  },
+  { immediate: true }
+)
 </script>
 
 <template>

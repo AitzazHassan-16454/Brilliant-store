@@ -14,6 +14,8 @@ const props = defineProps({
 const deleteId = ref(null);
 const confirmStatus = ref(null);
 const expandedOrder = ref(null);
+const viewingSlipOrder = ref(null);
+const removingSlipId = ref(null);
 const searchQuery = ref("");
 const activeFilter = ref("all");
 const debouncedSearch = ref("");
@@ -76,6 +78,22 @@ const destroy = () => {
   router.delete(`/orders/${deleteId.value}`, {
     preserveScroll: true,
     onFinish: () => (deleteId.value = null),
+  });
+};
+
+const viewSlip = (order) => {
+  viewingSlipOrder.value = order;
+};
+
+const confirmRemoveSlip = (id) => {
+  removingSlipId.value = id;
+};
+
+const removeSlip = () => {
+  if (!removingSlipId.value) return;
+  router.delete(`/orders/${removingSlipId.value}/payment-slip`, {
+    preserveScroll: true,
+    onFinish: () => (removingSlipId.value = null),
   });
 };
 
@@ -243,17 +261,29 @@ const nextStatuses = (current) => ({
                 <div class="min-w-0">
                   <p class="text-sm font-medium text-[#1A1A1A] dark:text-[#F5F5F5] truncate">{{ order.user?.name ||"Guest" }}</p>
                   <p class="text-xs text-gray-400 dark:text-[#A0A0A0]" :title="formatTime(order.created_at)">{{ timeAgo(order.created_at) }}</p>
-                  <p v-if="order.tracking_code" class="mt-1">
-                    <a
-                      :href="`/track-order?code=${order.tracking_code}`"
-                      target="_blank"
-                      class="inline-flex items-center gap-1 font-mono text-[10px] font-semibold tracking-wide text-[#B8960F] dark:text-[#D4AF37] bg-[#D4AF37]/10 border border-[#D4AF37]/25 rounded px-1.5 py-0.5 hover:bg-[#D4AF37]/20 no-underline"
-                      :title="`Open tracking for ${order.tracking_code}`"
+                  <div class="flex items-center gap-2 mt-1 flex-wrap">
+                    <p v-if="order.tracking_code" class="m-0">
+                      <a
+                        :href="`/track-order?code=${order.tracking_code}`"
+                        target="_blank"
+                        class="inline-flex items-center gap-1 font-mono text-[10px] font-semibold tracking-wide text-[#B8960F] dark:text-[#D4AF37] bg-[#D4AF37]/10 border border-[#D4AF37]/25 rounded px-1.5 py-0.5 hover:bg-[#D4AF37]/20 no-underline"
+                        :title="`Open tracking for ${order.tracking_code}`"
+                      >
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12"/></svg>
+                        {{ order.tracking_code }}
+                      </a>
+                    </p>
+                    <button
+                      v-if="order.payment_slip_url"
+                      type="button"
+                      @click="viewSlip(order)"
+                      class="inline-flex items-center gap-1 font-mono text-[10px] font-bold tracking-wide text-[#B8960F] dark:text-[#D4AF37] bg-[#D4AF37]/15 border border-[#D4AF37]/35 rounded px-2 py-0.5 hover:bg-[#D4AF37]/25 transition cursor-pointer"
+                      title="View attached payment receipt"
                     >
-                      <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12"/></svg>
-                      {{ order.tracking_code }}
-                    </a>
-                  </p>
+                      <svg class="w-3 h-3" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M18.375 12.739l-7.693 7.693a4.5 4.5 0 01-6.364-6.364l10.94-10.94A3 3 0 1119.5 7.373L8.557 18.315a1.5 1.5 0 11-2.121-2.121L15.75 6.879"/></svg>
+                      Slip Attached
+                    </button>
+                  </div>
                 </div>
               </div>
               <div class="flex items-center gap-3 shrink-0">
@@ -311,6 +341,15 @@ const nextStatuses = (current) => ({
               </button>
 
               <div class="flex items-center gap-1.5">
+                <button
+                  v-if="order.payment_slip_url"
+                  type="button"
+                  @click="viewSlip(order)"
+                  class="px-2.5 py-1.5 rounded-lg text-xs font-semibold cursor-pointer border border-[#D4AF37]/35 bg-[#D4AF37]/10 text-[#B8960F] dark:text-[#D4AF37] hover:bg-[#D4AF37]/20 flex items-center gap-1"
+                >
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M18.375 12.739l-7.693 7.693a4.5 4.5 0 01-6.364-6.364l10.94-10.94A3 3 0 1119.5 7.373L8.557 18.315a1.5 1.5 0 11-2.121-2.121L15.75 6.879"/></svg>
+                  Review Slip
+                </button>
                 <template v-if="nextStatuses(order.status).length">
                   <button
                     v-for="ns in nextStatuses(order.status)" :key="ns"
@@ -424,6 +463,109 @@ const nextStatuses = (current) => ({
         <button @click="destroy"
           class="flex-1 px-4 py-2.5 rounded-xl text-sm font-bold text-white cursor-pointer bg-red-600 hover:bg-red-700">
           Delete
+        </button>
+      </template>
+    </Modal>
+
+    <!-- VIEW PAYMENT SLIP MODAL -->
+    <Modal :show="!!viewingSlipOrder" @close="viewingSlipOrder = null" max-width="lg">
+      <template #icon>
+        <div class="w-12 h-12 rounded-xl flex items-center justify-center bg-[#D4AF37]/15 text-[#D4AF37]">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M18.375 12.739l-7.693 7.693a4.5 4.5 0 01-6.364-6.364l10.94-10.94A3 3 0 1119.5 7.373L8.557 18.315a1.5 1.5 0 11-2.121-2.121L15.75 6.879"/></svg>
+        </div>
+      </template>
+      <template #title>
+        <h2 class="text-base font-bold text-[#1A1A1A] dark:text-[#F5F5F5]">
+          Payment Slip &bull; Order #{{ viewingSlipOrder?.id }}
+        </h2>
+      </template>
+      <template #description>
+        <p class="text-xs text-gray-500 dark:text-[#A0A0A0]">
+          Tracking: {{ viewingSlipOrder?.tracking_code }} &bull; Customer: {{ viewingSlipOrder?.user?.name || viewingSlipOrder?.shipping_name || 'Guest' }} &bull; Total: ${{ viewingSlipOrder?.total }}
+        </p>
+      </template>
+
+      <div class="mt-4">
+        <div
+          v-if="viewingSlipOrder?.payment_slip_url?.match(/\.(jpg|jpeg|png|webp)$/i)"
+          class="rounded-xl overflow-hidden border border-gray-200 dark:border-[#D4AF37]/20 bg-black/5 dark:bg-black/40 flex items-center justify-center max-h-[55vh]"
+        >
+          <img
+            :src="viewingSlipOrder.payment_slip_url"
+            alt="Payment Receipt"
+            class="max-h-[55vh] w-auto object-contain cursor-pointer"
+            @click="window.open(viewingSlipOrder.payment_slip_url, '_blank')"
+          />
+        </div>
+        <div
+          v-else
+          class="p-8 text-center rounded-xl border border-gray-200 dark:border-[#D4AF37]/20 bg-gray-50 dark:bg-[#0A0A0A]"
+        >
+          <svg class="w-12 h-12 text-[#D4AF37] mx-auto mb-2" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m2.25 0H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/></svg>
+          <p class="text-sm font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">PDF Slip Attached</p>
+        </div>
+
+        <div class="mt-3 flex items-center justify-between text-xs text-gray-400 dark:text-[#A0A0A0]">
+          <span>Uploaded on {{ formatTime(viewingSlipOrder?.payment_slip_uploaded_at) }}</span>
+          <a :href="viewingSlipOrder?.payment_slip_url" target="_blank" class="font-semibold text-[#D4AF37] hover:underline flex items-center gap-1">
+            Open in new tab &rarr;
+          </a>
+        </div>
+      </div>
+
+      <template #actions>
+        <button
+          type="button"
+          @click="confirmRemoveSlip(viewingSlipOrder.id); viewingSlipOrder = null"
+          class="px-3.5 py-2.5 rounded-xl text-xs font-semibold text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition cursor-pointer border border-red-200 dark:border-red-500/20 bg-transparent"
+        >
+          Remove Slip
+        </button>
+        <button
+          v-if="viewingSlipOrder?.status === 'pending'"
+          type="button"
+          @click="requestStatusChange(viewingSlipOrder.id, 'confirmed'); viewingSlipOrder = null"
+          class="flex-1 px-4 py-2.5 rounded-xl text-xs font-bold text-white bg-[#D4AF37] hover:brightness-105 shadow-sm shadow-[#D4AF37]/30 cursor-pointer border-none"
+        >
+          Approve & Mark Confirmed
+        </button>
+        <button
+          type="button"
+          @click="viewingSlipOrder = null"
+          class="px-4 py-2.5 rounded-xl text-xs font-semibold border border-gray-200 dark:border-[#D4AF37]/20 bg-transparent text-gray-700 dark:text-[#F5F5F5] hover:bg-[#FAF7F2] dark:hover:bg-[#21262d] cursor-pointer"
+        >
+          Close
+        </button>
+      </template>
+    </Modal>
+
+    <!-- CONFIRM REMOVE SLIP MODAL -->
+    <Modal :show="!!removingSlipId" @close="removingSlipId = null">
+      <template #icon>
+        <div class="w-12 h-12 rounded-xl flex items-center justify-center bg-red-600/10">
+          <svg class="w-6 h-6" fill="none" stroke="#DC2626" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6m5 0V4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2"/></svg>
+        </div>
+      </template>
+      <template #title>
+        <h2 class="text-base font-bold text-[#1A1A1A] dark:text-[#F5F5F5]">Remove Payment Slip?</h2>
+      </template>
+      <template #description>
+        <p class="text-sm text-gray-500 dark:text-[#A0A0A0]">
+          Are you sure you want to remove this uploaded receipt? The customer will be able to upload a replacement.
+        </p>
+      </template>
+      <template #actions>
+        <button
+          @click="removingSlipId = null"
+          class="flex-1 px-4 py-2.5 rounded-xl text-sm font-semibold cursor-pointer border border-gray-200 dark:border-[#D4AF37]/20 bg-transparent text-gray-700 dark:text-[#F5F5F5] hover:bg-[#FAF7F2] dark:hover:bg-[#21262d]"
+        >
+          Cancel
+        </button>
+        <button
+          @click="removeSlip"
+          class="flex-1 px-4 py-2.5 rounded-xl text-sm font-bold text-white cursor-pointer bg-red-600 hover:bg-red-700"
+        >
+          Remove
         </button>
       </template>
     </Modal>

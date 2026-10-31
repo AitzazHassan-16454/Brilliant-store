@@ -10,6 +10,7 @@ use App\Http\Controllers\CustomOrderController;
 use App\Http\Controllers\FaqController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderTrackingController;
+use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\RoleController;
@@ -33,6 +34,9 @@ Route::get('/products/{product}', [ProductController::class, 'show'])
 Route::get('/track-order', [OrderTrackingController::class, 'show'])
     ->name('track-order');
 
+Route::post('/track-order/{code}/payment-slip', [OrderTrackingController::class, 'uploadSlip'])
+    ->name('track-order.payment-slip');
+
 Route::get('/about', fn () => Inertia::render('About'))->name('about');
 
 Route::get('/categories/{category}', [CategoryController::class, 'show'])
@@ -43,6 +47,20 @@ Route::middleware('guest')->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
 
     Route::post('/login', [AuthController::class, 'login']);
+
+    Route::get('/forgot-password', [PasswordResetController::class, 'create'])
+        ->name('password.request');
+
+    Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLink'])
+        ->middleware('throttle:5,1')
+        ->name('password.email');
+
+    Route::get('/reset-password/{token}', [PasswordResetController::class, 'edit'])
+        ->name('password.reset');
+
+    Route::post('/reset-password', [PasswordResetController::class, 'update'])
+        ->middleware('throttle:5,1')
+        ->name('password.update');
 });
 
 Route::middleware('auth')->group(function () {
@@ -113,6 +131,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/Orders', [OrderController::class, 'adminIndex']);
 
     Route::post('/orders/{id}/status', [OrderController::class, 'updateStatus']);
+
+    Route::delete('/orders/{id}/payment-slip', [OrderController::class, 'removeSlip'])
+        ->name('orders.remove-slip');
 
     Route::get('/dashboard', [ProductController::class, 'dashboard']);
 
