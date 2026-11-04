@@ -181,6 +181,7 @@ const statusColor = (s) => statusMeta(s).bg;
 const statusDot = (s) => statusMeta(s).dot;
 
 const paymentMethodLabel = (method) => ({
+  stripe: "Stripe Card",
   cod: "Cash on Delivery",
   bank_transfer: "Bank Transfer",
   whatsapp: "WhatsApp",

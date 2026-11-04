@@ -42,6 +42,8 @@ Route::post('/track-order/{code}/payment-slip', [OrderTrackingController::class,
 
 Route::get('/about', fn () => Inertia::render('About'))->name('about');
 
+Route::post('/stripe/webhook', [CheckoutController::class, 'webhook'])->name('stripe.webhook');
+
 Route::get('/categories/{category}', [CategoryController::class, 'show'])
     ->name('categories.show');
 
@@ -109,6 +111,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/orders', [OrderController::class, 'index']);
 
     Route::post('/checkout', [CheckoutController::class, 'checkout']);
+    Route::get('/checkout/stripe/success', [CheckoutController::class, 'stripeSuccess'])->name('checkout.stripe.success');
+    Route::get('/checkout/stripe/cancel/{order}', [CheckoutController::class, 'stripeCancel'])->name('checkout.stripe.cancel');
 
     Route::delete('/orders/{id}', [OrderController::class, 'destroy']);
 

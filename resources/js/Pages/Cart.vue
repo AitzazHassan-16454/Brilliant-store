@@ -32,8 +32,9 @@ const shipping = ref({
 
 const shippingErrors = ref({})
 
-const paymentMethod = ref("cod")
+const paymentMethod = ref("stripe")
 const paymentMethods = [
+    { value: "stripe", label: "Credit / Debit Card (Stripe)", description: "Pay securely online with credit or debit card via Stripe." },
     { value: "cod", label: "Cash on Delivery", description: "Pay in cash when your order is delivered." },
     { value: "bank_transfer", label: "Bank Transfer", description: "Pay by bank transfer and share your proof to confirm." },
     { value: "whatsapp", label: "Pay via WhatsApp", description: "Pay through WhatsApp and confirm with our team." },

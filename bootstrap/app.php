@@ -20,6 +20,10 @@ return Application::configure(basePath: dirname(__DIR__))
 
         $middleware->redirectUsersTo(fn () => url('/'));
 
+        $middleware->validateCsrfTokens(except: [
+            'stripe/*',
+        ]);
+
         $middleware->alias([
             'admin' => AdminMiddleware::class,
         ]);

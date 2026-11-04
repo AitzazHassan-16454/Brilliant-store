@@ -26,6 +26,8 @@ class Order extends Model
         'shipping_city',
         'shipping_postal_code',
         'payment_method',
+        'stripe_session_id',
+        'stripe_payment_intent_id',
         'payment_slip',
         'payment_slip_uploaded_at',
         'notes',
