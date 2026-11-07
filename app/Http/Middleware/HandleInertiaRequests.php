@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\BusinessSetting;
 use App\Models\Cart;
 use App\Models\User;
 use App\Models\Wishlist;
@@ -50,6 +51,8 @@ class HandleInertiaRequests extends Middleware
         return array_merge(parent::share($request), [
 
             'csrfToken' => csrf_token(),
+
+            'site' => fn () => BusinessSetting::shared(),
 
             'isFirstLogin' => $user ? ! $user->has_seen_welcome : false,
 

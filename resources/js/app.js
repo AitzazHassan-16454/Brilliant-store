@@ -6,14 +6,13 @@ const pages = import.meta.glob('./Pages/**/*.vue')
 
 
 createInertiaApp({
-    title : (title) => `Brilliant - ${title}`,
+    title : (title) => `${window.__SITE_NAME__ || 'Brilliant'} - ${title}`,
       resolve: async (name) => {
         const page = await pages[`./Pages/${name}.vue`]()
-         page.default.layout =
-        page.default.layout ||
-        (await import('./Layout/Default.vue')).default
-         return page
-       
+        if (page.default.layout === undefined) {
+          page.default.layout = (await import('./Layout/Default.vue')).default
+        }
+        return page
     },
     setup({ el, App, props, plugin }) {
         createApp({ render: () => h(App, props) })

@@ -101,23 +101,23 @@ const remove = (uid) => {
 
     <Sidebar />
 
-    <main class="flex-1 p-8">
+    <main class="flex-1 min-w-0 p-3.5 sm:p-6 lg:p-8 overflow-y-auto">
 
-        <div class="flex items-center justify-between mb-6">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-6">
             <div>
-                <h1 class="text-3xl font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">
+                <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-[#1A1A1A] dark:text-[#F5F5F5]">
                     Subcategories
                 </h1>
-                <p class="text-gray-500 dark:text-[#A0A0A0]">
+                <p class="text-xs sm:text-sm text-gray-500 dark:text-[#A0A0A0] mt-0.5">
                     Manage subcategories for each category
                 </p>
             </div>
         </div>
 
-        <div v-if="can('categories.create') || can('categories.update')" class="flex gap-3 mb-6">
+        <div v-if="can('categories.create') || can('categories.update')" class="flex flex-col sm:flex-row gap-3 mb-6">
             <select
                 v-model="categoryId"
-                class="border px-4 py-2.5 rounded-xl dark:bg-[#1A1A1A] dark:border-[#D4AF37]/20 dark:text-[#F5F5F5] outline-none"
+                class="border border-gray-200 px-4 py-2.5 rounded-xl dark:bg-[#1A1A1A] dark:border-[#D4AF37]/20 dark:text-[#F5F5F5] outline-none text-sm w-full sm:w-56 shrink-0"
             >
                 <option value="">All Categories</option>
                 <option v-for="cat in categories" :key="cat.id" :value="cat.id">
@@ -129,41 +129,44 @@ const remove = (uid) => {
                 v-model="name"
                 type="text"
                 placeholder="Enter subcategory name"
-                class="border px-4 py-2.5 flex-1 rounded-xl dark:bg-[#1A1A1A] dark:border-[#D4AF37]/20 dark:text-[#F5F5F5] outline-none focus:border-gray-400 dark:focus:border-gray-500"
+                class="border border-gray-200 px-4 py-2.5 flex-1 rounded-xl dark:bg-[#1A1A1A] dark:border-[#D4AF37]/20 dark:text-[#F5F5F5] outline-none focus:border-gray-400 dark:focus:border-gray-500 text-sm"
             />
 
             <button
                 @click="save"
-                class="bg-[#D4AF37] hover:bg-[#B8960F] text-white px-5 py-2.5 rounded-xl font-semibold cursor-pointer"
+                class="bg-[#D4AF37] hover:bg-[#B8960F] text-white px-5 py-2.5 rounded-xl font-semibold text-sm cursor-pointer transition shadow-xs w-full sm:w-auto"
             >
-                {{ editingId ? "Update" : "Add" }}
+                {{ editingId ? "Update Subcategory" : "Add Subcategory" }}
             </button>
         </div>
 
-        <div v-if="categoryId" class="mb-4 flex items-center gap-2">
-            <span class="text-sm text-gray-500 dark:text-[#A0A0A0]">Showing subcategories for:</span>
-            <span class="px-3 py-1 bg-[#1a1f36] text-white text-sm font-semibold rounded-full">
+        <div v-if="categoryId" class="mb-4 flex items-center gap-2 flex-wrap">
+            <span class="text-xs sm:text-sm text-gray-500 dark:text-[#A0A0A0]">Showing subcategories for:</span>
+            <span class="px-3 py-1 bg-[#1a1f36] text-white text-xs sm:text-sm font-semibold rounded-full">
                 {{ categories.find(c => c.id == categoryId)?.name }}
             </span>
             <button
                 @click="categoryId = ''"
-                class="text-sm text-gray-400 hover:text-gray-600 dark:text-[#A0A0A0] dark:hover:text-slate-400"
+                class="text-xs sm:text-sm text-gray-400 hover:text-gray-600 dark:text-[#A0A0A0] dark:hover:text-slate-400 underline cursor-pointer"
             >
                 Clear filter
             </button>
         </div>
 
-        <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden dark:bg-[#1A1A1A] dark:border-[#D4AF37]/20">
+        <div class="bg-white border border-gray-200 rounded-2xl shadow-xs overflow-hidden dark:bg-[#1A1A1A] dark:border-[#D4AF37]/20 mb-6">
 
-            <div class="p-5 border-b border-gray-100 dark:border-[#D4AF37]/20">
-                <h3 class="text-lg font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">
+            <div class="p-4 sm:p-5 border-b border-gray-100 dark:border-[#D4AF37]/20 flex items-center justify-between">
+                <h3 class="text-base sm:text-lg font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">
                     Subcategories List
                 </h3>
+                <span class="text-xs text-gray-400 dark:text-[#A0A0A0] lg:hidden">
+                    Scroll horizontally &rarr;
+                </span>
             </div>
 
             <div class="overflow-x-auto">
 
-                <table class="w-full text-sm text-left">
+                <table class="w-full text-sm text-left min-w-[560px]">
 
                     <thead class="bg-[#FAF7F2] dark:bg-[#1A1A1A] text-gray-500 dark:text-[#A0A0A0] uppercase text-xs">
                         <tr>
@@ -200,7 +203,7 @@ const remove = (uid) => {
                                     <button
                                         v-if="can('categories.update')"
                                         @click="edit(sub)"
-                                        class="px-3 py-1.5 bg-[#FAF7F2] dark:bg-[#1A1A1A] rounded-lg hover:bg-yellow-500 hover:text-white dark:hover:bg-yellow-500"
+                                        class="px-3 py-1.5 bg-[#FAF7F2] dark:bg-[#1A1A1A] rounded-lg hover:bg-yellow-500 hover:text-white dark:hover:bg-yellow-500 text-xs font-semibold cursor-pointer"
                                     >
                                         Edit
                                     </button>
@@ -208,7 +211,7 @@ const remove = (uid) => {
                                     <button
                                         v-if="can('categories.delete')"
                                         @click="remove(sub.uid)"
-                                        class="px-3 py-1.5 bg-[#FAF7F2] dark:bg-[#1A1A1A] rounded-lg hover:bg-red-500 hover:text-white dark:hover:bg-red-500"
+                                        class="px-3 py-1.5 bg-[#FAF7F2] dark:bg-[#1A1A1A] rounded-lg hover:bg-red-500 hover:text-white dark:hover:bg-red-500 text-xs font-semibold cursor-pointer"
                                     >
                                         Delete
                                     </button>

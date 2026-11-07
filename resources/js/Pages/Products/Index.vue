@@ -32,20 +32,25 @@ const toggleTrending = (product) => {
     <Sidebar />
 
     <!-- MAIN CONTENT -->
-    <main class="flex-1 p-6 lg:p-8 overflow-x-auto">
+    <main class="flex-1 min-w-0 p-3.5 sm:p-6 lg:p-8 overflow-y-auto">
 
       <!-- HEADER -->
-      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 sm:gap-4 mb-6">
 
-        <h1 class="text-2xl font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">
-          All Products
-        </h1>
+        <div>
+          <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-[#1A1A1A] dark:text-[#F5F5F5]">
+            All Products
+          </h1>
+          <p class="text-xs sm:text-sm text-gray-500 dark:text-[#A0A0A0] mt-0.5">
+            Manage your store's inventory, pricing, and visibility
+          </p>
+        </div>
 
         <div class="flex items-center gap-3">
           <Link
             v-if="can('products.create')"
             href="/CreateProduct"
-            class="px-5 py-2.5 bg-[#D4AF37] hover:bg-[#B8960F] text-white rounded-xl font-semibold shadow-sm"
+            class="w-full sm:w-auto text-center inline-flex items-center justify-center px-4 sm:px-5 py-2.5 bg-[#D4AF37] hover:bg-[#B8960F] text-white rounded-xl text-sm font-semibold shadow-xs transition"
           >
             + Add Product
           </Link>
@@ -54,19 +59,22 @@ const toggleTrending = (product) => {
       </div>
 
       <!-- TABLE CARD -->
-      <div class="bg-white dark:bg-[#1A1A1A] border border-gray-200 dark:border-[#D4AF37]/20 rounded-2xl shadow-sm overflow-hidden">
+      <div class="bg-white dark:bg-[#1A1A1A] border border-gray-200 dark:border-[#D4AF37]/20 rounded-2xl shadow-xs overflow-hidden">
 
         <!-- TITLE -->
-        <div class="p-5 border-b border-gray-100 dark:border-[#D4AF37]/20">
-          <h3 class="text-lg font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">
+        <div class="p-4 sm:p-5 border-b border-gray-100 dark:border-[#D4AF37]/20 flex items-center justify-between">
+          <h3 class="text-base sm:text-lg font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">
             Products List
           </h3>
+          <span class="text-xs text-gray-400 dark:text-[#A0A0A0] lg:hidden">
+            Scroll horizontally &rarr;
+          </span>
         </div>
 
         <!-- TABLE -->
         <div class="overflow-x-auto">
 
-          <table class="w-full text-sm text-left">
+          <table class="w-full text-sm text-left min-w-[760px]">
 
             <!-- HEAD -->
             <thead class="bg-[#FAF7F2] dark:bg-[#1A1A1A] text-gray-500 dark:text-[#A0A0A0] uppercase text-xs">
@@ -95,7 +103,7 @@ const toggleTrending = (product) => {
                 <td class="p-4">
                   <img
                     :src="`/storage/${product.image}`"
-                    class="w-14 h-14 rounded-xl object-cover border border-gray-200 dark:border-[#D4AF37]/20"
+                    class="w-12 h-12 sm:w-14 sm:h-14 rounded-xl object-cover border border-gray-200 dark:border-[#D4AF37]/20"
                   />
                 </td>
 
@@ -184,10 +192,10 @@ const toggleTrending = (product) => {
 
           </table>
 
-          <div v-if="products.data?.length" class="max-w-7xl mx-auto px-4 sm:px-6 pb-12">
-            <Pagination :links="products.links" :meta="products" :per-page-options="[10, 25, 50, 100]" item-label="products" />
-          </div>
+        </div>
 
+        <div v-if="products.data?.length" class="p-4 sm:p-6 border-t border-gray-100 dark:border-[#D4AF37]/20">
+          <Pagination :links="products.links" :meta="products" :per-page-options="[10, 25, 50, 100]" item-label="products" />
         </div>
 
       </div>

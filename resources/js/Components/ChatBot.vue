@@ -207,13 +207,13 @@ const clearChat = () => {
       ></div>
     </Transition>
     <div
-      class="fixed right-6 z-[60] flex flex-col items-end gap-3 transition-all duration-300"
+      class="fixed right-3 sm:right-6 z-[60] flex flex-col items-end gap-3 transition-all duration-300"
       :class="isProductDetailPage ? 'bottom-20 md:bottom-6' : 'bottom-6'"
     >
       <Transition name="chat-slide">
         <div
           v-if="isOpen"
-          class="w-[360px] max-w-[calc(100vw-3rem)] bg-white dark:bg-[#1A1A1A] rounded-2xl shadow-2xl border border-gray-200/70 dark:border-[#D4AF37]/15 overflow-hidden flex flex-col"
+          class="w-[360px] max-w-[calc(100vw-1.5rem)] bg-white dark:bg-[#1A1A1A] rounded-2xl shadow-2xl border border-gray-200/70 dark:border-[#D4AF37]/15 overflow-hidden flex flex-col"
           style="max-height: 450px"
         >
           <div
@@ -316,7 +316,7 @@ const clearChat = () => {
                     v-for="p in msg.products"
                     :key="p.uid"
                     :href="`/products/${p.uid}`"
-                    class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium no-underline transition-all bg-white dark:bg-[#1A1A1A] border border-gray-200 dark:border-[#D4AF37]/15 hover:border-[#D4AF37] dark:hover:border-[#D4AF37] text-gray-700 dark:text-[#F5F5F5] shadow-sm hover:shadow-md"
+                    class="flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-medium no-underline transition-all bg-white dark:bg-[#1A1A1A] border border-gray-200 dark:border-[#D4AF37]/15 hover:border-[#D4AF37] dark:hover:border-[#D4AF37] text-gray-700 dark:text-[#F5F5F5] shadow-sm "
                   >
                     <span class="w-8 h-8 rounded-lg shrink-0 overflow-hidden flex items-center justify-center bg-[#D4AF37]/10 text-[#D4AF37] text-[10px] font-bold">
                       <img
@@ -372,7 +372,7 @@ const clearChat = () => {
               <button
                 @click="send"
                 :disabled="loading || (!input.trim() && !selectedImage)"
-                class="px-3.5 py-2 rounded-xl text-sm font-semibold text-white disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer bg-gradient-to-br from-[#D4AF37] to-[#B8941E] hover:from-[#B8941E] hover:to-[#A3851A] flex items-center justify-center shadow-sm transition-all active:scale-95"
+                class="px-3.5 py-2 rounded-xl text-sm font-semibold text-white disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer bg-gradient-to-br from-[#D4AF37] to-[#B8941E] hover:from-[#B8941E] hover:to-[#A3851A] flex items-center justify-center shadow-sm transition-all "
               >
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
@@ -385,7 +385,7 @@ const clearChat = () => {
 
       <button
         @click="toggle"
-        class="w-14 h-14 rounded-2xl shadow-lg flex items-center justify-center cursor-pointer transition-all duration-200 active:scale-90 bg-gradient-to-br from-[#D4AF37] to-[#B8941E] hover:shadow-xl hover:shadow-[#D4AF37]/30 text-white"
+        class="w-14 h-14 rounded-2xl shadow-lg flex items-center justify-center cursor-pointer transition-all duration-200  bg-gradient-to-br from-[#D4AF37] to-[#B8941E]   text-white"
       >
         <svg
           v-if="!isOpen"

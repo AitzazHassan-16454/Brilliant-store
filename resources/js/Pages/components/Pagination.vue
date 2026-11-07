@@ -306,7 +306,7 @@ const handlePerPageChange = (event) => {
         <nav
             v-if="hasPages"
             aria-label="Pagination Navigation"
-            class="inline-flex items-center gap-0.5 bg-white dark:bg-[#1A1A1A] border border-gray-100 dark:border-[#D4AF37]/20 rounded-xl p-1 shadow-sm shrink-0"
+            class="inline-flex items-center gap-0.5 bg-white dark:bg-[#1A1A1A] border border-gray-100 dark:border-[#D4AF37]/20 rounded-xl p-1 shadow-sm max-w-full overflow-x-auto"
         >
             <!-- Previous Button -->
             <button

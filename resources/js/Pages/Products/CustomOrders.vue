@@ -25,16 +25,16 @@ const formatDate = (d) => new Date(d).toLocaleDateString("en-US", { month: "shor
   <div class="flex min-h-screen bg-[#FAF7F2] dark:bg-[#0A0A0A]">
     <Sidebar />
 
-    <main class="flex-1 p-6 lg:p-10">
-      <div class="mb-8">
-        <h1 class="text-3xl font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">Custom Orders</h1>
-        <p class="text-gray-500 dark:text-[#A0A0A0]">Customer custom order requests</p>
+    <main class="flex-1 min-w-0 p-3.5 sm:p-6 lg:p-8 overflow-y-auto">
+      <div class="mb-6">
+        <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-[#1A1A1A] dark:text-[#F5F5F5]">Custom Orders</h1>
+        <p class="text-xs sm:text-sm text-gray-500 dark:text-[#A0A0A0] mt-0.5">Customer custom order and commission requests</p>
       </div>
 
       <div v-if="customOrders.length === 0"
-        class="bg-white dark:bg-[#1A1A1A] border border-gray-200 dark:border-[#D4AF37]/20 rounded-2xl p-16 text-center">
-        <div class="w-16 h-16 rounded-2xl flex items-center justify-center bg-[#D4AF37]/10 mx-auto mb-4">
-          <svg class="w-8 h-8" fill="none" stroke="#D4AF37" stroke-width="1.5" viewBox="0 0 24 24">
+        class="bg-white dark:bg-[#1A1A1A] border border-gray-200 dark:border-[#D4AF37]/20 rounded-2xl p-12 sm:p-16 text-center">
+        <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center bg-[#D4AF37]/10 mx-auto mb-4">
+          <svg class="w-7 h-7 sm:w-8 sm:h-8" fill="none" stroke="#D4AF37" stroke-width="1.5" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M9.53 16.122a3 3 0 00-5.78 1.128 2.25 2.25 0 01-2.4 2.245 4.5 4.5 0 008.4-2.245c0-.399-.078-.78-.22-1.128zm0 0a15.998 15.998 0 003.388-1.62m-5.043-.025a15.994 15.994 0 011.622-3.395m3.42 3.42a15.995 15.995 0 004.764-4.648l3.876-5.814a1.151 1.151 0 00-1.597-1.597L14.146 6.32a15.996 15.996 0 00-4.649 4.763m3.42 3.42a6.776 6.776 0 00-3.42-3.42"/>
           </svg>
         </div>
@@ -43,26 +43,26 @@ const formatDate = (d) => new Date(d).toLocaleDateString("en-US", { month: "shor
 
       <div v-else class="space-y-4">
         <div v-for="order in customOrders" :key="order.id"
-          class="bg-white dark:bg-[#1A1A1A] border border-gray-200 dark:border-[#D4AF37]/20 rounded-2xl p-5">
-          <div class="flex items-start justify-between gap-4">
+          class="bg-white dark:bg-[#1A1A1A] border border-gray-200 dark:border-[#D4AF37]/20 rounded-2xl p-4 sm:p-5 shadow-xs">
+          <div class="flex items-start justify-between gap-3 flex-wrap sm:flex-nowrap">
             <div class="min-w-0 flex-1">
               <div class="flex items-center gap-2 flex-wrap">
                 <h3 class="text-sm font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">{{ order.name }}</h3>
-                <span class="text-xs text-gray-400 dark:text-[#A0A0A0]">({{ order.email }})</span>
+                <span class="text-xs text-gray-400 dark:text-[#A0A0A0] break-all">({{ order.email }})</span>
               </div>
               <p class="text-xs text-gray-500 dark:text-[#A0A0A0] mt-0.5">{{ order.phone }} &middot; {{ formatDate(order.created_at) }}</p>
             </div>
-            <span :class="['px-2.5 py-1 rounded-full text-xs font-semibold', statusColor(order.status)]">
+            <span :class="['px-2.5 py-1 rounded-full text-xs font-semibold capitalize shrink-0', statusColor(order.status)]">
               {{ order.status.replace("_", " ") }}
             </span>
           </div>
-          <p class="text-sm text-[#1A1A1A] dark:text-[#F5F5F5] mt-3 whitespace-pre-wrap">{{ order.description }}</p>
+          <p class="text-sm text-[#1A1A1A] dark:text-[#F5F5F5] mt-3 whitespace-pre-wrap leading-relaxed">{{ order.description }}</p>
           <div v-if="order.reference_image" class="mt-3">
-            <img :src="'/storage/' + order.reference_image" class="w-32 h-32 object-cover rounded-lg border border-gray-200 dark:border-[#D4AF37]/20" />
+            <img :src="'/storage/' + order.reference_image" class="w-28 h-28 sm:w-36 sm:h-36 object-cover rounded-xl border border-gray-200 dark:border-[#D4AF37]/20" />
           </div>
-          <div v-if="order.budget_min || order.budget_max" class="mt-3 flex items-center gap-4 text-xs text-gray-500 dark:text-[#A0A0A0]">
+          <div v-if="order.budget_min || order.budget_max || order.desired_date" class="mt-3 flex items-center gap-4 text-xs text-gray-500 dark:text-[#A0A0A0] flex-wrap">
             <span v-if="order.budget_min">Budget: ${{ order.budget_min }} &ndash; ${{ order.budget_max || "—" }}</span>
-            <span v-if="order.desired_date">By {{ formatDate(order.desired_date) }}</span>
+            <span v-if="order.desired_date">Desired by: {{ formatDate(order.desired_date) }}</span>
           </div>
         </div>
       </div>

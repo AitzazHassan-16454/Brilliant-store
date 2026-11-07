@@ -112,7 +112,7 @@ const answerVariants = {
         </p>
         <div class="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
           <a href="/custom-order"
-            class="inline-flex items-center justify-center gap-2 rounded-2xl px-6 py-3 text-sm font-semibold text-white bg-[#D4AF37] hover:bg-[#B8960F] transition-all active:scale-95">
+            class="inline-flex items-center justify-center gap-2 rounded-2xl px-6 py-3 text-sm font-semibold text-white bg-[#D4AF37] hover:bg-[#B8960F] transition-all ">
             Place a Custom Order
           </a>
         </div>

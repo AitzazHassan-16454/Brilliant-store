@@ -39,27 +39,34 @@ const statusColor = (status) => {
 
     <Sidebar />
 
-    <main class="flex-1 p-6 lg:p-10 overflow-x-hidden">
+    <main class="flex-1 min-w-0 p-3.5 sm:p-6 lg:p-8 overflow-y-auto">
 
       <!-- HEADER -->
-      <div class="flex items-center justify-between mb-6">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-6">
         <div>
-          <h1 class="text-2xl font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">Reviews Management</h1>
-          <p class="text-gray-500 dark:text-[#A0A0A0] text-sm">Approve or reject customer product reviews</p>
+          <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-[#1A1A1A] dark:text-[#F5F5F5]">Reviews Management</h1>
+          <p class="text-xs sm:text-sm text-gray-500 dark:text-[#A0A0A0] mt-0.5">Approve, moderate, or reject customer product reviews</p>
         </div>
       </div>
 
       <!-- EMPTY -->
       <div v-if="reviews.data.length === 0"
-        class="bg-white dark:bg-[#1A1A1A] p-10 rounded-2xl text-center text-gray-500 dark:text-[#A0A0A0] shadow-sm border border-gray-200 dark:border-[#D4AF37]/20">
+        class="bg-white dark:bg-[#1A1A1A] p-12 rounded-2xl text-center text-gray-500 dark:text-[#A0A0A0] shadow-xs border border-gray-200 dark:border-[#D4AF37]/20">
         No reviews found
       </div>
 
       <!-- REVIEWS TABLE -->
-      <div v-else class="bg-white dark:bg-[#1A1A1A] rounded-2xl border border-gray-100 dark:border-[#D4AF37]/20 shadow-sm overflow-hidden">
+      <div v-else class="bg-white dark:bg-[#1A1A1A] rounded-2xl border border-gray-200 dark:border-[#D4AF37]/20 shadow-xs overflow-hidden">
+
+        <div class="p-4 sm:p-5 border-b border-gray-100 dark:border-[#D4AF37]/20 flex items-center justify-between">
+          <h3 class="text-base sm:text-lg font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">All Customer Reviews</h3>
+          <span class="text-xs text-gray-400 dark:text-[#A0A0A0] lg:hidden">
+            Scroll horizontally &rarr;
+          </span>
+        </div>
 
         <div class="overflow-x-auto">
-          <table class="w-full text-xs text-left">
+          <table class="w-full text-xs text-left min-w-[720px]">
 
             <thead class="bg-[#FAF7F2] dark:bg-[#1A1A1A] text-gray-500 dark:text-[#A0A0A0] uppercase text-[10px]">
               <tr>
@@ -129,7 +136,7 @@ const statusColor = (status) => {
                     <button
                       v-if="review.status !== 'approved'"
                       @click="changeStatus(review.id, 'approve')"
-                      class="px-2 py-1 rounded-lg bg-green-500 hover:bg-green-600 text-white text-[10px] font-semibold cursor-pointer"
+                      class="px-2 py-1 rounded-lg bg-green-500 hover:bg-green-600 text-white text-[10px] font-semibold cursor-pointer transition"
                     >
                       Approve
                     </button>
@@ -137,14 +144,14 @@ const statusColor = (status) => {
                     <button
                       v-if="review.status !== 'rejected'"
                       @click="changeStatus(review.id, 'reject')"
-                      class="px-2 py-1 rounded-lg bg-yellow-500 hover:bg-yellow-600 text-white text-[10px] font-semibold cursor-pointer"
+                      class="px-2 py-1 rounded-lg bg-yellow-500 hover:bg-yellow-600 text-white text-[10px] font-semibold cursor-pointer transition"
                     >
                       Reject
                     </button>
 
                     <button
                       @click="deleteReview(review.id)"
-                      class="px-2 py-1 rounded-lg bg-red-500 hover:bg-red-600 text-white text-[10px] font-semibold cursor-pointer"
+                      class="px-2 py-1 rounded-lg bg-red-500 hover:bg-red-600 text-white text-[10px] font-semibold cursor-pointer transition"
                     >
                       Delete
                     </button>
@@ -159,7 +166,7 @@ const statusColor = (status) => {
         </div>
 
         <!-- PAGINATION -->
-        <div v-if="reviews.data?.length" class="px-4 py-2 border-t border-gray-100 dark:border-[#D4AF37]/20">
+        <div v-if="reviews.data?.length" class="px-4 py-3 border-t border-gray-100 dark:border-[#D4AF37]/20">
           <Pagination :links="reviews.links" :meta="reviews" :per-page-options="[10, 15, 25, 50, 100]" item-label="reviews" />
         </div>
 

@@ -105,62 +105,65 @@ const submit = () => {
     <div class="flex min-h-screen bg-[#FAF7F2] dark:bg-[#0A0A0A]">
         <Sidebar />
 
-        <main class="flex-1 p-8">
-            <div class="flex items-center justify-between mb-8">
+        <main class="flex-1 min-w-0 p-3.5 sm:p-6 lg:p-8 overflow-y-auto">
+            <div class="flex items-center justify-between mb-6 sm:mb-8">
                 <div>
-                    <h2 class="text-3xl font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">Edit Role</h2>
-                    <p class="text-gray-500 dark:text-[#A0A0A0] mt-2">Update role information and permissions</p>
+                    <h2 class="text-xl sm:text-3xl font-bold tracking-tight text-[#1A1A1A] dark:text-[#F5F5F5]">Edit Role</h2>
+                    <p class="text-xs sm:text-sm text-gray-500 dark:text-[#A0A0A0] mt-1">Update role details and granular module permissions</p>
                 </div>
             </div>
 
-            <div class="bg-white border border-gray-200 rounded-2xl shadow-sm p-8 max-w-5xl dark:bg-[#1A1A1A] dark:border-[#D4AF37]/20">
-                <form @submit.prevent="submit" class="space-y-8">
+            <div class="bg-white border border-gray-200 rounded-2xl shadow-xs p-4 sm:p-6 lg:p-8 max-w-5xl dark:bg-[#1A1A1A] dark:border-[#D4AF37]/20">
+                <form @submit.prevent="submit" class="space-y-6 sm:space-y-8">
                     <div>
-                        <label class="block text-gray-700 dark:text-[#F5F5F5] font-medium mb-2">
+                        <label class="block text-sm font-semibold text-gray-700 dark:text-[#F5F5F5] mb-2">
                             Role Name <span class="text-red-500">*</span>
                         </label>
                         <input
                             type="text"
                             v-model="form.name"
                             placeholder="Enter role name (e.g., Editor, Manager)"
-                            class="w-full border rounded-xl px-4 py-3 outline-none focus:border-gray-400 dark:focus:border-gray-500 dark:bg-[#1A1A1A] dark:border-[#D4AF37]/20 dark:text-[#F5F5F5]"
+                            class="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-[#D4AF37] dark:bg-[#0A0A0A] dark:border-[#D4AF37]/20 dark:text-[#F5F5F5] transition"
                         />
-                        <p v-if="form.errors.name" class="text-red-500 text-sm mt-1">
+                        <p v-if="form.errors.name" class="text-red-500 text-xs mt-1.5">
                             {{ form.errors.name }}
                         </p>
                     </div>
 
                     <div>
-                        <div class="flex justify-between items-center mb-6">
-                            <h3 class="text-lg font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">Permissions</h3>
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 sm:mb-6">
+                            <div>
+                                <h3 class="text-base sm:text-lg font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">Permissions</h3>
+                                <p class="text-xs text-gray-400 dark:text-[#A0A0A0]">Toggle all permissions or select by category</p>
+                            </div>
                             <button
                                 type="button"
                                 @click="toggleAllPermissions"
-                                class="px-4 py-2 text-sm font-semibold text-white bg-[#D4AF37] hover:bg-[#B8960F] rounded-xl cursor-pointer"
+                                class="self-start sm:self-auto px-4 py-2 text-xs font-semibold text-white bg-[#D4AF37] hover:bg-[#B8960F] rounded-xl cursor-pointer transition shadow-xs"
                             >
-                                {{ areAllPermissionsSelected ? 'Deselect All' : 'Select All' }}
+                                {{ areAllPermissionsSelected ? 'Deselect All' : 'Select All Permissions' }}
                             </button>
                         </div>
 
-                        <div class="grid gap-6">
+                        <div class="grid gap-4 sm:gap-6">
                             <div
                                 v-for="module in groupedPermissions"
                                 :key="module.name"
-                                class="border border-gray-200 rounded-lg p-6 bg-[#FAF7F2] dark:border-[#D4AF37]/20 dark:bg-[#1A1A1A]"
+                                class="border border-gray-200 rounded-xl p-4 sm:p-5 bg-[#FAF7F2] dark:border-[#D4AF37]/20 dark:bg-[#0A0A0A]"
                             >
-                                <div class="flex items-center mb-4 pb-4 border-b border-gray-200 dark:border-[#D4AF37]/20">
+                                <div class="flex items-center mb-3 sm:mb-4 pb-3 border-b border-gray-200 dark:border-[#D4AF37]/20">
                                     <input
                                         type="checkbox"
                                         :checked="isModuleFullySelected(module.name)"
                                         @change="toggleModulePermissions(module.name)"
-                                        class="w-5 h-5 rounded border-gray-200 cursor-pointer"
+                                        class="w-4 h-4 sm:w-5 sm:h-5 rounded border-gray-300 cursor-pointer text-[#D4AF37]"
                                     />
-                                    <label class="ml-3 text-lg font-semibold text-[#1A1A1A] dark:text-[#F5F5F5] cursor-pointer">
+                                    <label class="ml-2.5 sm:ml-3 text-sm sm:text-base font-semibold text-[#1A1A1A] dark:text-[#F5F5F5] cursor-pointer">
                                         {{ module.display_name }}
                                     </label>
                                 </div>
 
-                                <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-3">
                                     <div
                                         v-for="permission in module.permissions"
                                         :key="permission.id"
@@ -172,11 +175,11 @@ const submit = () => {
                                             :value="permission.id"
                                             :checked="form.permissions.includes(permission.id)"
                                             @change="togglePermission(permission.id)"
-                                            class="w-4 h-4 rounded border-gray-200 cursor-pointer"
+                                            class="w-4 h-4 rounded border-gray-300 cursor-pointer text-[#D4AF37]"
                                         />
                                         <label
                                             :for="`permission-${permission.id}`"
-                                            class="ml-2 text-sm text-gray-700 dark:text-[#F5F5F5] cursor-pointer hover:text-[#1A1A1A] dark:hover:text-[#c9d1d9]"
+                                            class="ml-2 text-xs sm:text-sm text-gray-700 dark:text-[#F5F5F5] cursor-pointer hover:text-[#1A1A1A] dark:hover:text-[#c9d1d9]"
                                         >
                                             {{ permission.display_name }}
                                         </label>
@@ -185,22 +188,22 @@ const submit = () => {
                             </div>
                         </div>
 
-                        <p v-if="form.errors.permissions" class="text-red-500 text-sm mt-2">
+                        <p v-if="form.errors.permissions" class="text-red-500 text-xs mt-2">
                             {{ form.errors.permissions }}
                         </p>
                     </div>
 
-                    <div class="flex gap-3 pt-4 border-t border-gray-200 dark:border-[#D4AF37]/20">
+                    <div class="flex flex-col sm:flex-row gap-3 pt-4 border-t border-gray-200 dark:border-[#D4AF37]/20">
                         <button
                             type="submit"
                             :disabled="form.processing"
-                            class="px-6 py-2.5 bg-[#D4AF37] hover:bg-[#B8960F] text-white rounded-xl font-semibold disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
+                            class="w-full sm:w-auto inline-flex items-center justify-center px-6 py-2.5 bg-[#D4AF37] hover:bg-[#B8960F] text-white rounded-xl text-sm font-semibold disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer transition shadow-xs"
                         >
                             {{ form.processing ? 'Updating...' : 'Update Role' }}
                         </button>
                         <Link
                             href="/roles"
-                            class="px-6 py-2.5 border border-gray-200 rounded-xl text-gray-700 hover:bg-[#FAF7F2] font-medium dark:border-[#D4AF37]/20 dark:text-[#F5F5F5] dark:hover:bg-[#21262d]"
+                            class="w-full sm:w-auto inline-flex items-center justify-center px-6 py-2.5 border border-gray-200 rounded-xl text-gray-700 hover:bg-[#FAF7F2] text-sm font-semibold dark:border-[#D4AF37]/20 dark:text-[#F5F5F5] dark:hover:bg-[#21262d] transition"
                         >
                             Cancel
                         </Link>

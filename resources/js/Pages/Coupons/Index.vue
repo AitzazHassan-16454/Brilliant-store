@@ -103,86 +103,89 @@ const statusLabel = (coupon) => {
 <div class="flex min-h-screen bg-[#FAF7F2] dark:bg-[#0A0A0A]">
   <Sidebar />
 
-  <main class="flex-1 p-8">
+  <main class="flex-1 min-w-0 p-3.5 sm:p-6 lg:p-8 overflow-y-auto">
 
-    <div class="flex items-center justify-between mb-6">
+    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-6">
       <div>
-        <h1 class="text-3xl font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">Coupons</h1>
-        <p class="text-gray-500 dark:text-[#A0A0A0]">Manage discount codes</p>
+        <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-[#1A1A1A] dark:text-[#F5F5F5]">Coupons</h1>
+        <p class="text-xs sm:text-sm text-gray-500 dark:text-[#A0A0A0] mt-0.5">Manage store promotional discount codes</p>
       </div>
     </div>
 
     <div v-if="$page.props.flash?.success"
-      class="mb-5 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg text-sm font-medium flex items-center gap-2 dark:bg-[#3fb950]/10 dark:border-green-800 dark:text-[#3fb950]">
+      class="mb-5 bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-xl text-sm font-medium flex items-center gap-2 dark:bg-[#3fb950]/10 dark:border-green-800 dark:text-[#3fb950]">
       {{ $page.props.flash.success }}
     </div>
 
-    <div v-if="can('coupons.create') || can('coupons.update')" class="bg-white border border-gray-200 rounded-lg p-6 mb-6 shadow-sm dark:bg-[#1A1A1A] dark:border-[#D4AF37]/20">
-      <h3 class="text-sm font-semibold uppercase tracking-wider text-[#1A1A1A] dark:text-[#F5F5F5] mb-4">
+    <div v-if="can('coupons.create') || can('coupons.update')" class="bg-white border border-gray-200 rounded-2xl p-4 sm:p-6 mb-6 shadow-xs dark:bg-[#1A1A1A] dark:border-[#D4AF37]/20">
+      <h3 class="text-sm font-bold uppercase tracking-wider text-[#1A1A1A] dark:text-[#F5F5F5] mb-4">
         {{ editingId ? "Edit Coupon" : "Create Coupon" }}
       </h3>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 sm:gap-4">
         <div>
-          <label class="block text-xs font-semibold text-gray-500 dark:text-[#A0A0A0] mb-1">Code</label>
+          <label class="block text-xs font-semibold text-gray-600 dark:text-[#A0A0A0] mb-1.5">Code</label>
           <input v-model="form.code" type="text" placeholder="e.g. SUMMER20"
-            class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm outline-none dark:bg-[#1A1A1A] dark:border-[#D4AF37]/20 dark:text-[#F5F5F5]" />
+            class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none dark:bg-[#0A0A0A] dark:border-[#D4AF37]/20 dark:text-[#F5F5F5] uppercase tracking-wider font-mono focus:border-[#D4AF37]" />
         </div>
         <div>
-          <label class="block text-xs font-semibold text-gray-500 dark:text-[#A0A0A0] mb-1">Type</label>
+          <label class="block text-xs font-semibold text-gray-600 dark:text-[#A0A0A0] mb-1.5">Type</label>
           <select v-model="form.type"
-            class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm outline-none dark:bg-[#1A1A1A] dark:border-[#D4AF37]/20 dark:text-[#F5F5F5]">
+            class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none dark:bg-[#0A0A0A] dark:border-[#D4AF37]/20 dark:text-[#F5F5F5] focus:border-[#D4AF37]">
             <option value="percentage">Percentage (%)</option>
             <option value="fixed">Fixed ($)</option>
           </select>
         </div>
         <div>
-          <label class="block text-xs font-semibold text-gray-500 dark:text-[#A0A0A0] mb-1">Value</label>
+          <label class="block text-xs font-semibold text-gray-600 dark:text-[#A0A0A0] mb-1.5">Discount Value</label>
           <input v-model="form.value" type="number" step="0.01" min="0.01" placeholder="0.00"
-            class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm outline-none dark:bg-[#1A1A1A] dark:border-[#D4AF37]/20 dark:text-[#F5F5F5]" />
+            class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none dark:bg-[#0A0A0A] dark:border-[#D4AF37]/20 dark:text-[#F5F5F5] focus:border-[#D4AF37]" />
         </div>
         <div>
-          <label class="block text-xs font-semibold text-gray-500 dark:text-[#A0A0A0] mb-1">Min Order ($)</label>
+          <label class="block text-xs font-semibold text-gray-600 dark:text-[#A0A0A0] mb-1.5">Min Order ($)</label>
           <input v-model="form.min_order" type="number" step="0.01" min="0" placeholder="0"
-            class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm outline-none dark:bg-[#1A1A1A] dark:border-[#D4AF37]/20 dark:text-[#F5F5F5]" />
+            class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none dark:bg-[#0A0A0A] dark:border-[#D4AF37]/20 dark:text-[#F5F5F5] focus:border-[#D4AF37]" />
         </div>
         <div>
-          <label class="block text-xs font-semibold text-gray-500 dark:text-[#A0A0A0] mb-1">Max Uses</label>
+          <label class="block text-xs font-semibold text-gray-600 dark:text-[#A0A0A0] mb-1.5">Max Uses</label>
           <input v-model="form.max_uses" type="number" min="1" placeholder="Unlimited"
-            class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm outline-none dark:bg-[#1A1A1A] dark:border-[#D4AF37]/20 dark:text-[#F5F5F5]" />
+            class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none dark:bg-[#0A0A0A] dark:border-[#D4AF37]/20 dark:text-[#F5F5F5] focus:border-[#D4AF37]" />
         </div>
         <div>
-          <label class="block text-xs font-semibold text-gray-500 dark:text-[#A0A0A0] mb-1">Expires At</label>
+          <label class="block text-xs font-semibold text-gray-600 dark:text-[#A0A0A0] mb-1.5">Expires At</label>
           <input v-model="form.expires_at" type="date"
-            class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm outline-none dark:bg-[#1A1A1A] dark:border-[#D4AF37]/20 dark:text-[#F5F5F5]" />
+            class="w-full border border-gray-200 rounded-xl px-4 py-2.5 text-sm outline-none dark:bg-[#0A0A0A] dark:border-[#D4AF37]/20 dark:text-[#F5F5F5] focus:border-[#D4AF37]" />
         </div>
-        <div class="flex items-end gap-3">
+        <div class="flex items-end pb-2">
           <label class="flex items-center gap-2 cursor-pointer">
-            <input v-model="form.active" type="checkbox" class="w-4 h-4 rounded border-gray-200" />
-            <span class="text-sm font-medium text-gray-700 dark:text-[#F5F5F5]">Active</span>
+            <input v-model="form.active" type="checkbox" class="w-4 h-4 rounded border-gray-200 cursor-pointer" />
+            <span class="text-sm font-semibold text-gray-700 dark:text-[#F5F5F5]">Active Coupon</span>
           </label>
         </div>
       </div>
 
-      <div class="flex gap-2 mt-4">
+      <div class="flex flex-wrap gap-2.5 mt-5">
         <button @click="save"
-          class="px-5 py-2.5 bg-[#D4AF37] hover:bg-[#B8960F] text-white text-sm font-semibold rounded-lg">
-          {{ editingId ? "Update" : "Create" }}
+          class="px-5 py-2.5 bg-[#D4AF37] hover:bg-[#B8960F] text-white text-sm font-semibold rounded-xl transition cursor-pointer shadow-xs">
+          {{ editingId ? "Update Coupon" : "Create Coupon" }}
         </button>
         <button v-if="editingId" @click="reset"
-          class="px-5 py-2.5 border border-gray-200 text-gray-600 text-sm font-semibold rounded-lg hover:bg-[#FAF7F2] dark:border-[#D4AF37]/20 dark:text-[#A0A0A0] dark:hover:bg-[#21262d]">
+          class="px-5 py-2.5 border border-gray-200 text-gray-600 text-sm font-semibold rounded-xl hover:bg-[#FAF7F2] dark:border-[#D4AF37]/20 dark:text-[#A0A0A0] dark:hover:bg-[#21262d] transition cursor-pointer">
           Cancel
         </button>
       </div>
     </div>
 
-    <div class="bg-white border border-gray-200 rounded-lg shadow-sm overflow-hidden dark:bg-[#1A1A1A] dark:border-[#D4AF37]/20">
-      <div class="p-5 border-b border-gray-100 dark:border-[#D4AF37]/20">
-        <h3 class="text-lg font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">All Coupons</h3>
+    <div class="bg-white border border-gray-200 rounded-2xl shadow-xs overflow-hidden dark:bg-[#1A1A1A] dark:border-[#D4AF37]/20">
+      <div class="p-4 sm:p-5 border-b border-gray-100 dark:border-[#D4AF37]/20 flex items-center justify-between">
+        <h3 class="text-base sm:text-lg font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">All Coupons</h3>
+        <span class="text-xs text-gray-400 dark:text-[#A0A0A0] lg:hidden">
+          Scroll horizontally &rarr;
+        </span>
       </div>
 
       <div class="overflow-x-auto">
-        <table class="w-full text-sm text-left">
+        <table class="w-full text-sm text-left min-w-[700px]">
           <thead class="bg-[#FAF7F2] dark:bg-[#1A1A1A] text-gray-500 dark:text-[#A0A0A0] uppercase text-xs">
             <tr>
               <th class="p-4">Code</th>
@@ -218,11 +221,11 @@ const statusLabel = (coupon) => {
               <td v-if="can('coupons.update') || can('coupons.delete')" class="p-4">
                 <div class="flex justify-center gap-2">
                   <button v-if="can('coupons.update')" @click="edit(coupon)"
-                    class="px-3 py-1.5 bg-[#FAF7F2] dark:bg-[#1A1A1A] rounded-lg hover:bg-yellow-500 hover:text-white dark:hover:bg-yellow-500 text-xs font-semibold">
+                    class="px-3 py-1.5 bg-[#FAF7F2] dark:bg-[#0A0A0A] rounded-lg hover:bg-yellow-500 hover:text-white dark:hover:bg-yellow-500 text-xs font-semibold cursor-pointer">
                     Edit
                   </button>
                   <button v-if="can('coupons.delete')" @click="remove(coupon.id)"
-                    class="px-3 py-1.5 bg-[#FAF7F2] dark:bg-[#1A1A1A] rounded-lg hover:bg-red-500 hover:text-white dark:hover:bg-red-500 text-xs font-semibold">
+                    class="px-3 py-1.5 bg-[#FAF7F2] dark:bg-[#0A0A0A] rounded-lg hover:bg-red-500 hover:text-white dark:hover:bg-red-500 text-xs font-semibold cursor-pointer">
                     Delete
                   </button>
                 </div>
@@ -235,7 +238,6 @@ const statusLabel = (coupon) => {
         </table>
       </div>
     </div>
-
   </main>
 </div>
 </template>

@@ -40,6 +40,8 @@ class ApplicationPermissions
             'reviews.view',
             'reviews.update',
             'reviews.delete',
+            'settings.view',
+            'settings.update',
         ];
     }
 }

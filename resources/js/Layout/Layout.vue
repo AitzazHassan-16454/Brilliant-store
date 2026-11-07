@@ -5,7 +5,7 @@ const page = usePage()
 </script>
 
 <template>
-  <div class="min-h-screen bg-[#FAF7F2] dark:bg-[#0A0A0A] dark:text-[#F5F5F5]">
+  <div class="min-h-screen bg-[#FAF7F2] dark:bg-[#0A0A0A] dark:text-[#F5F5F5] overflow-x-hidden w-full max-w-full">
 
     <!-- HEADER -->
     <header class="sticky top-0 z-50 bg-white dark:bg-[#1A1A1A] border-b border-gray-100 dark:border-[#D4AF37]/20">

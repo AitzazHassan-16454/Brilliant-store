@@ -18,10 +18,26 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
 
+    @php($branding = \App\Models\BusinessSetting::current())
+    <style>
+        html:root {
+            --gold: {{ $branding->primary_color }};
+            --gold-dark: {{ $branding->accent_color }};
+            --gold-light: color-mix(in srgb, {{ $branding->primary_color }} 35%, white);
+        }
+
+        html.dark {
+            --gold-light: color-mix(in srgb, {{ $branding->primary_color }} 45%, black);
+        }
+    </style>
+    <script>
+        window.__SITE_NAME__ = @json($branding->site_name);
+    </script>
+
     @inertiaHead
 </head>
 
-<body>
+<body class="min-h-screen">
     @inertia
 </body>
 </html>

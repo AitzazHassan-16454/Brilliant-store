@@ -58,13 +58,13 @@ defineProps({
       <div class="flex items-center gap-3 shrink-0">
         <Link
           href="/orders"
-          class="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 hover:-translate-y-0.5 no-underline border border-black/10 dark:border-[#D4AF37]/20 bg-white/60 dark:bg-[#1A1A1A]/60 text-gray-900 dark:text-[#F5F5F5]">
+          class="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300  no-underline border border-black/10 dark:border-[#D4AF37]/20 bg-white/60 dark:bg-[#1A1A1A]/60 text-gray-900 dark:text-[#F5F5F5]">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z"/></svg>
           My Orders
         </Link>
         <Link
           href="/EditProfile"
-          class="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 hover:-translate-y-0.5 no-underline text-white bg-gradient-to-br from-[#D4AF37] via-[#B8960F] to-[#D4AF37] shadow-lg shadow-[#D4AF37]/30">
+          class="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300  no-underline text-white bg-gradient-to-br from-[#D4AF37] via-[#B8960F] to-[#D4AF37] shadow-lg shadow-[#D4AF37]/30">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>
           Edit Profile
         </Link>
@@ -84,7 +84,7 @@ defineProps({
       class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8"
     >
 
-      <motion.div :variants="m.itemFadeUp(0)" :whileHover="{ y: -4, transition: m.spring.gentle }"
+      <motion.div :variants="m.itemFadeUp(0)"
         class="rounded-2xl p-6 flex items-center justify-between transition-all duration-300 border border-gray-200 dark:border-[#D4AF37]/20 bg-white dark:bg-[#1A1A1A]/60 shadow-xl">
         <div>
           <p class="text-xs font-semibold uppercase tracking-widest text-gray-500 dark:text-[#A0A0A0]">Cart Items</p>
@@ -95,7 +95,7 @@ defineProps({
         </div>
       </motion.div>
 
-      <motion.div :variants="m.itemFadeUp(1)" :whileHover="{ y: -4, transition: m.spring.gentle }"
+      <motion.div :variants="m.itemFadeUp(1)"
         class="rounded-2xl p-6 flex items-center justify-between transition-all duration-300 border border-gray-200 dark:border-[#D4AF37]/20 bg-white dark:bg-[#1A1A1A]/60 shadow-xl">
         <div>
           <p class="text-xs font-semibold uppercase tracking-widest text-gray-500 dark:text-[#A0A0A0]">Total Orders</p>
@@ -106,7 +106,7 @@ defineProps({
         </div>
       </motion.div>
 
-      <motion.div :variants="m.itemFadeUp(2)" :whileHover="{ y: -4, transition: m.spring.gentle }"
+      <motion.div :variants="m.itemFadeUp(2)"
         class="rounded-2xl p-6 flex items-center justify-between transition-all duration-300 border border-gray-200 dark:border-[#D4AF37]/20 bg-white dark:bg-[#1A1A1A]/60 shadow-xl">
         <div>
           <p class="text-xs font-semibold uppercase tracking-widest text-gray-500 dark:text-[#A0A0A0]">Account Status</p>
@@ -131,13 +131,12 @@ defineProps({
       initial="hidden"
       whileInView="visible"
       :viewport="m.viewport.once"
-      class="grid grid-cols-2 lg:grid-cols-4 gap-4"
+      class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
     >
 
       <Motion
         asChild
         :variants="m.itemFadeUp(0)"
-        :whileHover="{ y: -6, boxShadow: '0 12px 40px rgba(212,175,55,0.15)', transition: m.spring.gentle }"
       >
         <Link
           href="/cart"
@@ -153,7 +152,6 @@ defineProps({
       <Motion
         asChild
         :variants="m.itemFadeUp(1)"
-        :whileHover="{ y: -6, boxShadow: '0 12px 40px rgba(212,175,55,0.15)', transition: m.spring.gentle }"
       >
         <Link
           href="/orders"
@@ -169,7 +167,6 @@ defineProps({
       <Motion
         asChild
         :variants="m.itemFadeUp(2)"
-        :whileHover="{ y: -6, boxShadow: '0 12px 40px rgba(212,175,55,0.15)', transition: m.spring.gentle }"
       >
         <Link
           href="/wishlist"
@@ -185,7 +182,6 @@ defineProps({
       <Motion
         asChild
         :variants="m.itemFadeUp(3)"
-        :whileHover="{ y: -6, boxShadow: '0 12px 40px rgba(212,175,55,0.15)', transition: m.spring.gentle }"
       >
         <Link
           href="/track-order"
@@ -201,7 +197,6 @@ defineProps({
       <Motion
         asChild
         :variants="m.itemFadeUp(4)"
-        :whileHover="{ y: -6, boxShadow: '0 12px 40px rgba(212,175,55,0.15)', transition: m.spring.gentle }"
       >
         <Link
           href="/EditProfile"
@@ -217,7 +212,6 @@ defineProps({
       <Motion
         asChild
         :variants="m.itemFadeUp(5)"
-        :whileHover="{ y: -6, boxShadow: '0 12px 40px rgba(212,175,55,0.15)', transition: m.spring.gentle }"
       >
         <Link
           href="/"

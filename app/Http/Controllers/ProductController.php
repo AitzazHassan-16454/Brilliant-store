@@ -90,7 +90,7 @@ class ProductController extends Controller
         // Calculate some store statistics
         $storeStats = [
             'products' => Product::where('is_active', true)->count(),
-            'categories' => Category::count(),
+            'categories' => Category::whereHas('products', fn ($q) => $q->where('is_active', true))->count(),
             'orders' => Order::count(),
         ];
 
@@ -104,7 +104,8 @@ class ProductController extends Controller
         return Inertia::render('Home', [
             'products' => $productQuery->paginate(10)->withQueryString(),
             'categories' => Category::select('id', 'uid', 'name', 'description', 'image')
-                ->withCount('products')
+                ->whereHas('products', fn ($q) => $q->where('is_active', true))
+                ->withCount(['products' => fn ($q) => $q->where('is_active', true)])
                 ->get(),
             'cartProductIds' => $cartProductIds,
             'wishlistProductIds' => $wishlistProductIds,
@@ -152,13 +153,36 @@ class ProductController extends Controller
             $productQuery->where('name', 'like', '%'.$request->search.'%');
         }
 
-        // Filter by category (by id or uid)
-        if ($request->category && $request->category !== 'All') {
-            if (is_numeric($request->category)) {
-                $productQuery->where('category_id', $request->category);
-            } else {
-                $productQuery->whereHas('category', function ($query) use ($request) {
-                    $query->where('uid', $request->category);
+        // Filter by category (by id, uid, or slug/name)
+        $selectedCategoryId = null;
+        if ($request->category && ! in_array(strtolower($request->category), ['all', ''])) {
+            $catVal = $request->category;
+            $catModel = is_numeric($catVal)
+                ? Category::find($catVal)
+                : Category::where('uid', $catVal)
+                    ->orWhereRaw('LOWER(name) = ?', [str_replace('-', ' ', strtolower($catVal))])
+                    ->orWhereRaw('LOWER(REPLACE(name, " ", "-")) = ?', [strtolower($catVal)])
+                    ->first();
+
+            if ($catModel) {
+                $selectedCategoryId = $catModel->id;
+                $productQuery->where('category_id', $catModel->id);
+            }
+        }
+
+        // Filter by subcategory (by id, uid, or slug/name)
+        if ($request->subcategory_id || $request->subcategory) {
+            $subVal = $request->subcategory_id ?? $request->subcategory;
+            if (! in_array(strtolower($subVal), ['all', ''])) {
+                $productQuery->whereHas('subcategory', function ($query) use ($subVal) {
+                    if (is_numeric($subVal)) {
+                        $query->where('id', $subVal);
+                    } else {
+                        $slugName = str_replace('-', ' ', strtolower($subVal));
+                        $query->where('uid', $subVal)
+                            ->orWhereRaw('LOWER(name) = ?', [$slugName])
+                            ->orWhereRaw('LOWER(REPLACE(name, " ", "-")) = ?', [strtolower($subVal)]);
+                    }
                 });
             }
         }
@@ -174,10 +198,13 @@ class ProductController extends Controller
 
         // Sort order
         if ($semanticIds === null) {
-            if ($request->sortBy === 'low-to-high') {
+            $sort = $request->sortBy ?? $request->sort;
+            if ($sort === 'low-to-high' || $sort === 'price-low') {
                 $productQuery->orderBy('price', 'asc');
-            } elseif ($request->sortBy === 'high-to-low') {
+            } elseif ($sort === 'high-to-low' || $sort === 'price-high') {
                 $productQuery->orderBy('price', 'desc');
+            } elseif ($sort === 'newest') {
+                $productQuery->latest();
             } else {
                 $productQuery->latest();
             }
@@ -195,18 +222,29 @@ class ProductController extends Controller
                 ->toArray();
         }
 
-        $categories = Category::select('id', 'uid', 'name')
+        $categories = Category::select('id', 'uid', 'name', 'description')
+            ->whereHas('products', fn ($q) => $q->where('is_active', true))
             ->withCount(['products' => function ($query) {
                 $query->where('is_active', true);
             }])
             ->get();
+
+        $subcategoriesQuery = Subcategory::whereHas('products', fn ($q) => $q->where('is_active', true))
+            ->withCount(['products' => fn ($q) => $q->where('is_active', true)]);
+
+        if ($selectedCategoryId) {
+            $subcategoriesQuery->where('category_id', $selectedCategoryId);
+        }
+
+        $subcategories = $subcategoriesQuery->get();
 
         $perPage = max(4, min(100, (int) $request->input('per_page', 12)));
 
         return Inertia::render('Products/All', [
             'products' => $productQuery->paginate($perPage)->withQueryString(),
             'categories' => $categories,
-            'filters' => $request->only(['search', 'category', 'min_price', 'max_price', 'sortBy', 'per_page']),
+            'subcategories' => $subcategories,
+            'filters' => $request->only(['search', 'category', 'subcategory', 'subcategory_id', 'min_price', 'max_price', 'sortBy', 'sort', 'per_page']),
             'cartProductIds' => $cartProductIds,
             'wishlistProductIds' => $wishlistProductIds,
         ]);

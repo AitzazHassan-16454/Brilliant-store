@@ -62,8 +62,20 @@ class CategoryController extends Controller
         }
 
         // If a subcategory filter is applied, only show products in that subcategory
-        if ($request->subcategory_id) {
-            $productQuery->where('subcategory_id', $request->subcategory_id);
+        if ($request->subcategory_id || $request->subcategory) {
+            $subVal = $request->subcategory_id ?? $request->subcategory;
+            if (! in_array(strtolower($subVal), ['all', ''])) {
+                if (is_numeric($subVal)) {
+                    $productQuery->where('subcategory_id', $subVal);
+                } else {
+                    $productQuery->whereHas('subcategory', function ($query) use ($subVal) {
+                        $slugName = str_replace('-', ' ', strtolower($subVal));
+                        $query->where('uid', $subVal)
+                            ->orWhereRaw('LOWER(name) = ?', [$slugName])
+                            ->orWhereRaw('LOWER(REPLACE(name, " ", "-")) = ?', [strtolower($subVal)]);
+                    });
+                }
+            }
         }
 
         // If a minimum price filter is set, only show products above that price
@@ -78,10 +90,13 @@ class CategoryController extends Controller
 
         // Sort the products based on the user's selection (only when not semantically ranked)
         if ($semanticIds === null) {
-            if ($request->sortBy === 'low-to-high') {
+            $sort = $request->sortBy ?? $request->sort;
+            if ($sort === 'low-to-high' || $sort === 'price-low') {
                 $productQuery->orderBy('price', 'asc');
-            } elseif ($request->sortBy === 'high-to-low') {
+            } elseif ($sort === 'high-to-low' || $sort === 'price-high') {
                 $productQuery->orderBy('price', 'desc');
+            } elseif ($sort === 'newest') {
+                $productQuery->latest();
             } else {
                 $productQuery->latest();
             }
@@ -103,18 +118,37 @@ class CategoryController extends Controller
                 ->toArray();
         }
 
-        // Get subcategories with their product counts
+        // Get subcategories that contain active products for the client side
         $subcategories = $category->subcategories()
-            ->withCount('products')
+            ->whereHas('products', fn ($q) => $q->where('is_active', true))
+            ->withCount(['products' => fn ($q) => $q->where('is_active', true)])
+            ->get();
+
+        // Other curated categories that contain active products for discovery
+        $otherCategories = Category::select('id', 'uid', 'name', 'image', 'description')
+            ->where('id', '!=', $category->id)
+            ->whereHas('products', fn ($q) => $q->where('is_active', true))
+            ->withCount(['products' => fn ($q) => $q->where('is_active', true)])
+            ->take(3)
+            ->get();
+
+        $categories = Category::select('id', 'uid', 'name', 'description')
+            ->whereHas('products', fn ($q) => $q->where('is_active', true))
+            ->withCount(['products' => fn ($q) => $q->where('is_active', true)])
             ->get();
 
         $perPage = max(4, min(100, (int) $request->input('per_page', 12)));
 
         return Inertia::render('Categories/Show', [
             'category' => $category,
+            'categories' => $categories,
             'products' => $productQuery->paginate($perPage)->withQueryString(),
-            'filters' => $request->only(['search', 'min_price', 'max_price', 'sortBy', 'subcategory_id', 'per_page']),
+            'filters' => array_merge(
+                $request->only(['search', 'min_price', 'max_price', 'sortBy', 'sort', 'subcategory_id', 'subcategory', 'per_page']),
+                ['category' => $category->uid]
+            ),
             'subcategories' => $subcategories,
+            'otherCategories' => $otherCategories,
             'cartProductIds' => $cartProductIds,
             'wishlistProductIds' => $wishlistProductIds,
         ]);

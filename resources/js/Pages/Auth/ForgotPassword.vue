@@ -70,30 +70,46 @@ function submit() {
 
         <!-- FORM -->
         <form v-else @submit.prevent="submit" class="mt-6 space-y-4">
-          <div>
-            <label class="block text-sm font-semibold mb-1.5 text-[#1A1A1A] dark:text-[#F5F5F5]">
-              Email address
+          <div class="pro-form-group">
+            <label class="pro-label">
+              <span>Email Address</span>
             </label>
-            <input
-              v-model="form.email"
-              type="email"
-              required
-              autofocus
-              placeholder="you@example.com"
-              class="w-full px-4 py-3 rounded-xl text-sm outline-none transition-all border border-gray-200 dark:border-[#D4AF37]/20 bg-white dark:bg-[#1A1A1A] text-[#1A1A1A] dark:text-[#F5F5F5] placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-[#D4AF37] focus:ring-[3px] focus:ring-[#D4AF37]/10"
-            />
-            <p v-if="form.errors.email" class="text-xs mt-1.5 font-medium text-red-600">
-              {{ form.errors.email }}
-            </p>
+            <div class="pro-input-wrap">
+              <svg class="pro-input-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
+              </svg>
+              <input
+                v-model="form.email"
+                type="email"
+                required
+                autofocus
+                autocomplete="email"
+                placeholder="you@example.com"
+                class="pro-input pro-input-with-icon"
+                :class="{ 'pro-input-error': form.errors.email }"
+              />
+            </div>
+            <div v-if="form.errors.email" class="pro-form-error">
+              <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 6.75h.008v.008H12v-.008Z" />
+              </svg>
+              <span>{{ form.errors.email }}</span>
+            </div>
           </div>
 
-          <button
-            type="submit"
-            :disabled="form.processing"
-            class="w-full py-3.5 px-4 rounded-xl text-sm font-bold transition-all duration-200 disabled:opacity-50 active:scale-[0.98] cursor-pointer border-none bg-[#D4AF37] text-white shadow-lg shadow-[#D4AF37]/30 hover:brightness-105"
-          >
-            {{ form.processing ? "Sending link..." : "Email Password Reset Link" }}
-          </button>
+          <div class="pt-2">
+            <button
+              type="submit"
+              :disabled="form.processing"
+              class="pro-btn-primary"
+            >
+              <svg v-if="form.processing" class="w-4 h-4 animate-spin text-[#0A0A0A]" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+              </svg>
+              <span>{{ form.processing ? "Sending link..." : "Email Password Reset Link" }}</span>
+            </button>
+          </div>
         </form>
 
         <!-- BACK TO LOGIN -->

@@ -112,7 +112,7 @@ const submit = () => {
             initial="hidden"
             whileInView="visible"
             :viewport="m.viewport.once"
-            class="relative overflow-hidden p-8 sm:p-10 lg:p-12"
+            class="relative overflow-hidden p-5 sm:p-10 lg:p-12"
           >
             <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(212,175,55,0.12),transparent_40%),linear-gradient(135deg,rgba(212,175,55,0.06),transparent_55%)]"></div>
 
@@ -127,16 +127,16 @@ const submit = () => {
               <!-- CTA Buttons -->
               <div class="mt-8 flex flex-col gap-4 sm:flex-row">
                 <a :href="whatsappUrl" target="_blank" rel="noreferrer"
-                  class="inline-flex items-center justify-center gap-3 rounded-2xl px-6 py-4 text-base font-semibold text-white shadow-lg transition-all hover:-translate-y-0.5"
+                  class="inline-flex items-center justify-center gap-3 rounded-2xl px-6 py-4 text-base font-semibold text-white shadow-lg transition-all "
                   style="background:#25D366; box-shadow:0 18px 40px -18px rgba(37,211,102,0.75);">
                   <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z"/>
                   </svg>
                   Chat on WhatsApp
-                  <svg class="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                  <svg class="w-5 h-5 transition-transform duration-300 " fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                 </a>
                 <button @click="showForm = !showForm"
-                  class="inline-flex items-center justify-center gap-3 rounded-2xl border border-gray-200 dark:border-[#D4AF37]/20 bg-white dark:bg-[#1A1A1A] px-6 py-4 text-base font-semibold text-[#1A1A1A] dark:text-[#F5F5F5] transition-all hover:bg-[#FAF7F2] dark:hover:bg-[#21262d] hover:-translate-y-0.5 cursor-pointer">
+                  class="inline-flex items-center justify-center gap-3 rounded-2xl border border-gray-200 dark:border-[#D4AF37]/20 bg-white dark:bg-[#1A1A1A] px-6 py-4 text-base font-semibold text-[#1A1A1A] dark:text-[#F5F5F5] transition-all hover:bg-[#FAF7F2] dark:hover:bg-[#21262d]  cursor-pointer">
                   <svg class="w-5 h-5 text-[#D4AF37] dark:text-[#D4AF37]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/>
                   </svg>
@@ -183,9 +183,9 @@ const submit = () => {
             initial="hidden"
             whileInView="visible"
             :viewport="m.viewport.once"
-            class="border-t border-gray-200 dark:border-[#D4AF37]/20 bg-[#FAF7F2] dark:bg-[#0A0A0A] p-8 sm:p-10 lg:border-l lg:border-t-0"
+            class="border-t border-gray-200 dark:border-[#D4AF37]/20 bg-[#FAF7F2] dark:bg-[#0A0A0A] p-5 sm:p-10 lg:border-l lg:border-t-0"
           >
-            <div class="rounded-2xl border border-gray-200 dark:border-[#D4AF37]/20 bg-white dark:bg-[#1A1A1A] p-6 shadow-sm">
+            <div class="rounded-2xl border border-gray-200 dark:border-[#D4AF37]/20 bg-white dark:bg-[#1A1A1A] p-4 sm:p-6 shadow-sm">
               <p class="text-sm font-semibold uppercase tracking-widest text-[#D4AF37] dark:text-[#D4AF37]">What to Share</p>
               <h2 class="mt-3 text-xl font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">Make your message more effective</h2>
 
@@ -243,82 +243,98 @@ const submit = () => {
           :transition="{ duration: 0.35, ease: m.easeOutExpo }"
           class="mb-8 overflow-hidden"
         >
-          <form @submit.prevent="submit" class="bg-white dark:bg-[#1A1A1A] border border-gray-200 dark:border-[#D4AF37]/20 rounded-2xl p-6 sm:p-8 space-y-5">
-            <h3 class="text-lg font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">Or submit a request here</h3>
+          <form @submit.prevent="submit" class="bg-card border border-border shadow-luxury rounded-3xl p-6 sm:p-8 space-y-5">
+            <h3 class="text-lg font-bold text-foreground">Submit a Custom Request</h3>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label class="block text-xs font-semibold text-gray-500 dark:text-[#A0A0A0] mb-1">Name</label>
+              <div class="pro-form-group">
+                <label class="pro-label">
+                  <span class="pro-label-required">Full Name</span>
+                </label>
                 <input v-model="form.name" type="text" placeholder="Your name"
-                  class="w-full border border-gray-200 dark:border-[#D4AF37]/20 rounded-lg px-4 py-2.5 text-sm outline-none bg-white dark:bg-[#1A1A1A] text-[#1A1A1A] dark:text-[#F5F5F5]" />
-                <p v-if="errors.name" class="text-xs text-red-500 mt-1">{{ errors.name }}</p>
+                  class="pro-input" :class="{ 'pro-input-error': errors.name }" />
+                <div v-if="errors.name" class="pro-form-error">{{ errors.name }}</div>
               </div>
-              <div>
-                <label class="block text-xs font-semibold text-gray-500 dark:text-[#A0A0A0] mb-1">Email</label>
+              <div class="pro-form-group">
+                <label class="pro-label">
+                  <span class="pro-label-required">Email Address</span>
+                </label>
                 <input v-model="form.email" type="email" placeholder="you@example.com"
-                  class="w-full border border-gray-200 dark:border-[#D4AF37]/20 rounded-lg px-4 py-2.5 text-sm outline-none bg-white dark:bg-[#1A1A1A] text-[#1A1A1A] dark:text-[#F5F5F5]" />
-                <p v-if="errors.email" class="text-xs text-red-500 mt-1">{{ errors.email }}</p>
+                  class="pro-input" :class="{ 'pro-input-error': errors.email }" />
+                <div v-if="errors.email" class="pro-form-error">{{ errors.email }}</div>
               </div>
             </div>
 
-            <div>
-              <label class="block text-xs font-semibold text-gray-500 dark:text-[#A0A0A0] mb-1">Phone</label>
+            <div class="pro-form-group">
+              <label class="pro-label">
+                <span>Phone Number</span>
+              </label>
               <input v-model="form.phone" type="tel" placeholder="+1 234 567 890"
-                class="w-full border border-gray-200 dark:border-[#D4AF37]/20 rounded-lg px-4 py-2.5 text-sm outline-none bg-white dark:bg-[#1A1A1A] text-[#1A1A1A] dark:text-[#F5F5F5]" />
-              <p v-if="errors.phone" class="text-xs text-red-500 mt-1">{{ errors.phone }}</p>
+                class="pro-input" :class="{ 'pro-input-error': errors.phone }" />
+              <div v-if="errors.phone" class="pro-form-error">{{ errors.phone }}</div>
             </div>
 
-            <div>
-              <label class="block text-xs font-semibold text-gray-500 dark:text-[#A0A0A0] mb-1">Describe What You Need</label>
+            <div class="pro-form-group">
+              <label class="pro-label">
+                <span class="pro-label-required">Describe What You Need</span>
+              </label>
               <textarea v-model="form.description" rows="4" placeholder="Describe your custom order in detail — size, colors, style, material, any specific requirements..."
-                class="w-full border border-gray-200 dark:border-[#D4AF37]/20 rounded-lg px-4 py-2.5 text-sm outline-none resize-y bg-white dark:bg-[#1A1A1A] text-[#1A1A1A] dark:text-[#F5F5F5]"></textarea>
-              <p v-if="errors.description" class="text-xs text-red-500 mt-1">{{ errors.description }}</p>
+                class="pro-textarea resize-y" :class="{ 'pro-input-error': errors.description }"></textarea>
+              <div v-if="errors.description" class="pro-form-error">{{ errors.description }}</div>
             </div>
 
-            <div>
-              <label class="block text-xs font-semibold text-gray-500 dark:text-[#A0A0A0] mb-1">Reference Image (optional)</label>
+            <div class="pro-form-group">
+              <label class="pro-label">
+                <span>Reference Image (Optional)</span>
+              </label>
               <div class="flex items-center gap-4">
-                <label class="flex items-center gap-2 px-4 py-2.5 border border-gray-200 dark:border-[#D4AF37]/20 rounded-lg cursor-pointer hover:bg-[#FAF7F2] dark:hover:bg-[#21262d] transition text-sm text-gray-600 dark:text-[#A0A0A0]">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <label class="flex items-center gap-2 px-4 py-2.5 border border-border rounded-xl cursor-pointer hover:bg-muted/60 transition text-sm text-foreground bg-card shadow-xs">
+                  <svg class="w-4 h-4 text-[#D4AF37]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/>
                   </svg>
-                  Upload Image
+                  <span>Upload Image</span>
                   <input type="file" accept="image/*" @change="onImageChange" class="hidden" />
                 </label>
-                <span v-if="form.reference_image" class="text-xs text-gray-500 dark:text-[#A0A0A0]">{{ form.reference_image.name }}</span>
+                <span v-if="form.reference_image" class="text-xs text-muted-foreground truncate max-w-xs">{{ form.reference_image.name }}</span>
               </div>
-              <img v-if="previewUrl" :src="previewUrl" class="mt-3 w-32 h-32 object-cover rounded-lg border border-gray-200 dark:border-[#D4AF37]/20" />
-              <p v-if="errors.reference_image" class="text-xs text-red-500 mt-1">{{ errors.reference_image }}</p>
+              <img v-if="previewUrl" :src="previewUrl" class="mt-3 w-32 h-32 object-cover rounded-xl border border-border shadow-sm" />
+              <div v-if="errors.reference_image" class="pro-form-error">{{ errors.reference_image }}</div>
             </div>
 
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label class="block text-xs font-semibold text-gray-500 dark:text-[#A0A0A0] mb-1">Budget Min ($)</label>
+              <div class="pro-form-group">
+                <label class="pro-label">
+                  <span>Budget Min ($)</span>
+                </label>
                 <input v-model="form.budget_min" type="number" step="0.01" min="0" placeholder="0.00"
-                  class="w-full border border-gray-200 dark:border-[#D4AF37]/20 rounded-lg px-4 py-2.5 text-sm outline-none bg-white dark:bg-[#1A1A1A] text-[#1A1A1A] dark:text-[#F5F5F5]" />
+                  class="pro-input" />
               </div>
-              <div>
-                <label class="block text-xs font-semibold text-gray-500 dark:text-[#A0A0A0] mb-1">Budget Max ($)</label>
+              <div class="pro-form-group">
+                <label class="pro-label">
+                  <span>Budget Max ($)</span>
+                </label>
                 <input v-model="form.budget_max" type="number" step="0.01" min="0" placeholder="0.00"
-                  class="w-full border border-gray-200 dark:border-[#D4AF37]/20 rounded-lg px-4 py-2.5 text-sm outline-none bg-white dark:bg-[#1A1A1A] text-[#1A1A1A] dark:text-[#F5F5F5]" />
+                  class="pro-input" />
               </div>
             </div>
 
-            <div>
-              <label class="block text-xs font-semibold text-gray-500 dark:text-[#A0A0A0] mb-1">Desired Completion Date</label>
+            <div class="pro-form-group">
+              <label class="pro-label">
+                <span>Desired Completion Date</span>
+              </label>
               <input v-model="form.desired_date" type="date"
-                class="w-full border border-gray-200 dark:border-[#D4AF37]/20 rounded-lg px-4 py-2.5 text-sm outline-none bg-white dark:bg-[#1A1A1A] text-[#1A1A1A] dark:text-[#F5F5F5]" />
-              <p v-if="errors.desired_date" class="text-xs text-red-500 mt-1">{{ errors.desired_date }}</p>
+                class="pro-input" :class="{ 'pro-input-error': errors.desired_date }" />
+              <div v-if="errors.desired_date" class="pro-form-error">{{ errors.desired_date }}</div>
             </div>
 
             <div class="pt-2">
               <button type="submit" :disabled="submitting"
-                class="w-full sm:w-auto px-8 py-3 bg-[#D4AF37] dark:bg-[#D4AF37] hover:bg-[#B8960F] dark:hover:bg-[#C9A032] text-white text-sm font-semibold rounded-xl transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed inline-flex items-center justify-center gap-2">
-                <svg v-if="submitting" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                class="pro-btn-primary sm:w-auto px-8">
+                <svg v-if="submitting" class="w-4 h-4 animate-spin text-[#0A0A0A]" fill="none" viewBox="0 0 24 24">
                   <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
                   <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
                 </svg>
-                {{ submitting ? "Submitting..." : "Submit Request" }}
+                <span>{{ submitting ? "Submitting..." : "Submit Request" }}</span>
               </button>
             </div>
           </form>

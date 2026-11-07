@@ -141,79 +141,79 @@ const nextStatuses = (current) => ({
 
     <Sidebar />
 
-    <main class="flex-1 overflow-hidden">
+    <main class="flex-1 min-w-0 overflow-y-auto">
 
       <!-- HEADER -->
-      <div class="sticky top-0 z-30 bg-white/80 dark:bg-[#0A0A0A]/80 backdrop-blur-md border-b border-gray-100 dark:border-[#D4AF37]/20">
-        <div class="h-16 px-6 sm:px-8 flex items-center justify-between">
+      <div class="static lg:sticky lg:top-0 z-20 bg-white/90 dark:bg-[#0A0A0A]/90 backdrop-blur-md border-b border-gray-200 dark:border-[#D4AF37]/20">
+        <div class="min-h-16 px-4 sm:px-6 lg:px-8 py-3.5 sm:py-0 flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-0">
           <div>
-            <h1 class="text-xl font-medium tracking-tight text-[#1A1A1A] dark:text-[#F5F5F5]">Orders</h1>
-            <p class="text-sm text-gray-500 dark:text-[#A0A0A0] mt-0.5">Manage customer orders and track status</p>
+            <h1 class="text-lg sm:text-xl font-semibold tracking-tight text-[#1A1A1A] dark:text-[#F5F5F5]">Orders Management</h1>
+            <p class="text-xs sm:text-sm text-gray-500 dark:text-[#A0A0A0] mt-0.5">Manage customer orders, track shipments, and review payment slips</p>
           </div>
-          <div class="flex items-center gap-2 text-sm text-gray-400 dark:text-[#A0A0A0]">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/></svg>
-            {{ stats.total }} orders
+          <div class="flex items-center gap-2 text-xs sm:text-sm text-gray-500 dark:text-[#A0A0A0]">
+            <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/></svg>
+            <span class="font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">{{ stats.total }}</span> total orders
           </div>
         </div>
       </div>
 
-      <div class="p-6 sm:p-8 space-y-6">
+      <div class="p-3.5 sm:p-6 lg:p-8 space-y-5 sm:space-y-6">
 
-        <!-- STATS ROW -->
-        <div class="grid grid-cols-4 gap-5">
-          <div class="bg-white dark:bg-[#1A1A1A] rounded-xl p-5 border border-gray-100 dark:border-[#D4AF37]/20">
+        <!-- STATS ROW (Responsive 2 cols on mobile, 4 on desktop) -->
+        <div class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5">
+          <div class="bg-white dark:bg-[#1A1A1A] rounded-2xl p-3.5 sm:p-5 border border-gray-200 dark:border-[#D4AF37]/20 shadow-xs">
             <div class="flex items-center justify-between">
-              <p class="text-sm font-medium text-gray-400 dark:text-[#A0A0A0]">Total</p>
+              <p class="text-xs sm:text-sm font-medium text-gray-400 dark:text-[#A0A0A0]">Total</p>
               <div class="w-8 h-8 rounded-lg bg-gray-50 dark:bg-[#2A2A2A] flex items-center justify-center text-gray-400 dark:text-[#A0A0A0]">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z"/></svg>
               </div>
             </div>
-            <p class="text-2xl font-medium text-[#1A1A1A] dark:text-[#F5F5F5] mt-3">{{ stats.total }}</p>
+            <p class="text-xl sm:text-2xl font-bold text-[#1A1A1A] dark:text-[#F5F5F5] mt-2 sm:mt-3">{{ stats.total }}</p>
           </div>
-          <div class="bg-white dark:bg-[#1A1A1A] rounded-xl p-5 border border-gray-100 dark:border-[#D4AF37]/20">
+          <div class="bg-white dark:bg-[#1A1A1A] rounded-2xl p-3.5 sm:p-5 border border-gray-200 dark:border-[#D4AF37]/20 shadow-xs">
             <div class="flex items-center justify-between">
-              <p class="text-sm font-medium text-gray-400 dark:text-[#A0A0A0]">Pending</p>
+              <p class="text-xs sm:text-sm font-medium text-gray-400 dark:text-[#A0A0A0]">Pending</p>
               <div class="w-8 h-8 rounded-lg bg-amber-50 dark:bg-[#d29922]/10 flex items-center justify-center text-amber-500 dark:text-[#d29922]">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
               </div>
             </div>
-            <p class="text-2xl font-medium text-amber-500 dark:text-[#d29922] mt-3">{{ stats.pending }}</p>
+            <p class="text-xl sm:text-2xl font-bold text-amber-500 dark:text-[#d29922] mt-2 sm:mt-3">{{ stats.pending }}</p>
           </div>
-          <div class="bg-white dark:bg-[#1A1A1A] rounded-xl p-5 border border-gray-100 dark:border-[#D4AF37]/20">
+          <div class="bg-white dark:bg-[#1A1A1A] rounded-2xl p-3.5 sm:p-5 border border-gray-200 dark:border-[#D4AF37]/20 shadow-xs">
             <div class="flex items-center justify-between">
-              <p class="text-sm font-medium text-gray-400 dark:text-[#A0A0A0]">Confirmed</p>
+              <p class="text-xs sm:text-sm font-medium text-gray-400 dark:text-[#A0A0A0]">Confirmed</p>
               <div class="w-8 h-8 rounded-lg bg-blue-50 dark:bg-[#58a6ff]/10 flex items-center justify-center text-blue-500 dark:text-[#58a6ff]">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
               </div>
             </div>
-            <p class="text-2xl font-medium text-blue-500 dark:text-[#58a6ff] mt-3">{{ stats.confirmed }}</p>
+            <p class="text-xl sm:text-2xl font-bold text-blue-500 dark:text-[#58a6ff] mt-2 sm:mt-3">{{ stats.confirmed }}</p>
           </div>
-          <div class="bg-white dark:bg-[#1A1A1A] rounded-xl p-5 border border-gray-100 dark:border-[#D4AF37]/20">
+          <div class="bg-white dark:bg-[#1A1A1A] rounded-2xl p-3.5 sm:p-5 border border-gray-200 dark:border-[#D4AF37]/20 shadow-xs">
             <div class="flex items-center justify-between">
-              <p class="text-sm font-medium text-gray-400 dark:text-[#A0A0A0]">Delivered</p>
+              <p class="text-xs sm:text-sm font-medium text-gray-400 dark:text-[#A0A0A0]">Delivered</p>
               <div class="w-8 h-8 rounded-lg bg-emerald-50 dark:bg-[#3fb950]/10 flex items-center justify-center text-emerald-500 dark:text-[#3fb950]">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
               </div>
             </div>
-            <p class="text-2xl font-medium text-emerald-500 dark:text-[#3fb950] mt-3">{{ stats.delivered }}</p>
+            <p class="text-xl sm:text-2xl font-bold text-emerald-500 dark:text-[#3fb950] mt-2 sm:mt-3">{{ stats.delivered }}</p>
           </div>
         </div>
 
         <!-- FILTERS + SEARCH -->
-        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div class="flex flex-wrap gap-1.5">
             <button
               v-for="f in filters" :key="f.key"
               @click="activeFilter = f.key"
               :class="[
-                'px-3.5 py-1.5 rounded-lg text-xs font-medium cursor-pointer',
+                'px-3 sm:px-3.5 py-1.5 rounded-xl text-xs font-semibold cursor-pointer transition',
                 activeFilter === f.key
-                  ? 'bg-[#1A1A1A] dark:bg-[#D4AF37] text-white shadow-sm'
+                  ? 'bg-[#1A1A1A] dark:bg-[#D4AF37] text-white dark:text-[#1A1A1A] shadow-xs'
                   : 'bg-white dark:bg-[#1A1A1A] text-gray-500 dark:text-[#A0A0A0] hover:bg-gray-50 dark:hover:bg-[#21262d] hover:text-gray-700 dark:hover:text-[#c9d1d9] border border-gray-200 dark:border-[#D4AF37]/20'
               ]"
             >
               {{ f.label }}
-              <span v-if="f.key === 'all' || stats[f.key]" class="ml-1.5 text-[10px] opacity-60">({{ f.key === 'all' ? stats.total : stats[f.key] }})</span>
+              <span v-if="f.key === 'all' || stats[f.key]" class="ml-1 text-[10px] opacity-75">({{ f.key === 'all' ? stats.total : stats[f.key] }})</span>
             </button>
           </div>
           <div class="relative w-full sm:w-64">
@@ -221,8 +221,8 @@ const nextStatuses = (current) => ({
             <input
               v-model="searchQuery"
               type="text"
-              placeholder="Search by name, ID, product..."
-              class="w-full pl-9 pr-4 py-2 rounded-lg text-sm border border-gray-200 dark:border-[#D4AF37]/20 bg-white dark:bg-[#1A1A1A] text-[#1A1A1A] dark:text-[#F5F5F5] placeholder-gray-400 dark:placeholder-[#8b949e] outline-none focus:border-gray-400 dark:focus:border-gray-500"
+              placeholder="Search orders, code, name..."
+              class="w-full pl-9 pr-4 py-2 rounded-xl text-xs sm:text-sm border border-gray-200 dark:border-[#D4AF37]/20 bg-white dark:bg-[#1A1A1A] text-[#1A1A1A] dark:text-[#F5F5F5] placeholder-gray-400 dark:placeholder-[#8b949e] outline-none focus:border-gray-400 dark:focus:border-gray-500"
             />
           </div>
         </div>
@@ -253,14 +253,16 @@ const nextStatuses = (current) => ({
           >
 
             <!-- ROW 1: Customer + Status + Total -->
-            <div class="px-5 py-3.5 flex items-center justify-between gap-4">
+            <div class="p-3.5 sm:px-5 sm:py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div class="flex items-center gap-3 min-w-0">
-                <div class="w-9 h-9 rounded-lg bg-gray-50 dark:bg-[#2A2A2A] flex items-center justify-center text-xs font-bold text-gray-400 dark:text-[#A0A0A0] shrink-0">
+                <div class="w-9 h-9 rounded-xl bg-gray-50 dark:bg-[#2A2A2A] flex items-center justify-center text-xs font-bold text-gray-500 dark:text-[#A0A0A0] shrink-0">
                   #{{ String(order.id).slice(-3) }}
                 </div>
-                <div class="min-w-0">
-                  <p class="text-sm font-medium text-[#1A1A1A] dark:text-[#F5F5F5] truncate">{{ order.user?.name ||"Guest" }}</p>
-                  <p class="text-xs text-gray-400 dark:text-[#A0A0A0]" :title="formatTime(order.created_at)">{{ timeAgo(order.created_at) }}</p>
+                <div class="min-w-0 flex-1">
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <p class="text-sm font-semibold text-[#1A1A1A] dark:text-[#F5F5F5] truncate">{{ order.user?.name || "Guest" }}</p>
+                    <span class="text-xs text-gray-400 dark:text-[#A0A0A0]" :title="formatTime(order.created_at)">&bull; {{ timeAgo(order.created_at) }}</span>
+                  </div>
                   <div class="flex items-center gap-2 mt-1 flex-wrap">
                     <p v-if="order.tracking_code" class="m-0">
                       <a
@@ -286,11 +288,11 @@ const nextStatuses = (current) => ({
                   </div>
                 </div>
               </div>
-              <div class="flex items-center gap-3 shrink-0">
+              <div class="flex items-center justify-between sm:justify-end gap-3 shrink-0 pl-12 sm:pl-0 border-t sm:border-t-0 pt-2 sm:pt-0 border-gray-100 dark:border-white/5">
                 <span class="px-2.5 py-0.5 rounded-md text-[11px] font-semibold leading-5" :class="statusBadge(order.status)">
                   {{ order.status }}
                 </span>
-                <span class="text-sm font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">${{ parseFloat(order.total).toFixed(2) }}</span>
+                <span class="text-base sm:text-sm font-bold text-[#1A1A1A] dark:text-[#F5F5F5]">${{ parseFloat(order.total).toFixed(2) }}</span>
               </div>
             </div>
 
@@ -331,16 +333,16 @@ const nextStatuses = (current) => ({
             </div>
 
             <!-- ROW 4: Actions -->
-            <div class="px-5 py-3 flex items-center justify-between gap-3">
+            <div class="p-3.5 sm:px-5 sm:py-3 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <button
                 @click="toggleTimeline(order.id)"
-                class="text-xs font-medium text-gray-400 dark:text-[#A0A0A0] hover:text-gray-600 dark:hover:text-[#c9d1d9] cursor-pointer flex items-center gap-1.5"
+                class="text-xs font-semibold text-gray-500 dark:text-[#A0A0A0] hover:text-gray-700 dark:hover:text-[#c9d1d9] cursor-pointer flex items-center gap-1.5 self-start"
               >
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                 {{ expandedOrder === order.id ? "Hide" : "View" }} History
               </button>
 
-              <div class="flex items-center gap-1.5">
+              <div class="flex items-center gap-1.5 flex-wrap">
                 <button
                   v-if="order.payment_slip_url"
                   type="button"
@@ -354,7 +356,7 @@ const nextStatuses = (current) => ({
                   <button
                     v-for="ns in nextStatuses(order.status)" :key="ns"
                     @click="requestStatusChange(order.id, ns)"
-                    class="px-3 py-1.5 rounded-lg text-xs font-medium cursor-pointer"
+                    class="px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer transition"
                     :class="{
                       'bg-amber-50 text-amber-600 hover:bg-amber-100 dark:bg-[#d29922]/10 dark:text-[#d29922] dark:hover:bg-[#d29922]/20': ns === 'pending',
                       'bg-blue-50 text-blue-600 hover:bg-blue-100 dark:bg-[#58a6ff]/10 dark:text-[#58a6ff] dark:hover:bg-[#58a6ff]/20': ns === 'confirmed',
@@ -366,7 +368,7 @@ const nextStatuses = (current) => ({
                 </template>
                 <button
                   @click="confirmDelete(order.id)"
-                  class="px-3 py-1.5 rounded-lg text-xs font-medium cursor-pointer bg-red-50 text-red-500 hover:bg-red-100 dark:bg-[#f85149]/10 dark:text-[#f85149] dark:hover:bg-[#f85149]/20"
+                  class="px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer bg-red-50 text-red-500 hover:bg-red-100 dark:bg-[#f85149]/10 dark:text-[#f85149] dark:hover:bg-[#f85149]/20 transition"
                 >
                   Delete
                 </button>
