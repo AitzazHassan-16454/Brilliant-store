@@ -46,15 +46,15 @@ const submit = () => {
 
 <div class="min-h-screen bg-[#FAF7F2] dark:bg-[#0A0A0A] text-[#1A1A1A] dark:text-[#F5F5F5]" style="font-family:'Inter',system-ui,sans-serif;">
 
-  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14">
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-14">
 
     <!-- HEADER -->
-    <div class="mb-8">
-      <Link href="/Profile" class="inline-flex items-center gap-1.5 text-sm font-medium mb-5 no-underline text-[#6B6B6B] dark:text-[#A0A0A0] transition-colors">
+    <div class="mb-6 sm:mb-8">
+      <Link href="/Profile" class="inline-flex items-center gap-1.5 text-sm font-medium mb-4 sm:mb-5 no-underline text-[#6B6B6B] dark:text-[#A0A0A0] transition-colors">
         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
         Back to Profile
       </Link>
-      <h1 class="text-3xl sm:text-4xl font-bold tracking-tight text-[#1A1A1A] dark:text-[#F5F5F5]">
+      <h1 class="text-2xl sm:text-4xl font-bold tracking-tight text-[#1A1A1A] dark:text-[#F5F5F5]">
         Edit Profile
       </h1>
       <p class="text-sm mt-2 text-[#6B6B6B] dark:text-[#A0A0A0]">
@@ -63,12 +63,12 @@ const submit = () => {
     </div>
 
     <!-- CARD -->
-    <div class="rounded-2xl p-6 sm:p-8 border border-white/25 dark:border-[#D4AF37]/20 bg-white/45 dark:bg-[#1A1A1A]/60 backdrop-blur-lg shadow-sm">
+    <div class="rounded-2xl p-4 sm:p-8 border border-white/25 dark:border-[#D4AF37]/20 bg-white/45 dark:bg-[#1A1A1A]/60 backdrop-blur-lg shadow-sm">
 
       <form @submit.prevent="submit" class="space-y-6">
 
         <!-- AVATAR -->
-        <div class="flex items-center gap-5">
+        <div class="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-5">
 
           <div class="w-20 h-20 rounded-2xl overflow-hidden flex items-center justify-center shrink-0 border border-black/6 dark:border-[#D4AF37]/20 bg-white/60 dark:bg-[#1A1A1A]/60 backdrop-blur-lg">
             <img
@@ -81,14 +81,15 @@ const submit = () => {
             </svg>
           </div>
 
-          <div>
+          <div class="min-w-0 flex-1">
             <label class="text-sm font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">
               Profile Image
             </label>
 
             <input
               type="file"
-              class="block mt-2 text-sm text-[#6B6B6B] dark:text-[#A0A0A0] file:text-[#1A1A1A] dark:file:text-slate-400"
+              accept="image/*"
+              class="block w-full mt-2 text-sm text-[#6B6B6B] dark:text-[#A0A0A0] cursor-pointer file:mr-3 file:px-4 file:py-2 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-[#D4AF37]/15 file:text-[#1A1A1A] dark:file:text-[#F5F5F5] file:cursor-pointer hover:file:bg-[#D4AF37]/25"
               @change="handleAvatar"
             />
 
@@ -167,18 +168,18 @@ const submit = () => {
         </div>
 
         <!-- ACTIONS -->
-        <div class="flex items-center justify-between pt-4">
+        <div class="flex flex-col-reverse sm:flex-row sm:items-center sm:justify-between gap-3 pt-4 border-t border-black/5 dark:border-[#D4AF37]/10">
 
           <Link
             href="/Profile"
-            class="text-sm font-medium no-underline text-[#6B6B6B] dark:text-[#A0A0A0] transition-colors"
+            class="w-full sm:w-auto text-center px-5 py-3 rounded-xl border border-black/8 dark:border-[#D4AF37]/20 text-sm font-medium no-underline text-[#6B6B6B] dark:text-[#A0A0A0] hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
           >
             Cancel
           </Link>
 
           <button
             type="submit"
-            class="px-8 py-3 rounded-xl font-semibold text-white transition-all duration-300 hover:-translate-y-0.5 cursor-pointer"
+            class="w-full sm:w-auto px-8 py-3 rounded-xl font-semibold text-white transition-all duration-300  cursor-pointer"
             style="background:linear-gradient(135deg,#D4AF37,#B8960F,#D4AF37); box-shadow:0 4px 16px rgba(212,175,55,0.3),0 1px 3px rgba(0,0,0,0.1); border:none;"
           >
             Save Changes

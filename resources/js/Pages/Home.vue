@@ -1,17 +1,20 @@
 <script setup>
-import { ref } from "vue"
+import { ref, computed, onMounted, onUnmounted } from "vue"
 import { router, usePage, Link, Head } from "@inertiajs/vue3"
 import { useNotification } from "../composables/useNotification.js"
 import { useAuthModal } from "../composables/useAuthModal.js"
 import AppFooter from "./components/AppFooter.vue"
 import ProductCard from "../Components/ProductCard.vue"
 import { motion } from "motion-v"
-import { motionPresets as m, staggerContainer, staggerItem, itemFadeUp, GESTURE } from "../lib/motion.js"
+import { motionPresets as m, staggerContainer, staggerItem, itemFadeUp } from "../lib/motion.js"
 
 const heroStagger = staggerContainer(0.12, 0.15)
 const heroItem = staggerItem
 
 const page = usePage()
+const site = computed(() => page.props.site ?? {})
+const siteName = computed(() => site.value.site_name || "Brilliant")
+const siteTagline = computed(() => site.value.tagline || "Premium Store")
 const { success } = useNotification()
 const { openLogin } = useAuthModal()
 
@@ -25,10 +28,16 @@ const props = defineProps({
   trendingProducts: Array,
 })
 
-const isInCart = (product) => props.cartProductIds.includes(product.id)
-const isInWishlist = (product) => props.wishlistProductIds.includes(product.id)
+const isInCart = (product) => props.cartProductIds?.includes(product?.id)
+const isInWishlist = (product) => props.wishlistProductIds?.includes(product?.id)
+
+const formatPrice = (val) => {
+  const num = Number(val)
+  return isNaN(num) ? "$0.00" : `$${num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+}
 
 const addToCart = (product) => {
+  if (!product) return
   if (!page.props.auth.user) { openLogin(); return }
   router.post("/cart", { product_id: product.id }, {
     preserveScroll: true,
@@ -37,56 +46,208 @@ const addToCart = (product) => {
 }
 
 const toggleWishlist = (product) => {
+  if (!product) return
   if (!page.props.auth.user) { openLogin(); return }
   router.post("/wishlist", { product_id: product.id }, { preserveScroll: true })
 }
+
+// ── Mobile Slider Navigation: Category ────────────────
+const activeCategoryIndex = ref(0)
+const categoryScrollRef = ref(null)
+const isCategoryPaused = ref(false)
+let categoryTimer = null
+let categoryResumeTimeout = null
+
+const pauseCategory = () => {
+  isCategoryPaused.value = true
+  if (categoryResumeTimeout) clearTimeout(categoryResumeTimeout)
+}
+
+const resumeCategory = () => {
+  if (categoryResumeTimeout) clearTimeout(categoryResumeTimeout)
+  categoryResumeTimeout = setTimeout(() => {
+    isCategoryPaused.value = false
+  }, 2500)
+}
+
+const onCategoryScroll = (e) => {
+  const el = e.target
+  if (!el || !el.children.length) return
+  const elCenter = el.getBoundingClientRect().left + el.clientWidth / 2
+  let closestIdx = 0
+  let minDiff = Infinity
+  Array.from(el.children).forEach((child, idx) => {
+    const rect = child.getBoundingClientRect()
+    const childCenter = rect.left + rect.width / 2
+    const diff = Math.abs(childCenter - elCenter)
+    if (diff < minDiff) {
+      minDiff = diff
+      closestIdx = idx
+    }
+  })
+  activeCategoryIndex.value = closestIdx
+}
+
+const scrollCategoryTo = (idx) => {
+  const el = categoryScrollRef.value
+  if (!el) return
+  const child = el.children[idx]
+  if (child) {
+    const elRect = el.getBoundingClientRect()
+    const childRect = child.getBoundingClientRect()
+    const targetLeft = (childRect.left - elRect.left + el.scrollLeft) - (el.clientWidth - child.offsetWidth) / 2
+    el.scrollTo({ left: Math.max(0, targetLeft), behavior: "smooth" })
+    activeCategoryIndex.value = idx
+  }
+}
+
+// ── Mobile Slider Navigation: Reviews ─────────────────
+const testimonials = [
+  {
+    quote: "The hand-finishing, weight, and precision exceeded expectations. The presentation box alone signals that you are holding an heirloom.",
+    author: "Sarah J.",
+    city: "London, UK",
+  },
+  {
+    quote: "Commissioning a bespoke creation was a seamless atelier experience. The artisans accommodated every custom detail with genuine care.",
+    author: "Michael C.",
+    city: "Geneva, Switzerland",
+  },
+  {
+    quote: "The design direction feels cohesive and distinct. The fast dispatch and insured white-glove arrival made it an effortless experience.",
+    author: "Emma W.",
+    city: "New York, USA",
+  },
+]
+
+const activeReviewIndex = ref(0)
+const reviewScrollRef = ref(null)
+const isReviewPaused = ref(false)
+let reviewTimer = null
+let reviewResumeTimeout = null
+
+const pauseReview = () => {
+  isReviewPaused.value = true
+  if (reviewResumeTimeout) clearTimeout(reviewResumeTimeout)
+}
+
+const resumeReview = () => {
+  if (reviewResumeTimeout) clearTimeout(reviewResumeTimeout)
+  reviewResumeTimeout = setTimeout(() => {
+    isReviewPaused.value = false
+  }, 2500)
+}
+
+const onReviewScroll = (e) => {
+  const el = e.target
+  if (!el || !el.children.length) return
+  const elCenter = el.getBoundingClientRect().left + el.clientWidth / 2
+  let closestIdx = 0
+  let minDiff = Infinity
+  Array.from(el.children).forEach((child, idx) => {
+    const rect = child.getBoundingClientRect()
+    const childCenter = rect.left + rect.width / 2
+    const diff = Math.abs(childCenter - elCenter)
+    if (diff < minDiff) {
+      minDiff = diff
+      closestIdx = idx
+    }
+  })
+  activeReviewIndex.value = closestIdx
+}
+
+const scrollReviewTo = (idx) => {
+  const el = reviewScrollRef.value
+  if (!el) return
+  const child = el.children[idx]
+  if (child) {
+    const elRect = el.getBoundingClientRect()
+    const childRect = child.getBoundingClientRect()
+    const targetLeft = (childRect.left - elRect.left + el.scrollLeft) - (el.clientWidth - child.offsetWidth) / 2
+    el.scrollTo({ left: Math.max(0, targetLeft), behavior: "smooth" })
+    activeReviewIndex.value = idx
+  }
+}
+
+// ── Auto-slide Timer (every 2.5 - 3 seconds) ──────────
+onMounted(() => {
+  // Category slider auto-advance every 3s on small devices
+  categoryTimer = setInterval(() => {
+    if (!isCategoryPaused.value) {
+      const el = categoryScrollRef.value
+      if (el && el.scrollWidth > el.clientWidth) {
+        const count = props.categories?.length || 0
+        if (count > 1) {
+          const nextIdx = (activeCategoryIndex.value + 1) % count
+          scrollCategoryTo(nextIdx)
+        }
+      }
+    }
+  }, 3000)
+
+  // Staggered Reviews slider auto-advance every 3s
+  setTimeout(() => {
+    reviewTimer = setInterval(() => {
+      if (!isReviewPaused.value) {
+        const el = reviewScrollRef.value
+        if (el && el.scrollWidth > el.clientWidth) {
+          const count = testimonials.length
+          if (count > 1) {
+            const nextIdx = (activeReviewIndex.value + 1) % count
+            scrollReviewTo(nextIdx)
+          }
+        }
+      }
+    }, 3000)
+  }, 1500)
+})
+
+onUnmounted(() => {
+  if (categoryTimer) clearInterval(categoryTimer)
+  if (reviewTimer) clearInterval(reviewTimer)
+  if (categoryResumeTimeout) clearTimeout(categoryResumeTimeout)
+  if (reviewResumeTimeout) clearTimeout(reviewResumeTimeout)
+})
 </script>
 
 <template>
 <Head>
-  <title>Brilliant — Premium Handmade Art</title>
-  <meta name="description" content="Discover exclusive luxury products crafted with passion and precision." />
+  <title>{{ siteName }} — {{ siteTagline }}</title>
+  <meta name="description" content="Discover exclusive luxury products crafted with passion, precision, and excellence." />
 </Head>
 
-<div class="min-h-screen bg-[#FAF7F2] dark:bg-[#0A0A0A] text-[#1A1A1A] dark:text-[#F5F5F5]" style="font-family:'Inter',system-ui,sans-serif;">
+<div class="min-h-screen bg-[#FAF7F2] dark:bg-[#0A0A0A] text-[#1A1A1A] dark:text-[#F5F5F5] selection:bg-[#D4AF37]/30 selection:text-[#1A1A1A] dark:selection:text-white" style="font-family:'Instrument Sans',Inter,system-ui,sans-serif;">
 
-  <!-- ══════════════════════════════
-       HERO SECTION
-  ══════════════════════════════ -->
-  <section class="relative overflow-hidden hero-premium-bg hero-gradient-animated">
-
-    <div class="absolute w-96 h-96 rounded-2xl top-[-10%] right-[-5%] hero-glow-orb" style="background:rgba(212,175,55,0.12); filter:blur(80px); animation:glow-pulse 6s cubic-bezier(0.4,0,0.2,1) infinite;"></div>
-    <div class="absolute w-80 h-80 rounded-2xl bottom-[-8%] left-[-8%] hero-glow-orb" style="background:rgba(212,175,55,0.08); filter:blur(80px); animation:glow-pulse 6s cubic-bezier(0.4,0,0.2,1) infinite 2.5s;"></div>
-    <div class="absolute w-64 h-64 rounded-2xl top-[40%] left-[-4%] hero-glow-orb" style="background:rgba(212,175,55,0.06); filter:blur(80px); animation:glow-pulse 6s cubic-bezier(0.4,0,0.2,1) infinite 4.5s;"></div>
-
-    <div class="hero-rays"></div>
+  <!-- ══════════════════════════════════════════════════════
+       HERO SECTION: ATMOSPHERIC BRAND CREST & EDITORIAL INTRO
+  ══════════════════════════════════════════════════════ -->
+  <section class="relative overflow-hidden hero-premium-bg hero-spotlight-bg border-b border-[#D4AF37]/15">
+    <div class="hero-noise" aria-hidden="true"></div>
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-12 lg:pt-16 pb-16 sm:pb-20 lg:pb-24 relative z-10">
       <div class="grid items-center gap-10 md:gap-16 lg:grid-cols-2 lg:gap-20">
 
-        <!-- Left: Content -->
+        <!-- Left: Content & Narrative -->
         <motion.div
           :variants="heroStagger"
           initial="hidden"
           animate="visible"
           class="space-y-4 md:space-y-5 lg:space-y-6"
         >
-
           <div class="space-y-3 md:space-y-4">
-
             <!-- Badge -->
             <motion.div :variants="heroItem" class="hero-badge">
               <span class="hero-badge-dot">
                 <span class="hero-badge-dot-ring"></span>
                 <span class="hero-badge-dot-core"></span>
               </span>
-              Premium Handmade Art
+              Haute Horology & Fine Art
             </motion.div>
 
             <!-- Heading -->
             <motion.h1
               :variants="heroItem"
-              class="text-2xl font-bold leading-tight sm:text-3xl lg:text-4xl xl:text-5xl"
+              class="text-3xl font-extrabold leading-tight sm:text-4xl lg:text-5xl xl:text-6xl tracking-tight"
             >
               <span class="text-[#1A1A1A] dark:text-[#F5F5F5]">Where Precision Meets</span>
               <span class="block mt-1 text-gold-gradient">Elegance</span>
@@ -102,24 +263,24 @@ const toggleWishlist = (product) => {
           </div>
 
           <!-- CTA Buttons -->
-          <motion.div :variants="heroItem" class="flex flex-col gap-3 sm:flex-row sm:gap-4">
-            <a href="#categories" class="btn-premium group">
-              Explore Collection
-              <svg class="btn-arrow h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-            </a>
-            <Link href="/custom-order" class="btn-glass group">
-              Custom Order
-              <svg class="btn-arrow h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          <motion.div :variants="heroItem" class="flex flex-col gap-3 sm:flex-row sm:gap-4 pt-1">
+            <Link href="/all-products" class="btn-premium group no-underline inline-flex items-center justify-center gap-2">
+              <span>Explore Collection</span>
+              <svg class="btn-arrow h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </Link>
+            <Link href="/custom-order" class="btn-glass group no-underline inline-flex items-center justify-center gap-2">
+              <span>Custom Order</span>
+              <svg class="btn-arrow h-4 w-4 transition-transform duration-300 group-hover:rotate-45" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </Link>
           </motion.div>
 
-          <!-- Stats -->
+          <!-- Stats Cards -->
           <motion.div :variants="heroItem" class="hidden md:grid md:grid-cols-3 gap-4 pt-2">
             <motion.div
               v-for="(stat, i) in [
-                { value: stats.products + '+', label: 'Products' },
-                { value: stats.categories + '+', label: 'Categories' },
-                { value: stats.orders + '+', label: 'Orders' },
+                { value: (stats?.products || 50) + '+', label: 'Products' },
+                { value: (stats?.categories || 10) + '+', label: 'Categories' },
+                { value: (stats?.orders || 100) + '+', label: 'Orders' },
               ]"
               :key="stat.label"
               :variants="itemFadeUp(i * 0.1)"
@@ -133,16 +294,16 @@ const toggleWishlist = (product) => {
           </motion.div>
         </motion.div>
 
-        <!-- Right: Hero Image -->
+        <!-- Right: Glowing Brand Crest Emblem & Masterpiece Card -->
         <motion.div
           :initial="{ opacity: 0, scale: 0.9, y: 24 }"
           :animate="{ opacity: 1, scale: 1, y: 0 }"
           :transition="{ duration: 0.8, ease: m.easeOutExpo, delay: 0.25 }"
           class="relative flex justify-center lg:justify-end"
         >
-          <div class="hero-image-group">
+          <div class="hero-image-group relative max-w-full overflow-hidden sm:overflow-visible">
 
-            <!-- Breathing glow -->
+            <!-- Breathing glow aura -->
             <div class="hero-glow"></div>
 
             <!-- Brand emblem card -->
@@ -179,12 +340,24 @@ const toggleWishlist = (product) => {
 
                 <!-- Wordmark -->
                 <div class="mt-5 text-center">
-                  <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Brilliant</h2>
+                  <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">{{ siteName }}</h2>
                   <div class="mt-2 flex items-center justify-center gap-2">
                     <span class="w-8 h-px bg-[#D4AF37]"></span>
-                    <span class="text-[9px] font-bold uppercase tracking-[0.3em] text-[#D4AF37]">Premium Store</span>
+                    <span class="text-[9px] font-bold uppercase tracking-[0.3em] text-[#D4AF37]">{{ siteTagline }}</span>
                     <span class="w-8 h-px bg-[#D4AF37]"></span>
                   </div>
+                </div>
+
+                <!-- Latest Creation Direct Link -->
+                <div v-if="latestProduct" class="mt-5 pt-4 border-t border-[#D4AF37]/20 text-center">
+                  <Link
+                    :href="`/products/${latestProduct.uid}`"
+                    class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#D4AF37]/15 border border-[#D4AF37]/30 text-[11px] font-semibold text-[#D4AF37] hover:bg-[#D4AF37] hover:text-[#0A0A0A] transition-all duration-300 no-underline"
+                  >
+                    <span>Latest: {{ latestProduct.name }}</span>
+                    <span class="font-bold">({{ formatPrice(latestProduct.price) }})</span>
+                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+                  </Link>
                 </div>
 
                 <!-- Gradient border -->
@@ -199,313 +372,420 @@ const toggleWishlist = (product) => {
     </div>
   </section>
 
-  <!-- ══════════════════════════════
-       BROWSE BY CATEGORY
-  ══════════════════════════════ -->
-  <section id="categories" class="py-12 sm:py-20 bg-[#FAF7F2] dark:bg-[#0A0A0A] border-t border-gray-200/50 dark:border-[#D4AF37]/10 shadow-xl">
+  <!-- ══════════════════════════════════════════════════════
+       BROWSE BY CATEGORY / CURATED DISCIPLINES
+       (Slider on small devices, Grid on sm+)
+  ══════════════════════════════════════════════════════ -->
+  <section id="categories" class="py-14 sm:py-24 bg-[#FAF7F2] dark:bg-[#0A0A0A] border-b border-gray-200/60 dark:border-[#D4AF37]/15 overflow-hidden">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
+      <!-- Section Title Lockup -->
       <motion.div
-        :variants="staggerContainer(0.15)"
+        :variants="staggerContainer(0.12)"
         initial="hidden"
         whileInView="visible"
         :viewport="m.viewport.once"
-        class="text-center mb-8 sm:mb-12"
+        class="text-center max-w-2xl mx-auto mb-8 sm:mb-16"
       >
-        <motion.h2 :variants="staggerItem" class="text-3xl sm:text-4xl font-bold tracking-tight text-[#1A1A1A] dark:text-[#F5F5F5]">Browse by Category</motion.h2>
-        <motion.p :variants="staggerItem" class="mt-3 text-base sm:text-lg text-[#6B6B6B] dark:text-[#A0A0A0]">Explore featured collections curated from the current catalog.</motion.p>
+        <motion.div :variants="staggerItem" class="text-[11px] font-bold uppercase tracking-[0.22em] text-[#D4AF37] mb-2">
+          Curated Disciplines
+        </motion.div>
+        <motion.h2 :variants="staggerItem" class="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-[#1A1A1A] dark:text-[#F5F5F5]">
+          Explore By Collection
+        </motion.h2>
+        <motion.p :variants="staggerItem" class="mt-3 text-sm sm:text-base text-[#6B6B6B] dark:text-[#A0A0A0] leading-relaxed">
+          Each collection represents a distinct discipline of design, noble materials, and artisanal execution.
+        </motion.p>
       </motion.div>
 
-      <motion.div
-        v-if="categories.length"
-        :variants="staggerContainer(0.08)"
-        initial="hidden"
-        whileInView="visible"
-        :viewport="m.viewport.onceLight"
-        class="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
-      >
-        <motion.div
-          v-for="cat in categories" :key="cat.id"
-          :variants="staggerItem"
-          :whileHover="{ y: -8, transition: m.spring.gentle }"
-          class="group relative overflow-hidden rounded-2xl no-underline border border-[#D4AF37]/20 bg-white dark:bg-[#1A1A1A] shadow-md shadow-[#D4AF37]/5 dark:shadow-[#D4AF37]/10 hover:shadow-xl hover:shadow-[#D4AF37]/15 dark:hover:shadow-[#D4AF37]/20"
+      <!-- Category Slider Container (Mobile scroll-snap / Desktop Grid) -->
+      <div v-if="categories?.length">
+        <div
+          ref="categoryScrollRef"
+          @scroll.passive="onCategoryScroll"
+          @touchstart.passive="pauseCategory"
+          @touchend.passive="resumeCategory"
+          @mouseenter="pauseCategory"
+          @mouseleave="resumeCategory"
+          :class="[
+            'gap-5 sm:gap-8 scroll-smooth pb-4 sm:pb-0',
+            categories.length === 1
+              ? 'flex justify-center max-w-md mx-auto px-4 sm:px-0'
+              : categories.length === 2
+                ? 'flex sm:grid sm:grid-cols-2 justify-center max-w-3xl mx-auto overflow-x-auto sm:overflow-visible snap-x snap-mandatory -mx-4 px-4 sm:mx-auto sm:px-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden'
+                : 'flex sm:grid sm:grid-cols-2 lg:grid-cols-3 overflow-x-auto sm:overflow-visible snap-x snap-mandatory -mx-4 px-4 pb-4 sm:mx-0 sm:px-0 sm:pb-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden'
+          ]"
         >
-          <Link :href="`/categories/${cat.uid}`" class="block no-underline">
+          <div
+            v-for="cat in categories"
+            :key="cat.id"
+            :class="[
+              'group relative overflow-hidden rounded-2xl border border-gray-200/80 dark:border-[#D4AF37]/20 bg-white dark:bg-[#141414] shadow-sm hover:shadow-xl hover:border-[#D4AF37]/60 transition-all duration-500 shrink-0 snap-center',
+              categories.length === 1
+                ? 'w-full max-w-[380px]'
+                : 'w-[78vw] max-w-[300px] sm:w-auto sm:max-w-none'
+            ]"
+          >
+            <Link :href="`/categories/${cat.uid}`" class="block no-underline">
+              <!-- Visual Container -->
+              <div class="aspect-[16/10] relative overflow-hidden bg-neutral-100 dark:bg-neutral-900">
+                <img
+                  v-if="cat.image"
+                  :src="`/storage/${cat.image}`"
+                  :alt="cat.name"
+                  loading="lazy"
+                  class="h-full w-full object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+                />
+                <!-- Monogram Fallback -->
+                <div v-else class="h-full w-full flex items-center justify-center bg-gradient-to-br from-[#1A1A1A] via-[#2B2413] to-[#0A0A0A]">
+                  <span class="text-7xl font-black text-[#D4AF37]/20 select-none group-hover:scale-110 transition-transform duration-500">
+                    {{ cat.name?.charAt(0)?.toUpperCase() }}
+                  </span>
+                </div>
 
-          <div v-if="cat.image" class="aspect-[4/3] relative overflow-hidden">
-            <img :src="`/storage/${cat.image}`" :alt="cat.name" loading="lazy"
-              class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
-            <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-black/20" />
-            <div class="absolute bottom-0 left-0 right-0 p-4">
-              <span class="text-lg font-bold text-white">{{ cat.name }}</span>
-              <p v-if="cat.description" class="text-sm text-white/80 mt-1 line-clamp-2">{{ cat.description }}</p>
-            </div>
-          </div>
-          <div v-else class="aspect-[4/3] relative overflow-hidden bg-gradient-to-br from-[#D4AF37]/20 via-[#FAF7F2] to-[#D4AF37]/10 dark:from-[#D4AF37]/15 dark:via-[#1A1A1A] dark:to-[#D4AF37]/5">
-            <div class="absolute inset-0 opacity-60 dark:opacity-70 category-rays">
-            </div>
-            <div class="absolute inset-0 flex flex-col items-center justify-center p-6 text-center">
-              <span class="text-xl font-bold text-[#1A1A1A] dark:text-[#F5F5F5]">{{ cat.name }}</span>
-              <p v-if="cat.description" class="text-sm text-[#6B6B6B] dark:text-[#A0A0A0] mt-2 line-clamp-2 max-w-xs">{{ cat.description }}</p>
-            </div>
-          </div>
+                <!-- Top Pill Badge -->
+                <div class="absolute top-3.5 right-3.5 z-10">
+                  <span class="inline-flex items-center px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-[11px] font-semibold text-white/90">
+                    {{ cat.products_count }} {{ cat.products_count === 1 ? 'Piece' : 'Pieces' }}
+                  </span>
+                </div>
 
-          <div class="p-5">
-            <div class="flex items-center justify-between">
-              <span class="text-xs font-medium text-[#6B6B6B]/70 dark:text-[#A0A0A0]/70">
-                {{ cat.products_count }} {{ cat.products_count === 1 ? 'item' : 'items' }}
-              </span>
-              <span class="inline-flex items-center text-sm font-semibold text-[#D4AF37]">
-                Explore
-                <svg class="w-4 h-4 ml-1.5 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-              </span>
-            </div>
-          </div>
-        </Link>
-      </motion.div>
-    </motion.div>
+                <!-- Bottom Gradient Overlay -->
+                <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent flex flex-col justify-end p-5 sm:p-6 text-white">
+                  <h3 class="text-xl sm:text-2xl font-bold tracking-tight text-white group-hover:text-[#D4AF37] transition-colors">
+                    {{ cat.name }}
+                  </h3>
+                  <p v-if="cat.description" class="text-xs sm:text-sm text-white/75 mt-1.5 line-clamp-2 leading-relaxed">
+                    {{ cat.description }}
+                  </p>
 
-    <div v-else class="rounded-2xl p-8 text-center border border-gray-200 dark:border-[#D4AF37]/15 bg-white dark:bg-[#1A1A1A] text-[#6B6B6B] dark:text-[#A0A0A0]">
-      Categories will appear here once featured collections are active.
+                  <div class="mt-3.5 inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-[#D4AF37]">
+                    <span>Discover Collection</span>
+                    <svg class="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </Link>
+          </div>
+        </div>
+
+        <!-- Slider Pagination Indicator for Mobile -->
+        <div v-if="categories?.length > 1" class="flex sm:hidden items-center justify-center gap-1.5 mt-4">
+          <button
+            v-for="(cat, idx) in categories"
+            :key="'cat-dot-' + cat.id"
+            type="button"
+            @click="scrollCategoryTo(idx)"
+            :aria-label="`Slide to ${cat.name}`"
+            :class="[
+              'h-1.5 rounded-full transition-all duration-300 cursor-pointer',
+              activeCategoryIndex === idx ? 'w-6 bg-[#D4AF37]' : 'w-1.5 bg-neutral-300 dark:bg-neutral-700'
+            ]"
+          />
+        </div>
+      </div>
+
+      <!-- Empty State -->
+      <div v-else class="rounded-2xl p-12 text-center border border-dashed border-gray-300 dark:border-[#D4AF37]/20 bg-white/50 dark:bg-[#141414]/50">
+        <p class="text-sm text-[#6B6B6B] dark:text-[#A0A0A0]">Curated disciplines will be published shortly.</p>
+      </div>
     </div>
-  </div>
-</section>
+  </section>
 
-  <!-- ══════════════════════════════
-       TRENDING PRODUCTS
-  ══════════════════════════════ -->
-  <section id="products" class="py-12 sm:py-20 hero-gradient-static dark:hero-gradient-static border-t border-[#D4AF37]/10 shadow-xl">
+  <!-- ══════════════════════════════════════════════════════
+       CURATED SELECTION / TRENDING ACQUISITIONS
+       (Background matches AppFooter: hero-gradient-static)
+  ══════════════════════════════════════════════════════ -->
+  <section id="products" class="py-12 sm:py-20 hero-gradient-static dark:hero-gradient-static border-t border-b border-[#D4AF37]/10 shadow-xl">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
+      <!-- Header Row with Quick Link -->
       <motion.div
-        :variants="staggerContainer(0.15)"
+        :variants="staggerContainer(0.12)"
         initial="hidden"
         whileInView="visible"
         :viewport="m.viewport.once"
-        class="mb-8 sm:mb-12 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center"
+        class="mb-10 sm:mb-14 flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end"
       >
         <div>
-          <motion.h2 :variants="staggerItem" class="text-3xl sm:text-4xl font-bold tracking-tight text-[#1A1A1A] dark:text-[#F5F5F5]">Trending Products</motion.h2>
-          <motion.p :variants="staggerItem" class="mt-2 text-base text-[#6B6B6B] dark:text-[#A0A0A0]">A quick look at featured pieces from the live collection.</motion.p>
+          <motion.div :variants="staggerItem" class="text-[11px] font-bold uppercase tracking-[0.22em] text-[#D4AF37] mb-2">
+            Curated Selection
+          </motion.div>
+          <motion.h2 :variants="staggerItem" class="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-[#1A1A1A] dark:text-[#F5F5F5]">
+            Trending Acquisitions
+          </motion.h2>
+          <motion.p :variants="staggerItem" class="mt-2 text-sm sm:text-base text-[#6B6B6B] dark:text-[#A0A0A0]">
+            The most sought-after pieces from the current atelier archive.
+          </motion.p>
         </div>
 
         <motion.div :variants="staggerItem">
           <Link
             href="/all-products"
-            class="group inline-flex items-center gap-2 rounded-xl border border-[#D4AF37]/30 bg-white/70 dark:bg-[#1A1A1A]/80 px-4 py-2.5 text-sm font-semibold text-[#1A1A1A] dark:text-[#F5F5F5] backdrop-blur-sm transition-all duration-300 hover:border-[#D4AF37] hover:bg-[#D4AF37]/10 hover:text-[#D4AF37] dark:hover:text-[#D4AF37] shadow-sm hover:shadow-md hover:shadow-[#D4AF37]/10 no-underline"
+            class="group inline-flex items-center gap-2 rounded-xl border border-gray-300 dark:border-[#D4AF37]/30 bg-white/80 dark:bg-[#141414]/80 px-4 py-2.5 text-xs sm:text-sm font-semibold text-[#1A1A1A] dark:text-[#F5F5F5] backdrop-blur-sm transition-all duration-300 hover:border-[#D4AF37] hover:bg-[#D4AF37]/10 hover:text-[#D4AF37] dark:hover:text-[#D4AF37] shadow-sm no-underline"
           >
-            <span>View all products</span>
-            <svg class="h-4 w-4 text-[#D4AF37] transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <span>View Complete Vault</span>
+            <svg class="h-4 w-4 text-[#D4AF37] transition-transform duration-300 group-hover:translate-x-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
             </svg>
           </Link>
         </motion.div>
       </motion.div>
 
+      <!-- Products Grid -->
       <motion.div
         v-if="trendingProducts?.length"
-        :variants="staggerContainer(0.08)"
+        :variants="staggerContainer(0.06)"
         initial="hidden"
         whileInView="visible"
         :viewport="m.viewport.onceLight"
         class="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4"
       >
-        <motion.div v-for="product in trendingProducts" :key="product.id" :variants="staggerItem">
+        <motion.div
+          v-for="product in trendingProducts"
+          :key="product.id"
+          :variants="staggerItem"
+        >
           <ProductCard
             :product="product"
             :is-in-wishlist="isInWishlist(product)"
             :is-in-cart="isInCart(product)"
             @add-to-cart="addToCart(product)"
-            @toggle-wishlist="toggleWishlist(product)" />
+            @toggle-wishlist="toggleWishlist(product)"
+          />
         </motion.div>
       </motion.div>
 
-      <div v-else class="rounded-2xl p-8 text-center border border-gray-200 dark:border-[#D4AF37]/15 bg-white dark:bg-[#1A1A1A] text-[#6B6B6B] dark:text-[#A0A0A0]">
-        Featured products will appear here once they are available.
+      <!-- Empty State -->
+      <div v-else class="rounded-2xl p-12 text-center border border-dashed border-gray-300 dark:border-[#D4AF37]/20 bg-white/50 dark:bg-[#141414]/50">
+        <p class="text-sm text-[#6B6B6B] dark:text-[#A0A0A0]">Featured pieces will appear here once ready for acquisition.</p>
       </div>
     </div>
   </section>
 
-  <!-- ══════════════════════════════
-       FEATURES
-  ══════════════════════════════ -->
-  <section class="py-12 sm:py-20 bg-[#FAF7F2] dark:bg-[#0A0A0A] border-t border-gray-200/50 dark:border-[#D4AF37]/10 shadow-xl">
+  <!-- ══════════════════════════════════════════════════════
+       PILLARS OF ARTISTRY & HERITAGE
+  ══════════════════════════════════════════════════════ -->
+  <section class="py-14 sm:py-24 bg-white/60 dark:bg-[#111111]/60 border-b border-gray-200/60 dark:border-[#D4AF37]/15">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="grid grid-cols-2 gap-6 sm:gap-8 lg:grid-cols-4">
 
-        <motion.div
-          :whileHover="{ y: -4, transition: m.spring.gentle }"
-          class="text-center"
-        >
-          <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#D4AF37]/10 dark:bg-[#D4AF37]/15 transition-all duration-300 group-hover:bg-[#D4AF37]">
-            <svg class="w-7 h-7" fill="none" stroke="#D4AF37" stroke-width="1.5" viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
-          </div>
-          <h3 class="mb-2 font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">Handcrafted</h3>
-          <p class="text-sm text-[#6B6B6B] dark:text-[#A0A0A0]">Every piece is created with careful finishing and a human touch.</p>
-        </motion.div>
+      <!-- Small Section Kicker -->
+      <div class="text-center max-w-xl mx-auto mb-12 sm:mb-16">
+        <div class="text-[11px] font-bold uppercase tracking-[0.22em] text-[#D4AF37] mb-2">
+          The Atelier Standard
+        </div>
+        <h2 class="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#1A1A1A] dark:text-[#F5F5F5]">
+          Pillars of Exceptional Craftsmanship
+        </h2>
+      </div>
 
-        <motion.div
-          :whileHover="{ y: -4, transition: m.spring.gentle }"
-          class="text-center"
-        >
-          <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#D4AF37]/10 dark:bg-[#D4AF37]/15 transition-all duration-300 group-hover:bg-[#D4AF37]">
-            <svg class="w-7 h-7" fill="none" stroke="#D4AF37" stroke-width="1.5" viewBox="0 0 24 24"><path d="M12 15l-2 5-6-2 2-6-5-2 5-2-2-6 6 2 2-5 2 5 6-2-2 6 5 2-5 2 2 6-6-2-2 5z"/></svg>
-          </div>
-          <h3 class="mb-2 font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">Premium Quality</h3>
-          <p class="text-sm text-[#6B6B6B] dark:text-[#A0A0A0]">Materials and detailing stay aligned with a polished final result.</p>
-        </motion.div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
 
-        <motion.div
-          :whileHover="{ y: -4, transition: m.spring.gentle }"
-          class="text-center"
-        >
-          <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#D4AF37]/10 dark:bg-[#D4AF37]/15 transition-all duration-300 group-hover:bg-[#D4AF37]">
-            <svg class="w-7 h-7" fill="none" stroke="#D4AF37" stroke-width="1.5" viewBox="0 0 24 24"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+        <!-- Pillar 1 -->
+        <div class="group relative rounded-2xl border border-gray-200/70 dark:border-white/5 bg-white dark:bg-[#161616] p-6 sm:p-7 shadow-sm hover:border-[#D4AF37]/40 hover:shadow-lg transition-all duration-300">
+          <div class="mb-5 flex h-13 w-13 items-center justify-center rounded-xl bg-[#D4AF37]/10 dark:bg-[#D4AF37]/15 text-[#D4AF37] group-hover:bg-[#D4AF37] group-hover:text-white transition-colors duration-300">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
+            </svg>
           </div>
-          <h3 class="mb-2 font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">Made with Care</h3>
-          <p class="text-sm text-[#6B6B6B] dark:text-[#A0A0A0]">Each item is shaped with attention to detail, balance, and precision.</p>
-        </motion.div>
+          <h3 class="text-base font-bold text-[#1A1A1A] dark:text-[#F5F5F5] mb-2">
+            Master Craftsmanship
+          </h3>
+          <p class="text-xs sm:text-sm text-[#6B6B6B] dark:text-[#A0A0A0] leading-relaxed">
+            Every creation is sculpted, assembled, and finished by master artisans with micrometer precision.
+          </p>
+        </div>
 
-        <motion.div
-          :whileHover="{ y: -4, transition: m.spring.gentle }"
-          class="text-center"
-        >
-          <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-[#D4AF37]/10 dark:bg-[#D4AF37]/15 transition-all duration-300 group-hover:bg-[#D4AF37]">
-            <svg class="w-7 h-7" fill="none" stroke="#D4AF37" stroke-width="1.5" viewBox="0 0 24 24"><path d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707"/><circle cx="12" cy="12" r="4"/></svg>
+        <!-- Pillar 2 -->
+        <div class="group relative rounded-2xl border border-gray-200/70 dark:border-white/5 bg-white dark:bg-[#161616] p-6 sm:p-7 shadow-sm hover:border-[#D4AF37]/40 hover:shadow-lg transition-all duration-300">
+          <div class="mb-5 flex h-13 w-13 items-center justify-center rounded-xl bg-[#D4AF37]/10 dark:bg-[#D4AF37]/15 text-[#D4AF37] group-hover:bg-[#D4AF37] group-hover:text-white transition-colors duration-300">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
+            </svg>
           </div>
-          <h3 class="mb-2 font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">Curated Collection</h3>
-          <p class="text-sm text-[#6B6B6B] dark:text-[#A0A0A0]">Featured works reflect the active products and categories in your catalog.</p>
-        </motion.div>
+          <h3 class="text-base font-bold text-[#1A1A1A] dark:text-[#F5F5F5] mb-2">
+            Certified Authenticity
+          </h3>
+          <p class="text-xs sm:text-sm text-[#6B6B6B] dark:text-[#A0A0A0] leading-relaxed">
+            Each individual piece is cataloged with a unique serial identification and atelier certificate.
+          </p>
+        </div>
+
+        <!-- Pillar 3 -->
+        <div class="group relative rounded-2xl border border-gray-200/70 dark:border-white/5 bg-white dark:bg-[#161616] p-6 sm:p-7 shadow-sm hover:border-[#D4AF37]/40 hover:shadow-lg transition-all duration-300">
+          <div class="mb-5 flex h-13 w-13 items-center justify-center rounded-xl bg-[#D4AF37]/10 dark:bg-[#D4AF37]/15 text-[#D4AF37] group-hover:bg-[#D4AF37] group-hover:text-white transition-colors duration-300">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21 11.25v8.25a1.5 1.5 0 01-1.5 1.5H4.5a1.5 1.5 0 01-1.5-1.5v-8.25M12 4.875A2.625 2.625 0 109.375 7.5H12m0-2.625V7.5m0-2.625A2.625 2.625 0 1114.625 7.5H12m0 0V21m-8.625-9.75h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
+            </svg>
+          </div>
+          <h3 class="text-base font-bold text-[#1A1A1A] dark:text-[#F5F5F5] mb-2">
+            White-Glove Presentation
+          </h3>
+          <p class="text-xs sm:text-sm text-[#6B6B6B] dark:text-[#A0A0A0] leading-relaxed">
+            Delivered in a handcrafted presentation case, velvet travel pouch, and wax-sealed provenance.
+          </p>
+        </div>
+
+        <!-- Pillar 4 -->
+        <div class="group relative rounded-2xl border border-gray-200/70 dark:border-white/5 bg-white dark:bg-[#161616] p-6 sm:p-7 shadow-sm hover:border-[#D4AF37]/40 hover:shadow-lg transition-all duration-300">
+          <div class="mb-5 flex h-13 w-13 items-center justify-center rounded-xl bg-[#D4AF37]/10 dark:bg-[#D4AF37]/15 text-[#D4AF37] group-hover:bg-[#D4AF37] group-hover:text-white transition-colors duration-300">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.25V4.125A1.125 1.125 0 0013.125 3H4.875A1.125 1.125 0 003.75 4.125v10.125c0 .621.504 1.125 1.125 1.125h9.75" />
+            </svg>
+          </div>
+          <h3 class="text-base font-bold text-[#1A1A1A] dark:text-[#F5F5F5] mb-2">
+            Insured Express Courier
+          </h3>
+          <p class="text-xs sm:text-sm text-[#6B6B6B] dark:text-[#A0A0A0] leading-relaxed">
+            Directly dispatched with comprehensive transit insurance, real-time tracking, and adult signature.
+          </p>
+        </div>
 
       </div>
     </div>
   </section>
 
-  <!-- ══════════════════════════════
-       TESTIMONIALS
-  ══════════════════════════════ -->
-  <section class="py-12 sm:py-20 hero-gradient-static dark:hero-gradient-static border-t border-gray-200/50 dark:border-[#D4AF37]/10 shadow-xl">
+  <!-- ══════════════════════════════════════════════════════
+       VERIFIED EXPERIENCES (COLLECTOR ACCLAIM)
+       (Slider on small devices, Grid on md+)
+  ══════════════════════════════════════════════════════ -->
+  <section class="py-12 sm:py-20 hero-gradient-static dark:hero-gradient-static border-t border-b border-gray-200/50 dark:border-[#D4AF37]/10 shadow-xl overflow-hidden">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
+      <!-- Header -->
       <motion.div
-        :variants="staggerContainer(0.15)"
+        :variants="staggerContainer(0.12)"
         initial="hidden"
         whileInView="visible"
         :viewport="m.viewport.once"
-        class="mb-10 sm:mb-12 text-center"
+        class="text-center max-w-2xl mx-auto mb-8 sm:mb-16"
       >
-        <motion.h2 :variants="staggerItem" class="mb-3 text-3xl font-bold leading-tight text-foreground sm:mb-4 sm:text-4xl">
-          <span class="inline-flex flex-wrap items-baseline gap-x-[0.24em] gap-y-1 justify-center">
-            <span>Client</span>
-            <span class="text-gold-gradient">Testimonials</span>
-          </span>
+        <motion.div :variants="staggerItem" class="text-[11px] font-bold uppercase tracking-[0.22em] text-[#D4AF37] mb-2">
+          Collector Acclaim
+        </motion.div>
+        <motion.h2 :variants="staggerItem" class="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-[#1A1A1A] dark:text-[#F5F5F5]">
+          Verified Experiences
         </motion.h2>
-        <motion.p :variants="staggerItem" class="max-w-2xl text-muted-foreground leading-7 sm:text-lg mx-auto">Recent feedback from collectors and watch enthusiasts.</motion.p>
+        <motion.p :variants="staggerItem" class="mt-2 text-sm sm:text-base text-[#6B6B6B] dark:text-[#A0A0A0]">
+          Reflections from connoisseurs who have welcomed our creations into their permanent collections.
+        </motion.p>
       </motion.div>
 
-      <motion.div
-        :variants="staggerContainer(0.15)"
-        initial="hidden"
-        whileInView="visible"
-        :viewport="m.viewport.onceLight"
-        class="grid gap-6 md:grid-cols-3"
-      >
-        <motion.div
-          :variants="staggerItem"
-          :whileHover="{ y: -6, transition: m.spring.gentle }"
-          class="rounded-xl border border-border bg-[#F5F1E8] dark:bg-[#1A1A1A] p-6 shadow-luxury transition-luxury hover:shadow-luxury-hover"
+      <!-- Review Slider Container (Mobile scroll-snap / Desktop Grid) -->
+      <div>
+        <div
+          ref="reviewScrollRef"
+          @scroll.passive="onReviewScroll"
+          @touchstart.passive="pauseReview"
+          @touchend.passive="resumeReview"
+          @mouseenter="pauseReview"
+          @mouseleave="resumeReview"
+          class="flex md:grid md:grid-cols-3 gap-5 md:gap-6 overflow-x-auto md:overflow-visible snap-x snap-mandatory -mx-4 px-4 pb-4 md:mx-0 md:px-0 md:pb-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden scroll-smooth"
         >
-          <div class="mb-4 flex items-center space-x-1">
-            <svg v-for="i in 5" :key="i" class="w-5 h-5 fill-[#D4AF37] text-[#D4AF37]" viewBox="0 0 20 20">
-              <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
-            </svg>
+          <div
+            v-for="testimonial in testimonials"
+            :key="testimonial.author"
+            class="rounded-2xl border border-gray-200/80 dark:border-[#D4AF37]/20 bg-white/90 dark:bg-[#1A1A1A]/90 backdrop-blur-sm p-6 sm:p-7 shadow-md hover:border-[#D4AF37]/50 hover:shadow-lg transition-all duration-300 flex flex-col justify-between w-[82vw] max-w-[320px] shrink-0 snap-center md:w-auto md:max-w-none"
+          >
+            <div>
+              <div class="mb-4 flex items-center space-x-1">
+                <svg v-for="i in 5" :key="i" class="w-4 h-4 fill-[#D4AF37] text-[#D4AF37]" viewBox="0 0 20 20">
+                  <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
+                </svg>
+              </div>
+              <p class="text-sm sm:text-base italic text-[#1A1A1A] dark:text-[#EDEDED] leading-relaxed mb-6">
+                "{{ testimonial.quote }}"
+              </p>
+            </div>
+            <div class="border-t border-gray-100 dark:border-white/10 pt-4 flex items-center justify-between">
+              <div>
+                <div class="font-bold text-sm text-[#1A1A1A] dark:text-[#F5F5F5]">{{ testimonial.author }}</div>
+                <div class="text-xs text-[#6B6B6B] dark:text-[#A0A0A0]">{{ testimonial.city }}</div>
+              </div>
+              <span class="inline-flex items-center gap-1 text-[11px] font-semibold text-emerald-600 dark:text-emerald-400">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/></svg>
+                Verified Buyer
+              </span>
+            </div>
           </div>
-          <p class="mb-4 italic text-muted-foreground">"The finishing, accuracy, and presentation were even better in person. It instantly became my daily wear."</p>
-          <p class="font-semibold text-foreground">Sarah Johnson</p>
-        </motion.div>
+        </div>
 
-        <motion.div
-          :variants="staggerItem"
-          :whileHover="{ y: -6, transition: m.spring.gentle }"
-          class="rounded-xl border border-border bg-[#F5F1E8] dark:bg-[#1A1A1A] p-6 shadow-luxury transition-luxury hover:shadow-luxury-hover"
-        >
-          <div class="mb-4 flex items-center space-x-1">
-            <svg v-for="i in 5" :key="i" class="w-5 h-5 fill-[#D4AF37] text-[#D4AF37]" viewBox="0 0 20 20">
-              <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
-            </svg>
-          </div>
-          <p class="mb-4 italic text-muted-foreground">"A premium experience. The craftsmanship and packaging worked perfectly for a luxury gift."</p>
-          <p class="font-semibold text-foreground">Michael Chen</p>
-        </motion.div>
+        <!-- Slider Pagination Indicator for Mobile -->
+        <div class="flex md:hidden items-center justify-center gap-1.5 mt-4">
+          <button
+            v-for="(_, idx) in testimonials"
+            :key="'review-dot-' + idx"
+            type="button"
+            @click="scrollReviewTo(idx)"
+            :aria-label="`Slide to review ${idx + 1}`"
+            :class="[
+              'h-1.5 rounded-full transition-all duration-300 cursor-pointer',
+              activeReviewIndex === idx ? 'w-6 bg-[#D4AF37]' : 'w-1.5 bg-neutral-300 dark:bg-neutral-700'
+            ]"
+          />
+        </div>
+      </div>
 
-        <motion.div
-          :variants="staggerItem"
-          :whileHover="{ y: -6, transition: m.spring.gentle }"
-          class="rounded-xl border border-border bg-[#F5F1E8] dark:bg-[#1A1A1A] p-6 shadow-luxury transition-luxury hover:shadow-luxury-hover"
-        >
-          <div class="mb-4 flex items-center space-x-1">
-            <svg v-for="i in 5" :key="i" class="w-5 h-5 fill-[#D4AF37] text-[#D4AF37]" viewBox="0 0 20 20">
-              <path d="M10 15l-5.878 3.09 1.123-6.545L.489 6.91l6.572-.955L10 0l2.939 5.955 6.572.955-4.756 4.635 1.123 6.545z"/>
-            </svg>
-          </div>
-          <p class="mb-4 italic text-muted-foreground">"The design direction feels thoughtful and consistent. Every collection looks professionally curated."</p>
-          <p class="font-semibold text-foreground">Emma Williams</p>
-        </motion.div>
-      </motion.div>
     </div>
   </section>
 
-  <!-- ══════════════════════════════
-       CTA SECTION
-  ══════════════════════════════ -->
-  <section id="custom-order" class="py-12 sm:py-20 bg-[#FAF7F2] dark:bg-[#0A0A0A] border-t border-gray-200/50 dark:border-[#D4AF37]/10 shadow-xl">
-    <div class="max-w-4xl mx-auto px-4 text-center sm:px-6 lg:px-8">
+  <!-- ══════════════════════════════════════════════════════
+       BESPOKE COMMISSIONS / CUSTOM INVITATION BANNER
+  ══════════════════════════════════════════════════════ -->
+  <section id="custom-order" class="py-16 sm:py-24 bg-[#FAF7F2] dark:bg-[#0A0A0A]">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
       <motion.div
         :variants="m.scaleIn"
         initial="hidden"
         whileInView="visible"
         :viewport="m.viewport.once"
-        class="rounded-2xl p-8 sm:p-12 border border-gray-200 dark:border-[#D4AF37]/20 bg-gradient-to-br from-[#D4AF37]/10 to-slate-900/5 dark:from-[#D4AF37]/10 dark:to-[#1A1A1A]/50 shadow-lg shadow-[#D4AF37]/10 dark:shadow-[#D4AF37]/20 hover:shadow-xl hover:shadow-[#D4AF37]/20 dark:hover:shadow-[#D4AF37]/25 transition-shadow duration-300"
+        class="relative overflow-hidden rounded-3xl border border-[#D4AF37]/35 bg-gradient-to-br from-[#1C1814] via-[#121110] to-[#0A0A0A] p-8 sm:p-14 text-center text-white shadow-2xl shadow-black/40"
       >
+        <!-- Ambient Gold Flare -->
+        <div class="absolute -top-24 left-1/2 -translate-x-1/2 w-96 h-96 bg-[#D4AF37]/15 rounded-full blur-3xl pointer-events-none"></div>
 
-        <motion.h2
-          :variants="m.fadeUp"
-          initial="hidden"
-          whileInView="visible"
-          :viewport="m.viewport.once"
-          class="mb-4 text-3xl font-bold sm:text-4xl text-[#1A1A1A] dark:text-[#F5F5F5]"
-        >Ready to Commission Your Custom Order?</motion.h2>
-        <motion.p
-          :variants="m.fadeUp"
-          initial="hidden"
-          whileInView="visible"
-          :viewport="m.viewport.once"
-          :transition="{ duration: m.duration.base, ease: m.easeOutExpo, delay: 0.1 }"
-          class="mx-auto mb-8 max-w-2xl text-lg text-[#6B6B6B] dark:text-[#A0A0A0]"
-        >Share your idea with us and we will help shape the right piece for your space, gift, or collection.</motion.p>
+        <div class="relative z-10 max-w-2xl mx-auto">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[#D4AF37]/30 bg-[#D4AF37]/10 backdrop-blur-md mb-5">
+            <span class="w-1.5 h-1.5 rounded-full bg-[#D4AF37]"></span>
+            <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.2em] text-[#D4AF37]">
+              Atelier Commissions
+            </span>
+          </div>
 
-        <motion.div
-          :variants="m.fadeUp"
-          initial="hidden"
-          whileInView="visible"
-          :viewport="m.viewport.once"
-          :transition="{ duration: m.duration.base, ease: m.easeOutExpo, delay: 0.2 }"
-          class="flex flex-col justify-center gap-4 sm:flex-row"
-        >
-          <Link href="/custom-order"
-            class="inline-flex items-center justify-center rounded-lg px-6 py-3 text-base font-medium transition-all duration-300 sm:px-8 sm:py-4 sm:text-lg no-underline bg-[#D4AF37] dark:bg-[#D4AF37] text-white dark:text-[#0A0A0A] hover:bg-[#C9A032] dark:hover:bg-[#C9A032] shadow-lg shadow-[#D4AF37]/20 dark:shadow-[#D4AF37]/30 hover:shadow-xl hover:shadow-[#D4AF37]/30 dark:hover:shadow-[#D4AF37]/40">
-            Start Custom Order
-            <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-          </Link>
-          <Link href="/cart"
-            class="inline-flex items-center justify-center rounded-lg px-6 py-3 text-base font-medium transition-all duration-300 sm:px-8 sm:py-4 sm:text-lg no-underline border border-gray-200 dark:border-[#D4AF37]/25 bg-white dark:bg-[#1A1A1A] text-[#1A1A1A] dark:text-[#F5F5F5] shadow-sm shadow-[#D4AF37]/5 dark:shadow-[#D4AF37]/10 hover:shadow-md hover:shadow-[#D4AF37]/10 dark:hover:shadow-[#D4AF37]/20">
-            Contact Us
-          </Link>
-        </motion.div>
+          <h2 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-white mb-4">
+            Desire a One-of-a-Kind Creation?
+          </h2>
+
+          <p class="text-sm sm:text-base text-white/75 leading-relaxed mb-8 max-w-xl mx-auto">
+            Collaborate directly with our master craftsmen to create a bespoke timepiece, sculpted artwork, or customized collectible tailored to your exact aesthetic.
+          </p>
+
+          <div class="flex flex-col sm:flex-row items-center justify-center gap-3.5 sm:gap-4">
+            <Link
+              href="/custom-order"
+              class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-[#D4AF37] text-[#0A0A0A] font-bold text-sm sm:text-base hover:bg-[#C9A032] shadow-xl shadow-[#D4AF37]/25 transition-all duration-300 no-underline"
+            >
+              <span>Begin Bespoke Inquiry</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+              </svg>
+            </Link>
+
+            <Link
+              href="/all-products"
+              class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl border border-white/20 bg-white/5 text-white font-semibold text-sm sm:text-base backdrop-blur-md hover:border-[#D4AF37] hover:bg-white/10 transition-all duration-300 no-underline"
+            >
+              <span>Browse Catalog Vault</span>
+            </Link>
+          </div>
+        </div>
       </motion.div>
     </div>
   </section>
 
+  <!-- Global Footer -->
   <AppFooter />
 
 </div>
@@ -518,56 +798,26 @@ html {
 }
 
 .dark .elegance-text {
-  background: linear-gradient(135deg, #D4AF37, #F4E5C2) !important;
+  background: linear-gradient(135deg, var(--gold), var(--gold-light)) !important;
   -webkit-background-clip: text !important;
   background-clip: text !important;
   -webkit-text-fill-color: transparent !important;
 }
-
-.dark .hero-glow-orb {
-  background: rgba(212, 175, 55, 0.15) !important;
-}
-
-.dark .hero-rays {
-  background: repeating-linear-gradient(55deg, transparent, transparent 60px, rgba(212, 175, 55, 0.06) 60px, rgba(212, 175, 55, 0.06) 62px) !important;
-}
-
-.dark .hero-gradient-animated {
-  background: linear-gradient(135deg, #0A0A0A, #1A1A1A, #111, #1A1A1A, #0A0A0A) !important;
-  background-size: 200% 200% !important;
-  animation: gradient-shift 20s cubic-bezier(0.4, 0, 0.2, 1) infinite !important;
-}
-
-.dark .hero-stat-card {
-  background: rgba(26, 26, 26, 0.6) !important;
-  border-color: rgba(212, 175, 55, 0.15) !important;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2) !important;
-}
-
-.dark .hero-stat-card:hover {
-  box-shadow: 0 12px 40px rgba(212, 175, 55, 0.1) !important;
-  border-color: rgba(212, 175, 55, 0.3) !important;
-}
-
-.category-rays {
-  background-image: repeating-linear-gradient(45deg, transparent, transparent 25px, rgba(212, 175, 55, 0.12) 25px, rgba(212, 175, 55, 0.12) 26px);
-}
-
-.dark .category-rays {
-  background-image: repeating-linear-gradient(45deg, transparent, transparent 25px, rgba(212, 175, 55, 0.25) 25px, rgba(212, 175, 55, 0.25) 26px) !important;
-}
 </style>
 
 <style scoped>
-@keyframes gradient-shift {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
+.hero-spotlight-bg {
+  background:
+    radial-gradient(ellipse 80% 70% at 78% 32%, color-mix(in srgb, var(--gold) 20%, transparent), transparent 62%),
+    radial-gradient(ellipse 55% 55% at 8% 88%, color-mix(in srgb, var(--gold) 10%, transparent), transparent 65%),
+    linear-gradient(135deg, #FAF7F2 0%, #F5F1E8 45%, #FFFFFF 70%, #FAF7F2 100%);
 }
 
-.hero-gradient-animated {
-  background: linear-gradient(135deg, #FAF7F2, #F5F1E8, #FFF, #F5F1E8, #FAF7F2);
-  background-size: 200% 200%;
-  animation: gradient-shift 30s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+.dark .hero-spotlight-bg {
+  background:
+    radial-gradient(ellipse 80% 70% at 78% 30%, color-mix(in srgb, var(--gold) 16%, transparent), transparent 62%),
+    radial-gradient(ellipse 55% 55% at 12% 86%, color-mix(in srgb, var(--gold) 8%, transparent), transparent 65%),
+    linear-gradient(135deg, #0A0A0A 0%, #141414 45%, #1A1A1A 70%, #0A0A0A 100%);
 }
 
 @keyframes glow-pulse {
@@ -575,33 +825,12 @@ html {
   50% { opacity: 0.4; transform: scale(1.05); }
 }
 
-.hero-glow-orb {
-  pointer-events: none;
-  will-change: transform, opacity;
-}
-
-@keyframes rays-sweep {
-  0% { transform: translate(-30%) translateY(-20%) rotate(0); }
-  100% { transform: translate(30%) translateY(20%) rotate(3deg); }
-}
-
-.hero-rays {
-  position: absolute;
-  top: -50%;
-  right: -50%;
-  bottom: -50%;
-  left: -50%;
-  background: repeating-linear-gradient(55deg, transparent, transparent 60px, rgba(212, 175, 55, 0.03) 60px, rgba(212, 175, 55, 0.03) 62px);
-  animation: rays-sweep 40s linear infinite;
-  pointer-events: none;
-}
-
 .hero-glow {
   position: absolute;
   width: 280px;
   height: 280px;
   border-radius: 9999px;
-  background: radial-gradient(circle, rgba(212, 175, 55, 0.28), transparent 65%);
+  background: radial-gradient(circle, color-mix(in srgb, var(--gold) 28%, transparent), transparent 65%);
   filter: blur(30px);
   animation: glow-pulse 6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
   pointer-events: none;
@@ -619,22 +848,29 @@ html {
 
 .hero-emblem-card {
   position: relative;
-  background: #1a1f36;
-  border: 1px solid rgba(212, 175, 55, 0.35);
+  background: #141414;
+  border: 1px solid color-mix(in srgb, var(--gold) 35%, transparent);
   border-radius: 28px;
-  padding: 2.5rem 2.75rem;
+  padding: 1.75rem 1.5rem;
+  max-width: 100%;
   box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.08);
   animation: emblem-breathe 5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
 }
 
+@media (min-width: 640px) {
+  .hero-emblem-card {
+    padding: 2.5rem 2.75rem;
+  }
+}
+
 @keyframes emblem-breathe {
-  0%, 100% { box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 0 30px rgba(212, 175, 55, 0.08); }
-  50% { box-shadow: 0 28px 70px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 0 50px rgba(212, 175, 55, 0.22); }
+  0%, 100% { box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 0 30px color-mix(in srgb, var(--gold) 8%, transparent); }
+  50% { box-shadow: 0 28px 70px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 0 50px color-mix(in srgb, var(--gold) 22%, transparent); }
 }
 
 .hero-sparkle {
   position: absolute;
-  color: #D4AF37;
+  color: var(--gold);
   animation: sparkle-twinkle 3s ease-in-out infinite;
 }
 
@@ -643,50 +879,7 @@ html {
   50% { opacity: 1; transform: scale(1); }
 }
 
-.hero-stat-card {
-  border-radius: 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  background: rgba(255, 255, 255, 0.45);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  padding: 1.25rem;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
-  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.3s ease;
-  will-change: transform;
-}
-
-.hero-stat-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.08);
-  border-color: rgba(212, 175, 55, 0.3);
-}
-
-.hero-stat-value {
-  font-size: 1.875rem;
-  font-weight: 700;
-  line-height: 1.2;
-  color: #1A1A1A;
-}
-
-.dark .hero-stat-value {
-  color: #F5F5F5;
-}
-
-.hero-stat-label {
-  margin-top: 0.25rem;
-  font-size: 0.875rem;
-  color: #6B6B6B;
-  font-weight: 400;
-}
-
-.dark .hero-stat-label {
-  color: #A0A0A0;
-}
-
 @media (prefers-reduced-motion: reduce) {
-  .hero-gradient-animated,
-  .hero-glow-orb,
-  .hero-rays,
   .hero-glow,
   .hero-emblem,
   .hero-emblem-card,
@@ -694,12 +887,6 @@ html {
     animation: none !important;
     transition: none !important;
     transform: none !important;
-    opacity: 1 !important;
-  }
-  .hero-stat-card {
-    transform: none !important;
-    box-shadow: none !important;
-    border-color: inherit !important;
     opacity: 1 !important;
   }
 }

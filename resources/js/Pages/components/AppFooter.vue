@@ -1,15 +1,27 @@
 <script setup>
-import { Link } from "@inertiajs/vue3"
+import { computed } from "vue"
+import { Link, usePage } from "@inertiajs/vue3"
+
+const page = usePage()
+const site = computed(() => page.props.site ?? {})
+const siteName = computed(() => site.value.site_name || "Brilliant")
+const siteLogo = computed(() => site.value.logo_url || null)
+const description = computed(() => site.value.footer_description || "Premium products crafted with precision and passion.")
+const contactEmail = computed(() => site.value.contact_email || "info@brilliantstore.com")
+const contactHours = computed(() => site.value.contact_hours || "Mon - Fri: 9:00 AM - 6:00 PM")
 </script>
 
 <template>
   <footer class="hero-gradient-static dark:hero-gradient-static text-gray-600 dark:text-white/70">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
-      <div class="grid grid-cols-2 gap-8 sm:grid-cols-4">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
 
-        <div class="col-span-2 sm:col-span-1">
+        <div class="col-span-1 sm:col-span-2 lg:col-span-1">
           <div class="flex items-center gap-2 mb-4">
-            <div class="w-8 h-8 rounded-xl flex items-center justify-center bg-gradient-to-br from-[#D4AF37] to-[#B8941E]">
+            <div v-if="siteLogo" class="w-8 h-8 rounded-xl flex items-center justify-center overflow-hidden bg-white">
+              <img :src="siteLogo" :alt="siteName" class="w-full h-full object-contain p-0.5" />
+            </div>
+            <div v-else class="w-8 h-8 rounded-xl flex items-center justify-center bg-gradient-to-br from-[#D4AF37] to-[#B8941E]">
               <svg class="w-4 h-4" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
                 <path d="M6 3h12l4 6-10 13L2 9z"/>
                 <path d="M2 9h20"/>
@@ -17,9 +29,9 @@ import { Link } from "@inertiajs/vue3"
                 <path d="M12 22l6-13"/>
               </svg>
             </div>
-            <span class="font-extrabold text-lg text-gray-900 dark:text-white">Brilliant</span>
+            <span class="font-extrabold text-lg text-gray-900 dark:text-white">{{ siteName }}</span>
           </div>
-          <p class="text-sm leading-relaxed text-gray-500 dark:text-white/50">Premium products crafted with precision and passion.</p>
+          <p class="text-sm leading-relaxed text-gray-500 dark:text-white/50">{{ description }}</p>
         </div>
 
         <div>
@@ -35,8 +47,8 @@ import { Link } from "@inertiajs/vue3"
         <div>
           <h4 class="font-semibold mb-4 text-gray-900 dark:text-white">Contact</h4>
           <ul class="space-y-2 text-sm list-none p-0 text-gray-500 dark:text-white/50">
-            <li>info@brilliantstore.com</li>
-            <li>Mon - Fri: 9:00 AM - 6:00 PM</li>
+            <li class="break-all">{{ contactEmail }}</li>
+            <li>{{ contactHours }}</li>
           </ul>
         </div>
 
@@ -55,7 +67,7 @@ import { Link } from "@inertiajs/vue3"
       </div>
 
       <div class="mt-10 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-gray-200 dark:border-white/10">
-        <p class="text-sm text-gray-400 dark:text-white/40">&copy; 2025 Brilliant. All rights reserved.</p>
+        <p class="text-sm text-gray-400 dark:text-white/40">&copy; {{ new Date().getFullYear() }} {{ siteName }}. All rights reserved.</p>
         <div class="flex items-center gap-5 text-sm text-gray-400 dark:text-white/40">
           <a href="#" class="transition-colors no-underline text-gray-400 dark:text-white/40 hover:text-gray-600 dark:hover:text-white/70">Privacy</a>
           <a href="#" class="transition-colors no-underline text-gray-400 dark:text-white/40 hover:text-gray-600 dark:hover:text-white/70">Terms</a>

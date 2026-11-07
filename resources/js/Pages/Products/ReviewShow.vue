@@ -48,41 +48,39 @@ const formatDate = (date) => {
 
     <Sidebar />
 
-    <main class="flex-1 p-6 lg:p-10 overflow-x-hidden">
+    <main class="flex-1 min-w-0 p-3.5 sm:p-6 lg:p-8 overflow-y-auto">
 
       <!-- HEADER -->
       <div class="mb-6 flex items-center gap-3">
-        <a href="/reviews"
-          class="w-8 h-8 rounded-lg flex items-center justify-center border border-gray-200 dark:border-[#D4AF37]/20 hover:bg-gray-50 dark:hover:bg-[#30363d]/50 cursor-pointer">
+        <Link href="/reviews"
+          class="w-9 h-9 rounded-xl flex items-center justify-center border border-gray-200 dark:border-[#D4AF37]/20 hover:bg-gray-50 dark:hover:bg-[#30363d]/50 cursor-pointer transition shrink-0">
           <svg class="w-4 h-4 text-gray-500 dark:text-[#A0A0A0]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
           </svg>
-        </a>
+        </Link>
         <div>
-          <h1 class="text-2xl font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">Review #{{ review.id }}</h1>
-          <p class="text-gray-500 dark:text-[#A0A0A0] text-sm">Full review details and status management</p>
-        </div>
-        <div class="ml-auto">
+          <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-[#1A1A1A] dark:text-[#F5F5F5]">Review #{{ review.id }}</h1>
+          <p class="text-xs sm:text-sm text-gray-500 dark:text-[#A0A0A0] mt-0.5">Full review details and moderation status</p>
         </div>
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
 
         <!-- LEFT: Review Details -->
-        <div class="lg:col-span-2 space-y-5">
+        <div class="lg:col-span-2 space-y-4 sm:space-y-5">
 
           <!-- Review Card -->
-          <div class="bg-white dark:bg-[#1A1A1A] rounded-lg border border-gray-100 dark:border-[#D4AF37]/20 shadow-sm p-6">
+          <div class="bg-white dark:bg-[#1A1A1A] rounded-2xl border border-gray-200 dark:border-[#D4AF37]/20 shadow-xs p-4 sm:p-6">
 
             <!-- User + Status -->
-            <div class="flex items-center justify-between mb-5">
+            <div class="flex items-center justify-between mb-5 gap-3 flex-wrap">
               <div class="flex items-center gap-3">
                 <img
                   v-if="review.user?.avatar"
                   :src="`/storage/${review.user.avatar}`"
                   class="w-10 h-10 rounded-full object-cover shrink-0"
                 />
-                <div v-else class="w-10 h-10 bg-[#FAF7F2] dark:bg-[#1A1A1A] rounded-full flex items-center justify-center text-sm font-semibold text-gray-600 dark:text-[#F5F5F5] shrink-0">
+                <div v-else class="w-10 h-10 bg-[#FAF7F2] dark:bg-[#1A1A1A] rounded-full flex items-center justify-center text-sm font-semibold text-gray-600 dark:text-[#F5F5F5] shrink-0 border border-gray-200 dark:border-[#D4AF37]/20">
                   {{ review.user?.name?.charAt(0)?.toUpperCase() || '?' }}
                 </div>
                 <div>
@@ -98,7 +96,7 @@ const formatDate = (date) => {
             </div>
 
             <!-- Product -->
-            <div class="mb-5 p-3 rounded-lg bg-[#FAF7F2] dark:bg-[#1A1A1A] border border-gray-100 dark:border-[#D4AF37]/20">
+            <div class="mb-5 p-3.5 rounded-xl bg-[#FAF7F2] dark:bg-[#0A0A0A] border border-gray-100 dark:border-[#D4AF37]/20">
               <p class="text-[10px] text-gray-400 dark:text-[#A0A0A0] uppercase font-semibold tracking-wider mb-1">Product</p>
               <p class="text-sm font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">{{ review.product?.name || 'Deleted product' }}</p>
             </div>
@@ -134,15 +132,15 @@ const formatDate = (date) => {
         </div>
 
         <!-- RIGHT: Sidebar Info + Actions -->
-        <div class="space-y-5">
+        <div class="space-y-4 sm:space-y-5">
 
           <!-- Details -->
-          <div class="bg-white dark:bg-[#1A1A1A] rounded-lg border border-gray-100 dark:border-[#D4AF37]/20 shadow-sm p-5">
-            <h3 class="text-xs font-semibold text-gray-400 dark:text-[#A0A0A0] uppercase tracking-wider mb-4">Details</h3>
+          <div class="bg-white dark:bg-[#1A1A1A] rounded-2xl border border-gray-200 dark:border-[#D4AF37]/20 shadow-xs p-4 sm:p-5">
+            <h3 class="text-xs font-bold text-gray-400 dark:text-[#A0A0A0] uppercase tracking-wider mb-4">Details</h3>
             <div class="space-y-3 text-sm">
               <div class="flex justify-between">
                 <span class="text-gray-500 dark:text-[#A0A0A0]">Review ID</span>
-                <span class="font-medium text-[#1A1A1A] dark:text-[#F5F5F5]">#{{ review.id }}</span>
+                <span class="font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">#{{ review.id }}</span>
               </div>
               <div class="flex justify-between">
                 <span class="text-gray-500 dark:text-[#A0A0A0]">Status</span>
@@ -152,9 +150,9 @@ const formatDate = (date) => {
               </div>
               <div class="flex justify-between">
                 <span class="text-gray-500 dark:text-[#A0A0A0]">Rating</span>
-                <span class="font-medium text-[#1A1A1A] dark:text-[#F5F5F5]">{{ review.rating }}/5</span>
+                <span class="font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">{{ review.rating }}/5</span>
               </div>
-              <div class="h-px bg-gray-100 dark:bg-[#1A1A1A]"></div>
+              <div class="h-px bg-gray-100 dark:border-white/5"></div>
               <div>
                 <span class="text-gray-500 dark:text-[#A0A0A0] text-xs">Submitted</span>
                 <p class="font-medium text-[#1A1A1A] dark:text-[#F5F5F5] text-xs mt-0.5">{{ formatDate(review.created_at) }}</p>
@@ -167,14 +165,14 @@ const formatDate = (date) => {
           </div>
 
           <!-- Actions -->
-          <div class="bg-white dark:bg-[#1A1A1A] rounded-lg border border-gray-100 dark:border-[#D4AF37]/20 shadow-sm p-5">
-            <h3 class="text-xs font-semibold text-gray-400 dark:text-[#A0A0A0] uppercase tracking-wider mb-4">Actions</h3>
+          <div class="bg-white dark:bg-[#1A1A1A] rounded-2xl border border-gray-200 dark:border-[#D4AF37]/20 shadow-xs p-4 sm:p-5">
+            <h3 class="text-xs font-bold text-gray-400 dark:text-[#A0A0A0] uppercase tracking-wider mb-4">Moderation Actions</h3>
             <div class="space-y-2">
 
               <button
                 v-if="review.status !== 'approved'"
                 @click="changeStatus('approve')"
-                class="w-full px-4 py-2.5 rounded-lg bg-green-500 hover:bg-green-600 text-white text-xs font-semibold cursor-pointer flex items-center justify-center gap-2"
+                class="w-full px-4 py-2.5 rounded-xl bg-green-500 hover:bg-green-600 text-white text-xs font-semibold cursor-pointer flex items-center justify-center gap-2 transition"
               >
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
                 Approve Review
@@ -183,17 +181,17 @@ const formatDate = (date) => {
               <button
                 v-if="review.status !== 'rejected'"
                 @click="changeStatus('reject')"
-                class="w-full px-4 py-2.5 rounded-lg bg-yellow-500 hover:bg-yellow-600 text-white text-xs font-semibold cursor-pointer flex items-center justify-center gap-2"
+                class="w-full px-4 py-2.5 rounded-xl bg-yellow-500 hover:bg-yellow-600 text-white text-xs font-semibold cursor-pointer flex items-center justify-center gap-2 transition"
               >
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
                 Reject Review
               </button>
 
-              <div class="h-px bg-gray-100 dark:bg-[#1A1A1A] my-1"></div>
+              <div class="h-px bg-gray-100 dark:border-white/5 my-1"></div>
 
               <button
                 @click="deleteReview"
-                class="w-full px-4 py-2.5 rounded-lg bg-red-500 hover:bg-red-600 text-white text-xs font-semibold cursor-pointer flex items-center justify-center gap-2"
+                class="w-full px-4 py-2.5 rounded-xl bg-red-500 hover:bg-red-600 text-white text-xs font-semibold cursor-pointer flex items-center justify-center gap-2 transition"
               >
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6m5 0V4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v2"/></svg>
                 Delete Review
@@ -203,10 +201,10 @@ const formatDate = (date) => {
           </div>
 
           <!-- Back Link -->
-          <a href="/reviews"
-            class="block text-center text-xs font-semibold text-gray-500 dark:text-[#A0A0A0] hover:text-[#1A1A1A] dark:hover:text-[#c9d1d9] py-2">
+          <Link href="/reviews"
+            class="block text-center text-xs font-semibold text-gray-500 dark:text-[#A0A0A0] hover:text-[#1A1A1A] dark:hover:text-[#F5F5F5] py-2 transition">
             &larr; Back to Reviews
-          </a>
+          </Link>
 
         </div>
 

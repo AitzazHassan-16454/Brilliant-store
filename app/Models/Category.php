@@ -18,6 +18,15 @@ class Category extends Model
         return 'uid';
     }
 
+    public function resolveRouteBinding($value, $field = null): ?Model
+    {
+        return $this->where('uid', $value)
+            ->orWhere('id', is_numeric($value) ? (int) $value : 0)
+            ->orWhereRaw('LOWER(REPLACE(name, " ", "-")) = ?', [strtolower($value)])
+            ->orWhereRaw('LOWER(name) = ?', [str_replace('-', ' ', strtolower($value))])
+            ->first() ?? abort(404);
+    }
+
     protected static function boot(): void
     {
         parent::boot();

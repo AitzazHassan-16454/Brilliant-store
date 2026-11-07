@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BusinessSettingController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ChatBotController;
@@ -17,13 +18,14 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SubcategoryController;
 use App\Http\Controllers\WishlistController;
 use App\Models\Order;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
 Route::get('/', [ProductController::class, 'home'])->name('home');
 
 Route::get('/all-products', [ProductController::class, 'allProducts'])->name('products.all');
-Route::get('/shop', fn () => redirect()->route('products.all'));
+Route::get('/shop', fn (Request $request) => redirect()->route('products.all', $request->query()))->name('shop');
 
 Route::get('/login', fn () => redirect('/'))->name('login');
 
@@ -161,4 +163,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/custom-orders', [CustomOrderController::class, 'index']);
 
     Route::get('/faqs', [FaqController::class, 'adminIndex']);
+
+    Route::get('/settings', [BusinessSettingController::class, 'edit'])->name('settings.edit');
+    Route::post('/settings', [BusinessSettingController::class, 'update'])->name('settings.update');
 });

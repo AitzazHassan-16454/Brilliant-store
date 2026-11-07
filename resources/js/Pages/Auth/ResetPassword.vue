@@ -54,71 +54,108 @@ function submit() {
         <!-- FORM -->
         <form @submit.prevent="submit" class="mt-6 space-y-4">
           <!-- EMAIL -->
-          <div>
-            <label class="block text-sm font-semibold mb-1.5 text-[#1A1A1A] dark:text-[#F5F5F5]">
-              Email address
+          <div class="pro-form-group">
+            <label class="pro-label">
+              <span>Email Address</span>
             </label>
-            <input
-              v-model="form.email"
-              type="email"
-              required
-              placeholder="you@example.com"
-              class="w-full px-4 py-3 rounded-xl text-sm outline-none transition-all border border-gray-200 dark:border-[#D4AF37]/20 bg-white dark:bg-[#1A1A1A] text-[#1A1A1A] dark:text-[#F5F5F5] placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-[#D4AF37] focus:ring-[3px] focus:ring-[#D4AF37]/10"
-            />
-            <p v-if="form.errors.email" class="text-xs mt-1.5 font-medium text-red-600">
-              {{ form.errors.email }}
-            </p>
+            <div class="pro-input-wrap">
+              <svg class="pro-input-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
+              </svg>
+              <input
+                v-model="form.email"
+                type="email"
+                required
+                autocomplete="email"
+                placeholder="you@example.com"
+                class="pro-input pro-input-with-icon"
+                :class="{ 'pro-input-error': form.errors.email }"
+              />
+            </div>
+            <div v-if="form.errors.email" class="pro-form-error">
+              <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 6.75h.008v.008H12v-.008Z" />
+              </svg>
+              <span>{{ form.errors.email }}</span>
+            </div>
           </div>
 
           <!-- NEW PASSWORD -->
-          <div>
-            <div class="flex items-center justify-between mb-1.5">
-              <label class="block text-sm font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">
-                New password
-              </label>
+          <div class="pro-form-group">
+            <label class="pro-label">
+              <span>New Password</span>
+            </label>
+            <div class="pro-input-wrap">
+              <svg class="pro-input-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" />
+              </svg>
+              <input
+                v-model="form.password"
+                :type="showPassword ? 'text' : 'password'"
+                required
+                autofocus
+                autocomplete="new-password"
+                placeholder="Min. 6 characters"
+                class="pro-input pro-input-with-icon pro-input-with-action"
+                :class="{ 'pro-input-error': form.errors.password }"
+              />
               <button
                 type="button"
                 @click="showPassword = !showPassword"
-                class="text-xs font-medium text-[#6B6B6B] dark:text-[#A0A0A0] hover:text-[#D4AF37] cursor-pointer bg-transparent border-none p-0"
+                class="pro-input-action"
+                :title="showPassword ? 'Hide password' : 'Show password'"
               >
-                {{ showPassword ? "Hide" : "Show" }}
+                <svg v-if="!showPassword" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                </svg>
+                <svg v-else class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3.98 8.223A10.477 10.477 0 0 0 1.934 12C3.226 16.338 7.244 19.5 12 19.5c.993 0 1.953-.138 2.863-.395M6.228 6.228A10.451 10.451 0 0 1 12 4.5c4.756 0 8.773 3.162 10.065 7.498a10.522 10.522 0 0 1-4.293 5.774M6.228 6.228 3 3m3.228 3.228 3.65 3.65m7.894 7.894L21 21m-3.228-3.228-3.65-3.65m0 0a3 3 0 1 0-4.243-4.243m4.242 4.242L9.88 9.88" />
+                </svg>
               </button>
             </div>
-            <input
-              v-model="form.password"
-              :type="showPassword ? 'text' : 'password'"
-              required
-              autofocus
-              placeholder="Min. 6 characters"
-              class="w-full px-4 py-3 rounded-xl text-sm outline-none transition-all border border-gray-200 dark:border-[#D4AF37]/20 bg-white dark:bg-[#1A1A1A] text-[#1A1A1A] dark:text-[#F5F5F5] placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-[#D4AF37] focus:ring-[3px] focus:ring-[#D4AF37]/10"
-            />
-            <p v-if="form.errors.password" class="text-xs mt-1.5 font-medium text-red-600">
-              {{ form.errors.password }}
-            </p>
+            <div v-if="form.errors.password" class="pro-form-error">
+              <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 6.75h.008v.008H12v-.008Z" />
+              </svg>
+              <span>{{ form.errors.password }}</span>
+            </div>
           </div>
 
           <!-- CONFIRM PASSWORD -->
-          <div>
-            <label class="block text-sm font-semibold mb-1.5 text-[#1A1A1A] dark:text-[#F5F5F5]">
-              Confirm new password
+          <div class="pro-form-group">
+            <label class="pro-label">
+              <span>Confirm New Password</span>
             </label>
-            <input
-              v-model="form.password_confirmation"
-              :type="showPassword ? 'text' : 'password'"
-              required
-              placeholder="Repeat your new password"
-              class="w-full px-4 py-3 rounded-xl text-sm outline-none transition-all border border-gray-200 dark:border-[#D4AF37]/20 bg-white dark:bg-[#1A1A1A] text-[#1A1A1A] dark:text-[#F5F5F5] placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-[#D4AF37] focus:ring-[3px] focus:ring-[#D4AF37]/10"
-            />
+            <div class="pro-input-wrap">
+              <svg class="pro-input-icon" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75m-3-7.036A11.959 11.959 0 0 1 3.598 6 11.99 11.99 0 0 0 3 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285Z" />
+              </svg>
+              <input
+                v-model="form.password_confirmation"
+                :type="showPassword ? 'text' : 'password'"
+                required
+                autocomplete="new-password"
+                placeholder="Repeat your new password"
+                class="pro-input pro-input-with-icon"
+              />
+            </div>
           </div>
 
           <!-- SUBMIT -->
-          <button
-            type="submit"
-            :disabled="form.processing"
-            class="w-full py-3.5 px-4 rounded-xl text-sm font-bold transition-all duration-200 disabled:opacity-50 active:scale-[0.98] cursor-pointer border-none bg-[#D4AF37] text-white shadow-lg shadow-[#D4AF37]/30 hover:brightness-105 mt-2"
-          >
-            {{ form.processing ? "Resetting password..." : "Reset Password" }}
-          </button>
+          <div class="pt-2">
+            <button
+              type="submit"
+              :disabled="form.processing"
+              class="pro-btn-primary"
+            >
+              <svg v-if="form.processing" class="w-4 h-4 animate-spin text-[#0A0A0A]" fill="none" viewBox="0 0 24 24">
+                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
+                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+              </svg>
+              <span>{{ form.processing ? "Resetting password..." : "Reset Password" }}</span>
+            </button>
+          </div>
         </form>
 
         <!-- BACK TO HOME -->
