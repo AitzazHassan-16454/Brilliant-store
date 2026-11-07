@@ -124,50 +124,39 @@ const imgLoaded = ref(false)
         No reviews yet
       </p>
 
-      <!-- Mobile: Add to cart row -->
-      <div class="mt-auto md:hidden">
-        <div class="mb-2.5 flex flex-wrap items-baseline gap-x-1.5">
-          <span class="text-base font-bold text-[#D4AF37]">${{ Number(product.price).toFixed(2) }}</span>
-          <span v-if="product.compare_price" class="text-xs text-muted-foreground line-through">${{ Number(product.compare_price).toFixed(2) }}</span>
+      <!-- Price + Add to Cart Button -->
+      <div class="mt-auto flex items-center justify-between gap-2 pt-2">
+        <div class="flex flex-col min-w-0">
+          <div class="flex flex-wrap items-baseline gap-x-1.5">
+            <span class="text-base sm:text-xl font-bold text-foreground">${{ Number(product.price).toFixed(2) }}</span>
+            <span v-if="product.compare_price" class="text-xs text-muted-foreground line-through">${{ Number(product.compare_price).toFixed(2) }}</span>
+          </div>
         </div>
         <motion.button
           @click="emit('add-to-cart')"
           :disabled="product.stock === 0 || isInCart"
-          :whileTap="{ scale: 0.96 }"
+          :whileTap="{ scale: 0.92 }"
+          :whileHover="{ scale: 1.06 }"
           :class="[
-            'flex h-10 w-full items-center justify-center gap-1.5 rounded-full text-sm font-semibold shadow-sm transition-luxury',
-            product.stock === 0 || isInCart
-              ? 'bg-muted text-muted-foreground cursor-not-allowed'
-              : 'bg-[#D4AF37] text-[#0A0A0A] hover:bg-[#B8941E]'
-          ]">
-          <svg v-if="!isInCart && product.stock > 0" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-            <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>
-          </svg>
-          <svg v-else-if="isInCart" class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-            <path d="M20 6 9 17l-5-5"/>
-          </svg>
-          {{ product.stock === 0 ? 'Sold Out' : isInCart ? 'Added' : 'Add to Cart' }}
-        </motion.button>
-      </div>
-
-      <!-- Desktop: Price + Cart icon -->
-      <div class="mt-auto hidden items-center justify-between md:flex">
-        <span class="text-2xl font-bold text-foreground">${{ Number(product.price).toFixed(2) }}</span>
-        <motion.button
-          @click="emit('add-to-cart')"
-          :disabled="product.stock === 0 || isInCart"
-          :whileTap="{ scale: 0.9 }"
-          :class="[
-            'flex h-10 w-10 items-center justify-center rounded-full shadow-sm transition-luxury',
+            'flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-xl shadow-xs transition-luxury cursor-pointer',
             product.stock === 0 || isInCart
               ? 'bg-muted text-muted-foreground cursor-not-allowed'
               : 'bg-[#D4AF37] text-[#0A0A0A] hover:bg-[#B8941E] hover:shadow-md'
-          ]">
-          <svg v-if="!isInCart && product.stock > 0" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
-            <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>
+          ]"
+          :title="product.stock === 0 ? 'Sold Out' : isInCart ? 'Added to Cart' : 'Add to Cart'"
+          :aria-label="product.stock === 0 ? 'Sold Out' : isInCart ? 'Added to Cart' : 'Add to Cart'"
+        >
+          <!-- In stock / Not in cart: Shopping Bag Icon -->
+          <svg v-if="!isInCart && product.stock > 0" class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
           </svg>
-          <svg v-else-if="isInCart" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-            <path d="M20 6 9 17l-5-5"/>
+          <!-- Already In Cart: Checkmark Icon -->
+          <svg v-else-if="isInCart" class="w-4 h-4 sm:w-5 sm:h-5 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/>
+          </svg>
+          <!-- Out of stock: Slash Icon -->
+          <svg v-else class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 0 0 5.636 5.636m12.728 12.728A9 9 0 0 1 5.636 5.636m12.728 12.728L5.636 5.636"/>
           </svg>
         </motion.button>
       </div>

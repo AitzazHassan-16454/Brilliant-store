@@ -5,6 +5,8 @@ import Sidebar from "../components/Sidebar.vue"
 import { Line, Doughnut } from 'vue-chartjs'
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, ArcElement, Title, Tooltip, Legend, Filler } from 'chart.js'
 
+defineOptions({ layout: false })
+
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, ArcElement, Title, Tooltip, Legend, Filler)
 
 const props = defineProps({
@@ -143,109 +145,110 @@ const categoryChartOptions = {
 
     <Sidebar />
 
-    <main class="flex-1 overflow-hidden">
+    <main class="flex-1 min-w-0 overflow-y-auto">
 
         <!-- Header -->
-        <div class="sticky top-0 z-30 bg-white/80 dark:bg-[#0A0A0A]/80 backdrop-blur-md border-b border-gray-100 dark:border-[#D4AF37]/20">
-            <div class="h-16 px-6 sm:px-8 flex items-center justify-between">
+        <div class="static lg:sticky lg:top-0 z-20 bg-white/90 dark:bg-[#0A0A0A]/90 backdrop-blur-md border-b border-gray-200 dark:border-[#D4AF37]/20">
+            <div class="min-h-16 px-4 sm:px-6 lg:px-8 py-3.5 sm:py-0 flex flex-col sm:flex-row sm:items-center justify-between gap-2 sm:gap-0">
                 <div>
-                    <h1 class="text-xl font-medium tracking-tight text-[#1A1A1A] dark:text-[#F5F5F5]">
-                        Dashboard
+                    <h1 class="text-lg sm:text-xl font-semibold tracking-tight text-[#1A1A1A] dark:text-[#F5F5F5]">
+                        Dashboard Overview
                     </h1>
-                    <p class="text-sm text-gray-500 dark:text-[#A0A0A0] mt-0.5">
+                    <p class="text-xs sm:text-sm text-gray-500 dark:text-[#A0A0A0] mt-0.5">
                         {{ new Date().toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" }) }}
                     </p>
                 </div>
-                <div class="hidden sm:flex items-center gap-3">
-                    <div class="px-4 py-2 rounded-lg border border-gray-200 dark:border-[#D4AF37]/20 text-sm font-medium text-gray-700 dark:text-[#F5F5F5]">
-                        Admin Panel
-                    </div>
+                <div class="flex items-center gap-2">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg border border-gray-200 dark:border-[#D4AF37]/20 text-xs font-semibold text-gray-700 dark:text-[#F5F5F5] bg-[#FAF7F2] dark:bg-[#1A1A1A]">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                        Live Store
+                    </span>
                 </div>
             </div>
         </div>
 
-        <div class="p-6 sm:p-8 space-y-6">
+        <div class="p-3.5 sm:p-6 lg:p-8 space-y-5 sm:space-y-6">
 
             <!-- KPI Cards -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
+            <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-3.5 sm:gap-5">
 
-                <div class="bg-white dark:bg-[#1A1A1A] border border-gray-100 dark:border-[#D4AF37]/20 rounded-lg p-5">
+                <div class="bg-white dark:bg-[#1A1A1A] border border-gray-200 dark:border-[#D4AF37]/20 rounded-2xl p-4 sm:p-5 shadow-xs transition-shadow hover:shadow-sm">
                     <div class="flex items-center justify-between mb-3">
-                        <span class="text-xs font-medium uppercase tracking-wider text-gray-400 dark:text-[#A0A0A0]">Revenue</span>
-                        <div class="w-9 h-9 rounded-lg bg-gray-50 dark:bg-[#2A2A2A] text-gray-600 dark:text-[#A0A0A0] flex items-center justify-center">
+                        <span class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-[#A0A0A0]">Revenue</span>
+                        <div class="w-9 h-9 rounded-xl bg-gray-50 dark:bg-[#2A2A2A] text-gray-600 dark:text-[#D4AF37] flex items-center justify-center">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                         </div>
                     </div>
-                    <p class="text-2xl font-medium tracking-tight text-[#1A1A1A] dark:text-[#F5F5F5]">{{ formatCurrency(revenueThisMonth) }}</p>
-                    <div class="flex items-center gap-1.5 mt-1.5">
-                        <svg class="w-4 h-4" :class="trendColor(revenueTrend)" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" v-html="trendIcon(revenueTrend)"></svg>
-                        <span class="text-sm font-medium" :class="trendColor(revenueTrend)">{{ Math.abs(revenueTrend) }}%</span>
-                        <span class="text-xs text-gray-400 dark:text-[#A0A0A0]">vs last month</span>
+                    <p class="text-2xl sm:text-3xl font-semibold tracking-tight text-[#1A1A1A] dark:text-[#F5F5F5]">{{ formatCurrency(revenueThisMonth) }}</p>
+                    <div class="flex items-center gap-1.5 mt-2 flex-wrap">
+                        <svg class="w-4 h-4 shrink-0" :class="trendColor(revenueTrend)" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" v-html="trendIcon(revenueTrend)"></svg>
+                        <span class="text-xs sm:text-sm font-semibold" :class="trendColor(revenueTrend)">{{ Math.abs(revenueTrend) }}%</span>
+                        <span class="text-[11px] text-gray-400 dark:text-[#A0A0A0]">vs last month</span>
                     </div>
                 </div>
 
-                <div class="bg-white dark:bg-[#1A1A1A] border border-gray-100 dark:border-[#D4AF37]/20 rounded-lg p-5">
+                <div class="bg-white dark:bg-[#1A1A1A] border border-gray-200 dark:border-[#D4AF37]/20 rounded-2xl p-4 sm:p-5 shadow-xs transition-shadow hover:shadow-sm">
                     <div class="flex items-center justify-between mb-3">
-                        <span class="text-xs font-medium uppercase tracking-wider text-gray-400 dark:text-[#A0A0A0]">Orders</span>
-                        <div class="w-9 h-9 rounded-lg bg-gray-50 dark:bg-[#2A2A2A] text-gray-600 dark:text-[#A0A0A0] flex items-center justify-center">
+                        <span class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-[#A0A0A0]">Orders</span>
+                        <div class="w-9 h-9 rounded-xl bg-gray-50 dark:bg-[#2A2A2A] text-gray-600 dark:text-[#D4AF37] flex items-center justify-center">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z"/></svg>
                         </div>
                     </div>
-                    <p class="text-2xl font-medium tracking-tight text-[#1A1A1A] dark:text-[#F5F5F5]">{{ ordersThisMonth }}</p>
-                    <div class="flex items-center gap-1.5 mt-1.5">
-                        <svg class="w-4 h-4" :class="trendColor(ordersTrend)" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" v-html="trendIcon(ordersTrend)"></svg>
-                        <span class="text-sm font-medium" :class="trendColor(ordersTrend)">{{ Math.abs(ordersTrend) }}%</span>
-                        <span class="text-xs text-gray-400 dark:text-[#A0A0A0]">vs last month</span>
+                    <p class="text-2xl sm:text-3xl font-semibold tracking-tight text-[#1A1A1A] dark:text-[#F5F5F5]">{{ ordersThisMonth }}</p>
+                    <div class="flex items-center gap-1.5 mt-2 flex-wrap">
+                        <svg class="w-4 h-4 shrink-0" :class="trendColor(ordersTrend)" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" v-html="trendIcon(ordersTrend)"></svg>
+                        <span class="text-xs sm:text-sm font-semibold" :class="trendColor(ordersTrend)">{{ Math.abs(ordersTrend) }}%</span>
+                        <span class="text-[11px] text-gray-400 dark:text-[#A0A0A0]">vs last month</span>
                     </div>
                 </div>
 
-                <div class="bg-white dark:bg-[#1A1A1A] border border-gray-100 dark:border-[#D4AF37]/20 rounded-lg p-5">
+                <div class="bg-white dark:bg-[#1A1A1A] border border-gray-200 dark:border-[#D4AF37]/20 rounded-2xl p-4 sm:p-5 shadow-xs transition-shadow hover:shadow-sm">
                     <div class="flex items-center justify-between mb-3">
-                        <span class="text-xs font-medium uppercase tracking-wider text-gray-400 dark:text-[#A0A0A0]">Products</span>
-                        <div class="w-9 h-9 rounded-lg bg-gray-50 dark:bg-[#2A2A2A] text-gray-600 dark:text-[#A0A0A0] flex items-center justify-center">
+                        <span class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-[#A0A0A0]">Products</span>
+                        <div class="w-9 h-9 rounded-xl bg-gray-50 dark:bg-[#2A2A2A] text-gray-600 dark:text-[#D4AF37] flex items-center justify-center">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"/></svg>
                         </div>
                     </div>
-                    <p class="text-2xl font-medium tracking-tight text-[#1A1A1A] dark:text-[#F5F5F5]">{{ productsCount }}</p>
-                    <div class="flex items-center gap-1.5 mt-1.5">
-                        <svg class="w-4 h-4" :class="trendColor(productsTrend)" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" v-html="trendIcon(productsTrend)"></svg>
-                        <span class="text-sm font-medium" :class="trendColor(productsTrend)">{{ Math.abs(productsTrend) }}%</span>
-                        <span class="text-xs text-gray-400 dark:text-[#A0A0A0]">vs last month</span>
+                    <p class="text-2xl sm:text-3xl font-semibold tracking-tight text-[#1A1A1A] dark:text-[#F5F5F5]">{{ productsCount }}</p>
+                    <div class="flex items-center gap-1.5 mt-2 flex-wrap">
+                        <svg class="w-4 h-4 shrink-0" :class="trendColor(productsTrend)" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" v-html="trendIcon(productsTrend)"></svg>
+                        <span class="text-xs sm:text-sm font-semibold" :class="trendColor(productsTrend)">{{ Math.abs(productsTrend) }}%</span>
+                        <span class="text-[11px] text-gray-400 dark:text-[#A0A0A0]">vs last month</span>
                     </div>
                 </div>
 
-                <div class="bg-white dark:bg-[#1A1A1A] border border-gray-100 dark:border-[#D4AF37]/20 rounded-lg p-5">
+                <div class="bg-white dark:bg-[#1A1A1A] border border-gray-200 dark:border-[#D4AF37]/20 rounded-2xl p-4 sm:p-5 shadow-xs transition-shadow hover:shadow-sm">
                     <div class="flex items-center justify-between mb-3">
-                        <span class="text-xs font-medium uppercase tracking-wider text-gray-400 dark:text-[#A0A0A0]">Customers</span>
-                        <div class="w-9 h-9 rounded-lg bg-gray-50 dark:bg-[#2A2A2A] text-gray-600 dark:text-[#A0A0A0] flex items-center justify-center">
+                        <span class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-[#A0A0A0]">Customers</span>
+                        <div class="w-9 h-9 rounded-xl bg-gray-50 dark:bg-[#2A2A2A] text-gray-600 dark:text-[#D4AF37] flex items-center justify-center">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"/></svg>
                         </div>
                     </div>
-                    <p class="text-2xl font-medium tracking-tight text-[#1A1A1A] dark:text-[#F5F5F5]">{{ usersCount }}</p>
-                    <div class="flex items-center gap-1.5 mt-1.5">
-                        <svg class="w-4 h-4" :class="trendColor(usersTrend)" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" v-html="trendIcon(usersTrend)"></svg>
-                        <span class="text-sm font-medium" :class="trendColor(usersTrend)">{{ Math.abs(usersTrend) }}%</span>
-                        <span class="text-xs text-gray-400 dark:text-[#A0A0A0]">vs last month</span>
+                    <p class="text-2xl sm:text-3xl font-semibold tracking-tight text-[#1A1A1A] dark:text-[#F5F5F5]">{{ usersCount }}</p>
+                    <div class="flex items-center gap-1.5 mt-2 flex-wrap">
+                        <svg class="w-4 h-4 shrink-0" :class="trendColor(usersTrend)" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" v-html="trendIcon(usersTrend)"></svg>
+                        <span class="text-xs sm:text-sm font-semibold" :class="trendColor(usersTrend)">{{ Math.abs(usersTrend) }}%</span>
+                        <span class="text-[11px] text-gray-400 dark:text-[#A0A0A0]">vs last month</span>
                     </div>
                 </div>
 
             </div>
 
             <!-- Charts Row -->
-            <div class="grid grid-cols-1 xl:grid-cols-3 gap-5">
+            <div class="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-5">
 
                 <!-- Revenue Chart -->
-                <div class="xl:col-span-2 bg-white dark:bg-[#1A1A1A] border border-gray-100 dark:border-[#D4AF37]/20 rounded-lg p-5">
-                    <div class="flex items-center justify-between mb-4">
+                <div class="xl:col-span-2 bg-white dark:bg-[#1A1A1A] border border-gray-200 dark:border-[#D4AF37]/20 rounded-2xl p-4 sm:p-5 shadow-xs">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
                         <div>
-                            <h3 class="text-sm font-medium text-[#1A1A1A] dark:text-[#F5F5F5]">Revenue Overview</h3>
-                            <p class="text-xs text-gray-400 dark:text-[#A0A0A0] mt-0.5">Last 6 months</p>
+                            <h3 class="text-sm font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">Revenue Overview</h3>
+                            <p class="text-xs text-gray-400 dark:text-[#A0A0A0] mt-0.5">Monthly sales performance</p>
                         </div>
-                        <span class="text-xs font-medium text-[#58a6ff] bg-blue-50 dark:bg-[#58a6ff]/10 px-2.5 py-1 rounded-lg">
+                        <span class="text-xs font-semibold text-[#B8960F] dark:text-[#D4AF37] bg-[#D4AF37]/10 px-2.5 py-1 rounded-lg self-start sm:self-auto">
                             {{ formatCurrency(revenue) }} total
                         </span>
                     </div>
-                    <div class="h-64">
+                    <div class="relative h-60 sm:h-72 w-full">
                         <Line v-if="monthlyRevenue?.length" :data="revenueChartData" :options="revenueChartOptions" />
                         <div v-else class="h-full flex items-center justify-center text-sm text-gray-400 dark:text-[#A0A0A0]">
                             No revenue data yet
@@ -254,14 +257,14 @@ const categoryChartOptions = {
                 </div>
 
                 <!-- Category Distribution -->
-                <div class="bg-white dark:bg-[#1A1A1A] border border-gray-100 dark:border-[#D4AF37]/20 rounded-lg p-5">
-                    <div class="flex items-center justify-between mb-2">
+                <div class="bg-white dark:bg-[#1A1A1A] border border-gray-200 dark:border-[#D4AF37]/20 rounded-2xl p-4 sm:p-5 shadow-xs">
+                    <div class="flex items-center justify-between mb-3">
                         <div>
-                            <h3 class="text-sm font-medium text-[#1A1A1A] dark:text-[#F5F5F5]">Products by Category</h3>
+                            <h3 class="text-sm font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">Category Breakdown</h3>
                             <p class="text-xs text-gray-400 dark:text-[#A0A0A0] mt-0.5">{{ productsByCategory?.length || 0 }} categories</p>
                         </div>
                     </div>
-                    <div class="h-64 flex items-center justify-center">
+                    <div class="relative h-60 sm:h-72 w-full flex items-center justify-center">
                         <Doughnut v-if="productsByCategory?.length" :data="categoryChartData" :options="categoryChartOptions" />
                         <div v-else class="text-sm text-gray-400 dark:text-[#A0A0A0]">
                             No products categorized
@@ -271,34 +274,34 @@ const categoryChartOptions = {
 
             </div>
 
-            <!-- Bottom Row -->
-            <div class="grid grid-cols-1 xl:grid-cols-2 gap-5">
+            <!-- Bottom Row: Recent Orders & Reviews -->
+            <div class="grid grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-5">
 
                 <!-- Recent Orders -->
-                <div class="bg-white dark:bg-[#1A1A1A] border border-gray-100 dark:border-[#D4AF37]/20 rounded-lg p-5">
+                <div class="bg-white dark:bg-[#1A1A1A] border border-gray-200 dark:border-[#D4AF37]/20 rounded-2xl p-4 sm:p-5 shadow-xs">
                     <div class="flex items-center justify-between mb-4">
                         <div>
-                            <h3 class="text-sm font-medium text-[#1A1A1A] dark:text-[#F5F5F5]">Recent Orders</h3>
-                            <p class="text-xs text-gray-400 dark:text-[#A0A0A0] mt-0.5">Latest 5 orders</p>
+                            <h3 class="text-sm font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">Recent Orders</h3>
+                            <p class="text-xs text-gray-400 dark:text-[#A0A0A0] mt-0.5">Latest customer activity</p>
                         </div>
-                        <Link href="/Orders" class="text-xs font-medium text-[#58a6ff] hover:underline">
+                        <Link href="/Orders" class="text-xs font-semibold text-[#B8960F] dark:text-[#D4AF37] hover:underline">
                             View all
                         </Link>
                     </div>
-                    <div v-if="recentOrders?.length" class="space-y-2">
-                        <div v-for="order in recentOrders" :key="order.id" class="flex items-center justify-between py-2.5 border-b border-gray-50 dark:border-[#D4AF37]/20 last:border-0">
+                    <div v-if="recentOrders?.length" class="space-y-2.5">
+                        <div v-for="order in recentOrders" :key="order.id" class="flex flex-col sm:flex-row sm:items-center justify-between py-2.5 gap-2 border-b border-gray-100 dark:border-[#D4AF37]/20 last:border-0">
                             <div class="flex items-center gap-3 min-w-0">
-                                <div class="w-8 h-8 rounded-lg bg-gray-50 dark:bg-[#2A2A2A] flex items-center justify-center text-xs font-medium text-gray-400 dark:text-[#A0A0A0] shrink-0">
-                                    #{{ String(order.id).slice(-2) }}
+                                <div class="w-8 h-8 rounded-lg bg-gray-50 dark:bg-[#2A2A2A] flex items-center justify-center text-xs font-bold text-gray-500 dark:text-[#A0A0A0] shrink-0">
+                                    #{{ String(order.id).slice(-3) }}
                                 </div>
                                 <div class="min-w-0">
                                     <p class="text-sm font-medium text-[#1A1A1A] dark:text-[#F5F5F5] truncate">{{ order.customer }}</p>
                                     <p class="text-xs text-gray-400 dark:text-[#A0A0A0]">{{ order.date }}</p>
                                 </div>
                             </div>
-                            <div class="flex items-center gap-3 shrink-0">
-                                <span class="text-sm font-medium text-[#1A1A1A] dark:text-[#F5F5F5]">{{ formatCurrency(order.total) }}</span>
-                                <span class="text-[10px] font-medium uppercase px-2 py-1 rounded-md leading-none" :class="statusColor(order.status)">
+                            <div class="flex items-center justify-between sm:justify-end gap-3 shrink-0 pl-11 sm:pl-0">
+                                <span class="text-sm font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">{{ formatCurrency(order.total) }}</span>
+                                <span class="text-[10px] font-semibold uppercase px-2 py-0.5 rounded-md leading-none" :class="statusColor(order.status)">
                                     {{ order.status }}
                                 </span>
                             </div>
@@ -310,20 +313,20 @@ const categoryChartOptions = {
                 </div>
 
                 <!-- Pending Reviews -->
-                <div class="bg-white dark:bg-[#1A1A1A] border border-gray-100 dark:border-[#D4AF37]/20 rounded-lg p-5">
+                <div class="bg-white dark:bg-[#1A1A1A] border border-gray-200 dark:border-[#D4AF37]/20 rounded-2xl p-4 sm:p-5 shadow-xs">
                     <div class="flex items-center justify-between mb-4">
                         <div>
-                            <h3 class="text-sm font-medium text-[#1A1A1A] dark:text-[#F5F5F5]">Pending Reviews</h3>
+                            <h3 class="text-sm font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">Pending Reviews</h3>
                             <p class="text-xs text-gray-400 dark:text-[#A0A0A0] mt-0.5">{{ pendingReviewsCount }} awaiting moderation</p>
                         </div>
-                        <Link href="/reviews" class="text-xs font-medium text-[#58a6ff] hover:underline">
+                        <Link href="/reviews" class="text-xs font-semibold text-[#B8960F] dark:text-[#D4AF37] hover:underline">
                             View all
                         </Link>
                     </div>
-                    <div v-if="pendingReviewList?.length" class="space-y-2">
-                        <div v-for="review in pendingReviewList" :key="review.id" class="flex items-start justify-between py-2.5 border-b border-gray-50 dark:border-[#D4AF37]/20 last:border-0">
+                    <div v-if="pendingReviewList?.length" class="space-y-2.5">
+                        <div v-for="review in pendingReviewList" :key="review.id" class="flex items-start justify-between py-2.5 border-b border-gray-100 dark:border-[#D4AF37]/20 last:border-0 gap-3">
                             <div class="min-w-0 flex-1">
-                                <div class="flex items-center gap-2">
+                                <div class="flex items-center gap-2 flex-wrap">
                                     <p class="text-sm font-medium text-[#1A1A1A] dark:text-[#F5F5F5] truncate">{{ review.product }}</p>
                                     <span class="text-xs shrink-0 flex items-center gap-[1px]">
                                         <svg v-for="i in review.rating" :key="'f'+i" class="w-3.5 h-3.5 text-[#d29922]" fill="currentColor" viewBox="0 0 20 20"><path :d="starPath"/></svg>
@@ -344,30 +347,30 @@ const categoryChartOptions = {
             </div>
 
             <!-- Quick Stats Bar -->
-            <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-3">
-                <div class="bg-white dark:bg-[#1A1A1A] border border-gray-100 dark:border-[#D4AF37]/20 rounded-lg px-4 py-3">
-                    <p class="text-xs text-gray-400 dark:text-[#A0A0A0]">Categories</p>
-                    <p class="text-lg font-medium text-[#1A1A1A] dark:text-[#F5F5F5] mt-0.5">{{ categoriesCount }}</p>
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-2.5 sm:gap-3">
+                <div class="bg-white dark:bg-[#1A1A1A] border border-gray-200 dark:border-[#D4AF37]/20 rounded-xl px-3.5 py-3">
+                    <p class="text-[11px] font-medium text-gray-400 dark:text-[#A0A0A0]">Categories</p>
+                    <p class="text-base sm:text-lg font-semibold text-[#1A1A1A] dark:text-[#F5F5F5] mt-0.5">{{ categoriesCount }}</p>
                 </div>
-                <div class="bg-white dark:bg-[#1A1A1A] border border-gray-100 dark:border-[#D4AF37]/20 rounded-lg px-4 py-3">
-                    <p class="text-xs text-gray-400 dark:text-[#A0A0A0]">Subcategories</p>
-                    <p class="text-lg font-medium text-[#1A1A1A] dark:text-[#F5F5F5] mt-0.5">{{ subcategoriesCount }}</p>
+                <div class="bg-white dark:bg-[#1A1A1A] border border-gray-200 dark:border-[#D4AF37]/20 rounded-xl px-3.5 py-3">
+                    <p class="text-[11px] font-medium text-gray-400 dark:text-[#A0A0A0]">Subcategories</p>
+                    <p class="text-base sm:text-lg font-semibold text-[#1A1A1A] dark:text-[#F5F5F5] mt-0.5">{{ subcategoriesCount }}</p>
                 </div>
-                <div class="bg-white dark:bg-[#1A1A1A] border border-gray-100 dark:border-[#D4AF37]/20 rounded-lg px-4 py-3">
-                    <p class="text-xs text-gray-400 dark:text-[#A0A0A0]">Roles</p>
-                    <p class="text-lg font-medium text-[#1A1A1A] dark:text-[#F5F5F5] mt-0.5">{{ rolesCount }}</p>
+                <div class="bg-white dark:bg-[#1A1A1A] border border-gray-200 dark:border-[#D4AF37]/20 rounded-xl px-3.5 py-3">
+                    <p class="text-[11px] font-medium text-gray-400 dark:text-[#A0A0A0]">Roles</p>
+                    <p class="text-base sm:text-lg font-semibold text-[#1A1A1A] dark:text-[#F5F5F5] mt-0.5">{{ rolesCount }}</p>
                 </div>
-                <div class="bg-white dark:bg-[#1A1A1A] border border-gray-100 dark:border-[#D4AF37]/20 rounded-lg px-4 py-3">
-                    <p class="text-xs text-gray-400 dark:text-[#A0A0A0]">Coupons</p>
-                    <p class="text-lg font-medium text-[#1A1A1A] dark:text-[#F5F5F5] mt-0.5">{{ couponsCount }}</p>
+                <div class="bg-white dark:bg-[#1A1A1A] border border-gray-200 dark:border-[#D4AF37]/20 rounded-xl px-3.5 py-3">
+                    <p class="text-[11px] font-medium text-gray-400 dark:text-[#A0A0A0]">Coupons</p>
+                    <p class="text-base sm:text-lg font-semibold text-[#1A1A1A] dark:text-[#F5F5F5] mt-0.5">{{ couponsCount }}</p>
                 </div>
-                <div class="bg-white dark:bg-[#1A1A1A] border border-gray-100 dark:border-[#D4AF37]/20 rounded-lg px-4 py-3">
-                    <p class="text-xs text-gray-400 dark:text-[#A0A0A0]">Stock Total</p>
-                    <p class="text-lg font-medium text-[#1A1A1A] dark:text-[#F5F5F5] mt-0.5">{{ totalStock.toLocaleString() }}</p>
+                <div class="bg-white dark:bg-[#1A1A1A] border border-gray-200 dark:border-[#D4AF37]/20 rounded-xl px-3.5 py-3">
+                    <p class="text-[11px] font-medium text-gray-400 dark:text-[#A0A0A0]">Stock Total</p>
+                    <p class="text-base sm:text-lg font-semibold text-[#1A1A1A] dark:text-[#F5F5F5] mt-0.5">{{ totalStock.toLocaleString() }}</p>
                 </div>
-                <div class="bg-white dark:bg-[#1A1A1A] border border-gray-100 dark:border-[#D4AF37]/20 rounded-lg px-4 py-3">
-                    <p class="text-xs text-gray-400 dark:text-[#A0A0A0]">Low Stock</p>
-                    <p class="text-lg font-medium mt-0.5" :class="lowStockCount > 0 ? 'text-red-500 dark:text-[#f85149]' : 'text-emerald-500 dark:text-[#3fb950]'">{{ lowStockCount }}</p>
+                <div class="bg-white dark:bg-[#1A1A1A] border border-gray-200 dark:border-[#D4AF37]/20 rounded-xl px-3.5 py-3">
+                    <p class="text-[11px] font-medium text-gray-400 dark:text-[#A0A0A0]">Low Stock</p>
+                    <p class="text-base sm:text-lg font-semibold mt-0.5" :class="lowStockCount > 0 ? 'text-red-500 dark:text-[#f85149]' : 'text-emerald-500 dark:text-[#3fb950]'">{{ lowStockCount }}</p>
                 </div>
             </div>
 

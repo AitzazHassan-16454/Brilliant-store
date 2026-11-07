@@ -4,6 +4,8 @@ import { router, Head } from "@inertiajs/vue3";
 import Sidebar from "../components/Sidebar.vue";
 import { useNotification } from "../../composables/useNotification.js";
 
+defineOptions({ layout: false });
+
 const { notify, error, success } = useNotification();
 
 const props = defineProps({
@@ -115,21 +117,21 @@ const categoryImageUrl = (cat) => {
 
     <Sidebar />
 
-    <main class="flex-1 p-8">
+    <main class="flex-1 min-w-0 p-3.5 sm:p-6 lg:p-8 overflow-y-auto">
 
-        <div class="flex items-center justify-between mb-6">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-6">
             <div>
-                <h1 class="text-3xl font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">
+                <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-[#1A1A1A] dark:text-[#F5F5F5]">
                     Categories
                 </h1>
-                <p class="text-gray-500 dark:text-[#A0A0A0]">
-                    Manage all product categories
+                <p class="text-xs sm:text-sm text-gray-500 dark:text-[#A0A0A0] mt-0.5">
+                    Manage all product categories and collections
                 </p>
             </div>
         </div>
 
-        <div class="bg-white border border-gray-200 rounded-2xl shadow-sm p-5 mb-6 dark:bg-[#1A1A1A] dark:border-[#D4AF37]/20">
-            <h3 class="text-lg font-semibold text-[#1A1A1A] dark:text-[#F5F5F5] mb-4">
+        <div class="bg-white border border-gray-200 rounded-2xl shadow-xs p-4 sm:p-6 mb-6 dark:bg-[#1A1A1A] dark:border-[#D4AF37]/20">
+            <h3 class="text-base sm:text-lg font-semibold text-[#1A1A1A] dark:text-[#F5F5F5] mb-4">
                 {{ editingUid ? "Edit Category" : "New Category" }}
             </h3>
 
@@ -138,38 +140,38 @@ const categoryImageUrl = (cat) => {
                     v-model="name"
                     type="text"
                     placeholder="Category name"
-                    class="border px-4 py-2.5 rounded-xl dark:bg-[#0A0A0A] dark:border-[#D4AF37]/20 dark:text-[#F5F5F5] outline-none focus:border-gray-400 dark:focus:border-gray-500"
+                    class="border border-gray-200 px-4 py-2.5 rounded-xl dark:bg-[#0A0A0A] dark:border-[#D4AF37]/20 dark:text-[#F5F5F5] outline-none focus:border-gray-400 dark:focus:border-gray-500 text-sm"
                 />
 
                 <textarea
                     v-model="description"
                     placeholder="Short description (optional)"
                     rows="2"
-                    class="border px-4 py-2.5 rounded-xl dark:bg-[#0A0A0A] dark:border-[#D4AF37]/20 dark:text-[#F5F5F5] outline-none focus:border-gray-400 dark:focus:border-gray-500 resize-none"
+                    class="border border-gray-200 px-4 py-2.5 rounded-xl dark:bg-[#0A0A0A] dark:border-[#D4AF37]/20 dark:text-[#F5F5F5] outline-none focus:border-gray-400 dark:focus:border-gray-500 resize-none text-sm"
                 />
 
-                <div class="flex items-center gap-4">
+                <div class="flex flex-wrap items-center gap-3 sm:gap-4">
                     <label class="cursor-pointer">
-                        <span class="inline-block px-4 py-2 bg-[#FAF7F2] dark:bg-[#0A0A0A] border border-gray-200 dark:border-[#D4AF37]/20 rounded-xl text-sm font-medium text-gray-600 dark:text-[#A0A0A0] hover:border-gray-400 dark:hover:border-gray-500 cursor-pointer">
-                            {{ imageFile ? imageFile.name : "Choose image" }}
+                        <span class="inline-block px-4 py-2.5 bg-[#FAF7F2] dark:bg-[#0A0A0A] border border-gray-200 dark:border-[#D4AF37]/20 rounded-xl text-xs sm:text-sm font-medium text-gray-600 dark:text-[#A0A0A0] hover:border-gray-400 dark:hover:border-gray-500 cursor-pointer transition">
+                            {{ imageFile ? imageFile.name : "Choose category image" }}
                         </span>
                         <input type="file" accept="image/*" class="hidden" @change="onImageSelect" />
                     </label>
 
-                    <img v-if="imagePreview" :src="imagePreview" class="w-14 h-14 rounded-lg object-cover border border-gray-200 dark:border-[#D4AF37]/20" />
+                    <img v-if="imagePreview" :src="imagePreview" class="w-12 h-12 sm:w-14 sm:h-14 rounded-xl object-cover border border-gray-200 dark:border-[#D4AF37]/20" />
                 </div>
 
-                <div class="flex gap-2">
+                <div class="flex flex-wrap gap-2.5 pt-1">
                     <button
                         @click="save"
-                        class="bg-[#D4AF37] hover:bg-[#B8960F] text-white px-5 py-2.5 rounded-xl font-semibold cursor-pointer"
+                        class="bg-[#D4AF37] hover:bg-[#B8960F] text-white px-5 py-2.5 rounded-xl font-semibold text-sm cursor-pointer transition shadow-xs"
                     >
-                        {{ editingUid ? "Update" : "Add" }}
+                        {{ editingUid ? "Update Category" : "Add Category" }}
                     </button>
                     <button
                         v-if="editingUid"
                         @click="reset"
-                        class="px-5 py-2.5 rounded-xl font-semibold border border-gray-200 dark:border-[#D4AF37]/20 text-gray-600 dark:text-[#A0A0A0] hover:bg-gray-100 dark:hover:bg-[#0A0A0A] cursor-pointer"
+                        class="px-5 py-2.5 rounded-xl font-semibold text-sm border border-gray-200 dark:border-[#D4AF37]/20 text-gray-600 dark:text-[#A0A0A0] hover:bg-gray-100 dark:hover:bg-[#0A0A0A] cursor-pointer transition"
                     >
                         Cancel
                     </button>
@@ -177,17 +179,20 @@ const categoryImageUrl = (cat) => {
             </div>
         </div>
 
-        <div class="bg-white border border-gray-200 rounded-2xl shadow-sm overflow-hidden dark:bg-[#1A1A1A] dark:border-[#D4AF37]/20">
+        <div class="bg-white border border-gray-200 rounded-2xl shadow-xs overflow-hidden dark:bg-[#1A1A1A] dark:border-[#D4AF37]/20">
 
-            <div class="p-5 border-b border-gray-100 dark:border-[#D4AF37]/20">
-                <h3 class="text-lg font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">
+            <div class="p-4 sm:p-5 border-b border-gray-100 dark:border-[#D4AF37]/20 flex items-center justify-between">
+                <h3 class="text-base sm:text-lg font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">
                     Categories List
                 </h3>
+                <span class="text-xs text-gray-400 dark:text-[#A0A0A0] lg:hidden">
+                    Scroll horizontally &rarr;
+                </span>
             </div>
 
             <div class="overflow-x-auto">
 
-                <table class="w-full text-sm text-left">
+                <table class="w-full text-sm text-left min-w-[620px]">
 
                     <thead class="bg-[#FAF7F2] dark:bg-[#1A1A1A] text-gray-500 dark:text-[#A0A0A0] uppercase text-xs">
                         <tr>
@@ -211,9 +216,9 @@ const categoryImageUrl = (cat) => {
                                     v-if="categoryImageUrl(cat)"
                                     :src="categoryImageUrl(cat)"
                                     :alt="cat.name"
-                                    class="w-12 h-12 rounded-lg object-cover border border-gray-200 dark:border-[#D4AF37]/20"
+                                    class="w-12 h-12 rounded-xl object-cover border border-gray-200 dark:border-[#D4AF37]/20"
                                 />
-                                <div v-else class="w-12 h-12 rounded-lg bg-[#FAF7F2] dark:bg-[#0A0A0A] border border-gray-200 dark:border-[#D4AF37]/20 flex items-center justify-center text-xs text-gray-400 dark:text-[#A0A0A0]">
+                                <div v-else class="w-12 h-12 rounded-xl bg-[#FAF7F2] dark:bg-[#0A0A0A] border border-gray-200 dark:border-[#D4AF37]/20 flex items-center justify-center text-xs text-gray-400 dark:text-[#A0A0A0]">
                                     No img
                                 </div>
                             </td>
@@ -235,14 +240,14 @@ const categoryImageUrl = (cat) => {
 
                                     <button
                                         @click="edit(cat)"
-                                        class="px-3 py-1.5 bg-[#FAF7F2] dark:bg-[#0A0A0A] rounded-lg hover:bg-yellow-500 hover:text-white dark:hover:bg-yellow-500 cursor-pointer"
+                                        class="px-3 py-1.5 bg-[#FAF7F2] dark:bg-[#0A0A0A] rounded-lg hover:bg-yellow-500 hover:text-white dark:hover:bg-yellow-500 cursor-pointer text-xs font-semibold"
                                     >
                                         Edit
                                     </button>
 
                                     <button
                                         @click="remove(cat.uid)"
-                                        class="px-3 py-1.5 bg-[#FAF7F2] dark:bg-[#0A0A0A] rounded-lg hover:bg-red-500 hover:text-white dark:hover:bg-red-500 cursor-pointer"
+                                        class="px-3 py-1.5 bg-[#FAF7F2] dark:bg-[#0A0A0A] rounded-lg hover:bg-red-500 hover:text-white dark:hover:bg-red-500 cursor-pointer text-xs font-semibold"
                                     >
                                         Delete
                                     </button>

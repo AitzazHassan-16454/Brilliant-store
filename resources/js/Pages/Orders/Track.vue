@@ -168,7 +168,7 @@ const formatTime = (date) => {
         <button
           type="submit"
           :disabled="searching || !searchCode.trim()"
-          class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold text-white transition-all duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed bg-gradient-to-br from-[#D4AF37] via-[#B8960F] to-[#D4AF37] shadow-lg shadow-[#D4AF37]/30 hover:-translate-y-0.5"
+          class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold text-white transition-all duration-200 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed bg-gradient-to-br from-[#D4AF37] via-[#B8960F] to-[#D4AF37] shadow-lg shadow-[#D4AF37]/30 "
         >
           <svg v-if="searching" class="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg>
           <svg v-else class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M16.5 9.5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
@@ -202,7 +202,7 @@ const formatTime = (date) => {
       <div class="bg-white dark:bg-[#1A1A1A] border border-[#D4AF37]/30 dark:border-[#D4AF37]/30 rounded-2xl p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <p class="text-xs font-medium uppercase tracking-wider text-gray-400 dark:text-[#A0A0A0]">Your Tracking Code</p>
-          <p class="mt-1 text-2xl font-bold font-mono tracking-wide text-[#1A1A1A] dark:text-[#D4AF37]">{{ order.tracking_code }}</p>
+          <p class="mt-1 text-2xl font-bold font-mono tracking-wide text-[#1A1A1A] dark:text-[#D4AF37] break-all">{{ order.tracking_code }}</p>
         </div>
         <div class="flex items-center gap-2">
           <button @click="copyCode" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold transition cursor-pointer border border-gray-200 dark:border-[#D4AF37]/20 text-gray-600 dark:text-[#A0A0A0] hover:bg-gray-50 dark:hover:bg-[#21262d]">
@@ -350,7 +350,7 @@ const formatTime = (date) => {
                 v-if="order.payment_slip_url.match(/\.(jpg|jpeg|png|webp)$/i)"
                 :src="order.payment_slip_url"
                 alt="Payment Slip"
-                class="w-full h-full object-cover cursor-pointer hover:scale-105 transition"
+                class="w-full h-full object-cover cursor-pointer  transition"
                 @click="window.open(order.payment_slip_url, '_blank')"
               />
               <svg v-else class="w-6 h-6 text-[#D4AF37]" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">

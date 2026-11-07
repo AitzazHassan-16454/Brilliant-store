@@ -24,7 +24,7 @@ class GetCategoryProducts implements Tool
             ->first();
 
         if (! $category) {
-            $categories = Category::pluck('name');
+            $categories = Category::whereHas('products', fn ($q) => $q->where('is_active', true))->pluck('name');
 
             return 'Category not found. Available categories: '.$categories->implode(', ');
         }

@@ -85,11 +85,11 @@ const reasons = [
             Here's who we are, what drives us, and why customers choose us.
           </p>
           <div :variants="m.itemFadeUp(3)" class="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <Link href="/" class="inline-flex items-center gap-2 text-sm font-semibold px-6 py-3 rounded-xl transition-all duration-300 hover:-translate-y-0.5 no-underline text-white bg-gradient-to-br from-[#D4AF37] via-[#B8960F] to-[#D4AF37] shadow-lg shadow-[#D4AF37]/30">
+            <Link href="/" class="inline-flex items-center gap-2 text-sm font-semibold px-6 py-3 rounded-xl transition-all duration-300  no-underline text-white bg-gradient-to-br from-[#D4AF37] via-[#B8960F] to-[#D4AF37] shadow-lg shadow-[#D4AF37]/30">
               Browse the Store
               <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </Link>
-            <Link href="/track-order" class="inline-flex items-center gap-2 text-sm font-semibold px-6 py-3 rounded-xl transition-all duration-300 hover:-translate-y-0.5 no-underline border border-black/10 dark:border-[#D4AF37]/20 bg-white/60 dark:bg-[#1A1A1A]/60 text-gray-900 dark:text-[#F5F5F5]">
+            <Link href="/track-order" class="inline-flex items-center gap-2 text-sm font-semibold px-6 py-3 rounded-xl transition-all duration-300  no-underline border border-black/10 dark:border-[#D4AF37]/20 bg-white/60 dark:bg-[#1A1A1A]/60 text-gray-900 dark:text-[#F5F5F5]">
               Track an Order
             </Link>
           </div>
@@ -125,21 +125,21 @@ const reasons = [
           initial="hidden"
           whileInView="visible"
           :viewport="m.viewport.once"
-          class="grid grid-cols-2 gap-4 sm:gap-5"
+          class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5"
         >
-          <motion.div :variants="m.itemScaleIn(0)" class="rounded-2xl p-6 text-center border border-gray-200 dark:border-[#D4AF37]/20 bg-white dark:bg-[#1A1A1A]/60 shadow-xl">
+          <motion.div :variants="m.itemScaleIn(0)" class="rounded-2xl p-4 sm:p-6 text-center border border-gray-200 dark:border-[#D4AF37]/20 bg-white dark:bg-[#1A1A1A]/60 shadow-xl">
             <p class="text-3xl sm:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-[#D4AF37] to-[#B8960F]">100%</p>
             <p class="mt-2 text-xs font-semibold uppercase tracking-widest text-gray-500 dark:text-[#A0A0A0]">Curated Products</p>
           </motion.div>
-          <motion.div :variants="m.itemScaleIn(1)" class="rounded-2xl p-6 text-center border border-gray-200 dark:border-[#D4AF37]/20 bg-white dark:bg-[#1A1A1A]/60 shadow-xl">
+          <motion.div :variants="m.itemScaleIn(1)" class="rounded-2xl p-4 sm:p-6 text-center border border-gray-200 dark:border-[#D4AF37]/20 bg-white dark:bg-[#1A1A1A]/60 shadow-xl">
             <p class="text-3xl sm:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-[#D4AF37] to-[#B8960F]">24/7</p>
             <p class="mt-2 text-xs font-semibold uppercase tracking-widest text-gray-500 dark:text-[#A0A0A0]">Customer Support</p>
           </motion.div>
-          <motion.div :variants="m.itemScaleIn(2)" class="rounded-2xl p-6 text-center border border-gray-200 dark:border-[#D4AF37]/20 bg-white dark:bg-[#1A1A1A]/60 shadow-xl">
+          <motion.div :variants="m.itemScaleIn(2)" class="rounded-2xl p-4 sm:p-6 text-center border border-gray-200 dark:border-[#D4AF37]/20 bg-white dark:bg-[#1A1A1A]/60 shadow-xl">
             <p class="text-3xl sm:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-[#D4AF37] to-[#B8960F]">Tracked</p>
             <p class="mt-2 text-xs font-semibold uppercase tracking-widest text-gray-500 dark:text-[#A0A0A0]">Every Order</p>
           </motion.div>
-          <motion.div :variants="m.itemScaleIn(3)" class="rounded-2xl p-6 text-center border border-gray-200 dark:border-[#D4AF37]/20 bg-white dark:bg-[#1A1A1A]/60 shadow-xl">
+          <motion.div :variants="m.itemScaleIn(3)" class="rounded-2xl p-4 sm:p-6 text-center border border-gray-200 dark:border-[#D4AF37]/20 bg-white dark:bg-[#1A1A1A]/60 shadow-xl">
             <p class="text-3xl sm:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-br from-[#D4AF37] to-[#B8960F]">Easy</p>
             <p class="mt-2 text-xs font-semibold uppercase tracking-widest text-gray-500 dark:text-[#A0A0A0]">Returns &amp; Exchanges</p>
           </motion.div>
@@ -212,7 +212,6 @@ const reasons = [
         <motion.div
           v-for="(value, index) in values" :key="value.title"
           :variants="m.itemScaleIn(index)"
-          :whileHover="{ y: -6, transition: m.spring.gentle }"
           class="rounded-2xl p-6 text-center border border-gray-200 dark:border-[#D4AF37]/20 bg-white dark:bg-[#1A1A1A]/60 shadow-xl transition-all duration-300"
         >
           <div class="w-11 h-11 rounded-xl flex items-center justify-center mx-auto mb-4 bg-[#D4AF37]/10">
@@ -244,7 +243,6 @@ const reasons = [
           <motion.div
             v-for="(reason, index) in reasons" :key="reason.title"
             :variants="m.itemFadeUp(index * 0.05)"
-            :whileHover="{ y: -6, boxShadow: '0 16px 40px rgba(212,175,55,0.15)', transition: m.spring.gentle }"
             class="group rounded-2xl p-6 border border-gray-200 dark:border-[#D4AF37]/20 bg-[#FAF7F2] dark:bg-[#0A0A0A] shadow-xl transition-all duration-300"
           >
             <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-4 bg-[#D4AF37]/10 transition group-hover:bg-[#D4AF37]">
@@ -266,7 +264,7 @@ const reasons = [
         <p class="mt-3 max-w-xl mx-auto text-sm sm:text-base text-gray-500 dark:text-[#A0A0A0]">
           Browse the collection, place an order, and enjoy premium quality delivered to your door.
         </p>
-        <Link href="/" class="mt-7 inline-flex items-center gap-2 text-sm font-semibold px-7 py-3 rounded-xl transition-all duration-300 hover:-translate-y-0.5 no-underline text-[#0A0A0A] bg-gradient-to-br from-[#D4AF37] via-[#D4AF37] to-[#B8960F] shadow-lg shadow-[#D4AF37]/30">
+        <Link href="/" class="mt-7 inline-flex items-center gap-2 text-sm font-semibold px-7 py-3 rounded-xl transition-all duration-300  no-underline text-[#0A0A0A] bg-gradient-to-br from-[#D4AF37] via-[#D4AF37] to-[#B8960F] shadow-lg shadow-[#D4AF37]/30">
           Start Shopping
           <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </Link>

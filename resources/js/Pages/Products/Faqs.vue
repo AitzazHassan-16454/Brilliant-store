@@ -15,16 +15,16 @@ defineProps({
   <div class="flex min-h-screen bg-[#FAF7F2] dark:bg-[#0A0A0A]">
     <Sidebar />
 
-    <main class="flex-1 p-6 lg:p-10">
-      <div class="mb-8">
-        <h1 class="text-3xl font-semibold text-[#1A1A1A] dark:text-[#F5F5F5]">FAQs</h1>
-        <p class="text-gray-500 dark:text-[#A0A0A0]">Frequently asked questions shown to customers</p>
+    <main class="flex-1 min-w-0 p-3.5 sm:p-6 lg:p-8 overflow-y-auto">
+      <div class="mb-6">
+        <h1 class="text-xl sm:text-2xl font-bold tracking-tight text-[#1A1A1A] dark:text-[#F5F5F5]">FAQs Management</h1>
+        <p class="text-xs sm:text-sm text-gray-500 dark:text-[#A0A0A0] mt-0.5">Frequently asked questions shown to customers</p>
       </div>
 
       <div v-if="faqs.length === 0"
-        class="bg-white dark:bg-[#1A1A1A] border border-gray-200 dark:border-[#D4AF37]/20 rounded-2xl p-16 text-center">
-        <div class="w-16 h-16 rounded-2xl flex items-center justify-center bg-[#D4AF37]/10 mx-auto mb-4">
-          <svg class="w-8 h-8" fill="none" stroke="#D4AF37" stroke-width="1.5" viewBox="0 0 24 24">
+        class="bg-white dark:bg-[#1A1A1A] border border-gray-200 dark:border-[#D4AF37]/20 rounded-2xl p-12 sm:p-16 text-center">
+        <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center bg-[#D4AF37]/10 mx-auto mb-4">
+          <svg class="w-7 h-7 sm:w-8 sm:h-8" fill="none" stroke="#D4AF37" stroke-width="1.5" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z"/>
           </svg>
         </div>
@@ -33,7 +33,7 @@ defineProps({
 
       <div v-else class="space-y-4">
         <div v-for="faq in faqs" :key="faq.id"
-          class="bg-white dark:bg-[#1A1A1A] border border-gray-200 dark:border-[#D4AF37]/20 rounded-2xl p-5">
+          class="bg-white dark:bg-[#1A1A1A] border border-gray-200 dark:border-[#D4AF37]/20 rounded-2xl p-4 sm:p-5 shadow-xs">
           <div class="flex items-start justify-between gap-4">
             <div class="min-w-0 flex-1">
               <div class="flex items-center gap-2 flex-wrap">
@@ -47,7 +47,7 @@ defineProps({
                   {{ faq.is_active ? "Active" : "Hidden" }}
                 </span>
               </div>
-              <p class="text-sm text-[#1A1A1A] dark:text-[#F5F5F5] mt-3 whitespace-pre-wrap">{{ faq.answer }}</p>
+              <p class="text-sm text-gray-600 dark:text-[#A0A0A0] mt-3 whitespace-pre-wrap leading-relaxed">{{ faq.answer }}</p>
             </div>
           </div>
         </div>
