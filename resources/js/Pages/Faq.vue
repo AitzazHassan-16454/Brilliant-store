@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from "vue"
-import { Head } from "@inertiajs/vue3"
+import { Head, Link } from "@inertiajs/vue3"
 import AppFooter from "./components/AppFooter.vue"
 import { AnimatePresence, motion } from "motion-v"
 import { motionPresets as m } from "../lib/motion.js"
@@ -111,10 +111,10 @@ const answerVariants = {
           Can't find what you're looking for? Reach out and we'll get back to you as soon as possible.
         </p>
         <div class="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
-          <a href="/custom-order"
-            class="inline-flex items-center justify-center gap-2 rounded-2xl px-6 py-3 text-sm font-semibold text-white bg-[#D4AF37] hover:bg-[#B8960F] transition-all ">
+          <Link href="/custom-order"
+            class="inline-flex items-center justify-center gap-2 rounded-2xl px-6 py-3 min-h-[44px] text-sm font-semibold text-white bg-[#D4AF37] hover:bg-[#B8960F] transition-all no-underline">
             Place a Custom Order
-          </a>
+          </Link>
         </div>
       </motion.div>
 

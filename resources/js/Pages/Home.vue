@@ -275,7 +275,7 @@ onUnmounted(() => {
           </motion.div>
 
           <!-- Stats Cards -->
-          <motion.div :variants="heroItem" class="hidden md:grid md:grid-cols-3 gap-4 pt-2">
+          <motion.div :variants="heroItem" class="grid grid-cols-3 gap-2 sm:gap-4 pt-2">
             <motion.div
               v-for="(stat, i) in [
                 { value: (stats?.products || 50) + '+', label: 'Products' },
@@ -541,7 +541,7 @@ onUnmounted(() => {
         initial="hidden"
         whileInView="visible"
         :viewport="m.viewport.onceLight"
-        class="grid grid-cols-2 gap-4 sm:gap-6 lg:grid-cols-4"
+        class="grid grid-cols-1 min-[360px]:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5 sm:gap-6"
       >
         <motion.div
           v-for="product in trendingProducts"

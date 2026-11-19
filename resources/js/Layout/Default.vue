@@ -109,21 +109,21 @@ const inactiveMobileNavClasses = 'text-[#1A1A1A] dark:text-[#F5F5F5] bg-transpar
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
 
         <!-- Logo -->
-        <Link href="/" class="flex items-center gap-3 shrink-0 no-underline group logo-link">
-          <div v-if="siteLogo" class="relative w-9 h-9 rounded-xl flex items-center justify-center overflow-hidden logo-icon bg-white transition-shadow duration-300  ">
+        <Link href="/" class="flex items-center gap-2.5 sm:gap-3 shrink-0 no-underline group logo-link min-w-0">
+          <div v-if="siteLogo" class="relative w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center overflow-hidden logo-icon bg-white transition-shadow duration-300 shrink-0">
             <img :src="siteLogo" :alt="siteName" class="w-full h-full object-contain p-0.5" />
           </div>
-          <div v-else class="relative w-9 h-9 rounded-xl flex items-center justify-center overflow-hidden logo-icon transition-shadow duration-300  " style="background:linear-gradient(135deg,var(--gold),var(--gold-dark));">
-            <svg class="w-5 h-5 relative z-10" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
+          <div v-else class="relative w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center overflow-hidden logo-icon transition-shadow duration-300 shrink-0" style="background:linear-gradient(135deg,var(--gold),var(--gold-dark));">
+            <svg class="w-4 h-4 sm:w-5 sm:h-5 relative z-10" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
               <path d="M6 3h12l4 6-10 13L2 9z"/>
               <path d="M2 9h20"/>
               <path d="M12 22L6 9"/>
               <path d="M12 22l6-13"/>
             </svg>
           </div>
-          <div class="flex flex-col leading-none">
-            <span class="text-lg font-extrabold tracking-tight transition-colors duration-200 logo-text text-[#1A1A1A] dark:text-[#F5F5F5]">{{ siteName }}</span>
-            <span class="text-[10px] font-medium tracking-widest uppercase transition-colors duration-200 logo-tagline text-[#9B9B9B] dark:text-[#A0A0A0]">{{ siteTagline }}</span>
+          <div class="flex flex-col leading-none min-w-0">
+            <span class="text-base sm:text-lg font-extrabold tracking-tight transition-colors duration-200 logo-text text-[#1A1A1A] dark:text-[#F5F5F5] truncate">{{ siteName }}</span>
+            <span class="text-[9px] sm:text-[10px] font-medium tracking-widest uppercase transition-colors duration-200 logo-tagline text-[#9B9B9B] dark:text-[#A0A0A0] truncate">{{ siteTagline }}</span>
           </div>
         </Link>
 
@@ -317,7 +317,7 @@ const inactiveMobileNavClasses = 'text-[#1A1A1A] dark:text-[#F5F5F5] bg-transpar
           class="fixed top-0 right-0 z-[70] h-dvh w-[86%] max-w-sm flex flex-col bg-[#FAF7F2] dark:bg-[#1A1A1A] border-l border-gray-200 dark:border-[#D4AF37]/20 shadow-2xl shadow-black/20 lg:hidden"
         >
           <!-- Drawer header -->
-          <div class="flex items-center justify-between gap-3 px-5 h-16 shrink-0 border-b border-gray-200 dark:border-[#D4AF37]/20">
+          <div class="flex items-center justify-between gap-3 px-5 h-16 shrink-0 border-b border-gray-200 dark:border-[#D4AF37]/20 pt-[env(safe-area-inset-top,0px)]">
             <Link href="/" @click="closeMobile" class="flex items-center gap-3 shrink-0 no-underline">
               <div v-if="siteLogo" class="w-9 h-9 rounded-xl flex items-center justify-center overflow-hidden bg-white">
                 <img :src="siteLogo" :alt="siteName" class="w-full h-full object-contain p-0.5" />
@@ -334,7 +334,7 @@ const inactiveMobileNavClasses = 'text-[#1A1A1A] dark:text-[#F5F5F5] bg-transpar
             </Link>
 
             <button @click="closeMobile" aria-label="Close menu"
-              class="flex items-center justify-center w-10 h-10 rounded-xl border border-gray-200 dark:border-[#D4AF37]/20 bg-white dark:bg-[#1A1A1A] text-[#1A1A1A] dark:text-[#F5F5F5]   transition-shadow cursor-pointer">
+              class="flex items-center justify-center w-10 h-10 rounded-xl border border-gray-200 dark:border-[#D4AF37]/20 bg-white dark:bg-[#1A1A1A] text-[#1A1A1A] dark:text-[#F5F5F5] transition-shadow cursor-pointer">
               <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
               </svg>
@@ -344,7 +344,7 @@ const inactiveMobileNavClasses = 'text-[#1A1A1A] dark:text-[#F5F5F5] bg-transpar
           <!-- Drawer navigation -->
           <nav class="flex-1 flex flex-col gap-1.5 px-3 py-4 overflow-y-auto">
             <Link href="/" @click="closeMobile"
-              class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold no-underline transition-all"
+              class="flex items-center gap-3 px-4 py-3 min-h-[44px] rounded-xl text-sm font-semibold no-underline transition-all"
               :class="isActive('/') && !isActive('/dashboard') ? activeMobileNavClasses : inactiveMobileNavClasses">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
@@ -353,7 +353,7 @@ const inactiveMobileNavClasses = 'text-[#1A1A1A] dark:text-[#F5F5F5] bg-transpar
             </Link>
 
             <Link href="/all-products" @click="closeMobile"
-              class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold no-underline transition-all"
+              class="flex items-center gap-3 px-4 py-3 min-h-[44px] rounded-xl text-sm font-semibold no-underline transition-all"
               :class="isActive('/all-products') ? activeMobileNavClasses : inactiveMobileNavClasses">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
@@ -362,7 +362,7 @@ const inactiveMobileNavClasses = 'text-[#1A1A1A] dark:text-[#F5F5F5] bg-transpar
             </Link>
 
             <Link href="/custom-order" @click="closeMobile"
-              class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold no-underline transition-all"
+              class="flex items-center gap-3 px-4 py-3 min-h-[44px] rounded-xl text-sm font-semibold no-underline transition-all"
               :class="isActive('/custom-order') ? activeMobileNavClasses : inactiveMobileNavClasses">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M9.53 16.122a3 3 0 00-5.78 1.128 2.25 2.25 0 01-2.4 2.245 4.5 4.5 0 008.4-2.245c0-.399-.078-.78-.22-1.128zm0 0a15.998 15.998 0 003.388-1.62m-5.043-.025a15.994 15.994 0 011.622-3.395m3.42 3.42a15.995 15.995 0 004.764-4.648l3.876-5.814a1.151 1.151 0 00-1.597-1.597L14.146 6.32a15.996 15.996 0 00-4.649 4.763m3.42 3.42a6.776 6.776 0 00-3.42-3.42"/>
@@ -371,7 +371,7 @@ const inactiveMobileNavClasses = 'text-[#1A1A1A] dark:text-[#F5F5F5] bg-transpar
             </Link>
 
             <Link href="/about" @click="closeMobile"
-              class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold no-underline transition-all"
+              class="flex items-center gap-3 px-4 py-3 min-h-[44px] rounded-xl text-sm font-semibold no-underline transition-all"
               :class="isActive('/about') ? activeMobileNavClasses : inactiveMobileNavClasses">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6 3h12l4 6-10 13L2 9z"/><path d="M2 9h20"/><path d="M12 22L6 9"/><path d="M12 22l6-13"/>
@@ -379,8 +379,26 @@ const inactiveMobileNavClasses = 'text-[#1A1A1A] dark:text-[#F5F5F5] bg-transpar
               About Us
             </Link>
 
+            <Link href="/faq" @click="closeMobile"
+              class="flex items-center gap-3 px-4 py-3 min-h-[44px] rounded-xl text-sm font-semibold no-underline transition-all"
+              :class="isActive('/faq') ? activeMobileNavClasses : inactiveMobileNavClasses">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9.879 7.519c1.171-1.025 3.071-1.025 4.242 0 1.172 1.025 1.172 2.687 0 3.712-.203.179-.43.326-.67.442-.745.361-1.45.999-1.45 1.827v.75M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9 5.25h.008v.008H12v-.008z"/>
+              </svg>
+              FAQ
+            </Link>
+
+            <Link href="/track-order" @click="closeMobile"
+              class="flex items-center gap-3 px-4 py-3 min-h-[44px] rounded-xl text-sm font-semibold no-underline transition-all"
+              :class="isActive('/track-order') ? activeMobileNavClasses : inactiveMobileNavClasses">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12"/>
+              </svg>
+              Track Order
+            </Link>
+
             <Link v-if="page.props.auth.user" href="/cart" @click="closeMobile"
-              class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold no-underline group transition-all"
+              class="flex items-center gap-3 px-4 py-3 min-h-[44px] rounded-xl text-sm font-semibold no-underline group transition-all"
               :class="isActive('/cart') ? activeMobileNavClasses : inactiveMobileNavClasses">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>
@@ -396,7 +414,7 @@ const inactiveMobileNavClasses = 'text-[#1A1A1A] dark:text-[#F5F5F5] bg-transpar
             <div class="h-px my-1 bg-gray-200 dark:bg-[#D4AF37]/10"></div>
 
             <Link v-if="page.props.auth.user" href="/Profile" @click="closeMobile"
-              class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold no-underline transition-all"
+              class="flex items-center gap-3 px-4 py-3 min-h-[44px] rounded-xl text-sm font-semibold no-underline transition-all"
               :class="isActive('/Profile') || isActive('/EditProfile') ? activeMobileNavClasses : inactiveMobileNavClasses">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
@@ -405,7 +423,7 @@ const inactiveMobileNavClasses = 'text-[#1A1A1A] dark:text-[#F5F5F5] bg-transpar
             </Link>
 
             <Link v-if="page.props.auth.user" href="/wishlist" @click="closeMobile"
-              class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold no-underline transition-all"
+              class="flex items-center gap-3 px-4 py-3 min-h-[44px] rounded-xl text-sm font-semibold no-underline transition-all"
               :class="isActive('/wishlist') ? activeMobileNavClasses : inactiveMobileNavClasses">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
@@ -418,7 +436,7 @@ const inactiveMobileNavClasses = 'text-[#1A1A1A] dark:text-[#F5F5F5] bg-transpar
             </Link>
 
             <Link v-if="page.props.permissions?.canViewDashboard" href="/dashboard" @click="closeMobile"
-              class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold no-underline transition-all"
+              class="flex items-center gap-3 px-4 py-3 min-h-[44px] rounded-xl text-sm font-semibold no-underline transition-all"
               :class="isActive('/dashboard') ? activeMobileNavClasses : inactiveMobileNavClasses">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/>
@@ -428,7 +446,7 @@ const inactiveMobileNavClasses = 'text-[#1A1A1A] dark:text-[#F5F5F5] bg-transpar
           </nav>
 
           <!-- Drawer footer -->
-          <div class="shrink-0 flex flex-col gap-2 px-3 py-4 border-t border-gray-200 dark:border-[#D4AF37]/20">
+          <div class="shrink-0 flex flex-col gap-2 px-3 py-4 pb-[max(1rem,env(safe-area-inset-bottom,0px))] border-t border-gray-200 dark:border-[#D4AF37]/20">
             <Link v-if="page.props.auth.user" href="/logout" method="post" as="button" @click="closeMobile"
               class="flex items-center justify-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold w-full border-none cursor-pointer transition-all text-[#DC2626] dark:text-[#f87171] bg-red-500/6 dark:bg-red-500/10">
               <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">

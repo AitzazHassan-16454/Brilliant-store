@@ -138,7 +138,7 @@ const imgLoaded = ref(false)
           :whileTap="{ scale: 0.92 }"
           :whileHover="{ scale: 1.06 }"
           :class="[
-            'flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-xl shadow-xs transition-luxury cursor-pointer',
+            'flex h-10 w-10 shrink-0 items-center justify-center rounded-xl shadow-xs transition-luxury cursor-pointer',
             product.stock === 0 || isInCart
               ? 'bg-muted text-muted-foreground cursor-not-allowed'
               : 'bg-[#D4AF37] text-[#0A0A0A] hover:bg-[#B8941E] hover:shadow-md'

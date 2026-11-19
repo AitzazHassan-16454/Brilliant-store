@@ -84,12 +84,12 @@ const reasons = [
             A premium store built on a simple idea: everyday products made exceptionally well.
             Here's who we are, what drives us, and why customers choose us.
           </p>
-          <div :variants="m.itemFadeUp(3)" class="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <Link href="/" class="inline-flex items-center gap-2 text-sm font-semibold px-6 py-3 rounded-xl transition-all duration-300  no-underline text-white bg-gradient-to-br from-[#D4AF37] via-[#B8960F] to-[#D4AF37] shadow-lg shadow-[#D4AF37]/30">
+          <div :variants="m.itemFadeUp(3)" class="mt-8 flex flex-col sm:flex-row items-stretch sm:items-center justify-center gap-3 max-w-sm sm:max-w-none mx-auto">
+            <Link href="/" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 text-sm font-semibold px-6 py-3 min-h-[44px] rounded-xl transition-all duration-300 no-underline text-white bg-gradient-to-br from-[#D4AF37] via-[#B8960F] to-[#D4AF37] shadow-lg shadow-[#D4AF37]/30">
               Browse the Store
               <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </Link>
-            <Link href="/track-order" class="inline-flex items-center gap-2 text-sm font-semibold px-6 py-3 rounded-xl transition-all duration-300  no-underline border border-black/10 dark:border-[#D4AF37]/20 bg-white/60 dark:bg-[#1A1A1A]/60 text-gray-900 dark:text-[#F5F5F5]">
+            <Link href="/track-order" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 text-sm font-semibold px-6 py-3 min-h-[44px] rounded-xl transition-all duration-300 no-underline border border-black/10 dark:border-[#D4AF37]/20 bg-white/60 dark:bg-[#1A1A1A]/60 text-gray-900 dark:text-[#F5F5F5]">
               Track an Order
             </Link>
           </div>
@@ -264,7 +264,7 @@ const reasons = [
         <p class="mt-3 max-w-xl mx-auto text-sm sm:text-base text-gray-500 dark:text-[#A0A0A0]">
           Browse the collection, place an order, and enjoy premium quality delivered to your door.
         </p>
-        <Link href="/" class="mt-7 inline-flex items-center gap-2 text-sm font-semibold px-7 py-3 rounded-xl transition-all duration-300  no-underline text-[#0A0A0A] bg-gradient-to-br from-[#D4AF37] via-[#D4AF37] to-[#B8960F] shadow-lg shadow-[#D4AF37]/30">
+        <Link href="/" class="mt-7 inline-flex items-center justify-center gap-2 text-sm font-semibold px-7 py-3 min-h-[44px] rounded-xl transition-all duration-300 no-underline text-[#0A0A0A] bg-gradient-to-br from-[#D4AF37] via-[#D4AF37] to-[#B8960F] shadow-lg shadow-[#D4AF37]/30">
           Start Shopping
           <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </Link>

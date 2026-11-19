@@ -410,7 +410,7 @@ const timeAgo = (date) => {
               </p>
             </div>
           </div>
-          <div class="flex items-center gap-3">
+          <div class="flex flex-wrap items-center gap-2 sm:gap-3">
             <span class="px-2.5 py-1 rounded-md text-[10px] font-semibold uppercase tracking-wide leading-none" :class="statusColor(order.status)">
               {{ order.status }}
             </span>
@@ -510,7 +510,7 @@ const timeAgo = (date) => {
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             {{ expandedOrder === order.id ? "Hide" : "View" }} Tracking
           </button>
-          <div class="flex items-center gap-1.5">
+          <div class="flex flex-wrap items-center gap-1.5">
             <button @click="printInvoice(order)" class="px-2.5 py-1.5 rounded-md text-[11px] font-semibold transition cursor-pointer bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-[#2A2A2A] dark:text-[#A0A0A0] dark:hover:bg-[#30363d] flex items-center gap-1">
               <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"/></svg>
               Invoice

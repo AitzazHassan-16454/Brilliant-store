@@ -114,7 +114,7 @@ const gridItem = staggerItem
       </div>
 
       <!-- Action buttons -->
-      <div v-if="wishlistItems?.length" class="flex items-center gap-3">
+      <div v-if="wishlistItems?.length" class="flex flex-wrap items-center gap-2.5 sm:gap-3">
         <button
           v-if="availableItems.length > 0"
           type="button"
@@ -145,7 +145,7 @@ const gridItem = staggerItem
       :variants="gridStagger"
       initial="hidden"
       animate="visible"
-      class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6"
+      class="grid grid-cols-1 min-[360px]:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3.5 sm:gap-6"
     >
       <motion.div
         v-for="item in wishlistItems"

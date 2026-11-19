@@ -172,14 +172,14 @@ const submit = () => {
 
           <Link
             href="/Profile"
-            class="w-full sm:w-auto text-center px-5 py-3 rounded-xl border border-black/8 dark:border-[#D4AF37]/20 text-sm font-medium no-underline text-[#6B6B6B] dark:text-[#A0A0A0] hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+            class="w-full sm:w-auto inline-flex items-center justify-center min-h-[44px] px-5 py-3 rounded-xl border border-black/8 dark:border-[#D4AF37]/20 text-sm font-medium no-underline text-[#6B6B6B] dark:text-[#A0A0A0] hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
           >
             Cancel
           </Link>
 
           <button
             type="submit"
-            class="w-full sm:w-auto px-8 py-3 rounded-xl font-semibold text-white transition-all duration-300  cursor-pointer"
+            class="w-full sm:w-auto inline-flex items-center justify-center min-h-[44px] px-8 py-3 rounded-xl font-semibold text-white transition-all duration-300 cursor-pointer"
             style="background:linear-gradient(135deg,#D4AF37,#B8960F,#D4AF37); box-shadow:0 4px 16px rgba(212,175,55,0.3),0 1px 3px rgba(0,0,0,0.1); border:none;"
           >
             Save Changes

@@ -184,7 +184,7 @@ const scrollToReviews = () => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-[var(--background)] text-neutral-900 dark:text-neutral-100 pb-24 selection:bg-[#D4AF37]/30">
+  <div class="min-h-screen bg-[var(--background)] text-neutral-900 dark:text-neutral-100 pb-32 md:pb-24 selection:bg-[#D4AF37]/30">
     <Head :title="`${product.name} — Luxury Collection`" />
 
     <!-- TOP NAVIGATION BAR -->
@@ -315,18 +315,18 @@ const scrollToReviews = () => {
             </div>
 
             <!-- Bottom Gallery Ribbon Highlights -->
-            <div class="grid grid-cols-3 border-t border-neutral-100 dark:border-neutral-800 divide-x divide-neutral-100 dark:divide-neutral-800 bg-neutral-50/50 dark:bg-neutral-900/30 text-center py-3 text-[11px] font-medium text-neutral-500 dark:text-neutral-400">
-              <div class="flex items-center justify-center gap-1.5 px-2">
-                <span class="text-[#D4AF37]">✦</span>
-                <span>Original Guaranteed</span>
+            <div class="grid grid-cols-3 border-t border-neutral-100 dark:border-neutral-800 divide-x divide-neutral-100 dark:divide-neutral-800 bg-neutral-50/50 dark:bg-neutral-900/30 text-center py-2.5 sm:py-3 text-[10px] sm:text-[11px] font-medium text-neutral-500 dark:text-neutral-400">
+              <div class="flex items-center justify-center gap-1 sm:gap-1.5 px-1 sm:px-2">
+                <span class="text-[#D4AF37] shrink-0">✦</span>
+                <span class="truncate">Original Guaranteed</span>
               </div>
-              <div class="flex items-center justify-center gap-1.5 px-2">
-                <span class="text-[#D4AF37]">✦</span>
-                <span>Insured Delivery</span>
+              <div class="flex items-center justify-center gap-1 sm:gap-1.5 px-1 sm:px-2">
+                <span class="text-[#D4AF37] shrink-0">✦</span>
+                <span class="truncate">Insured Delivery</span>
               </div>
-              <div class="flex items-center justify-center gap-1.5 px-2">
-                <span class="text-[#D4AF37]">✦</span>
-                <span>Bespoke Care</span>
+              <div class="flex items-center justify-center gap-1 sm:gap-1.5 px-1 sm:px-2">
+                <span class="text-[#D4AF37] shrink-0">✦</span>
+                <span class="truncate">Bespoke Care</span>
               </div>
             </div>
 
@@ -848,7 +848,7 @@ const scrollToReviews = () => {
     </div>
 
     <!-- MOBILE STICKY BOTTOM PURCHASE BAR -->
-    <div class="md:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 dark:bg-[#1A1A1A]/95 backdrop-blur-md border-t border-neutral-200/80 dark:border-white/10 px-4 py-3 flex items-center justify-between gap-3 shadow-2xl">
+    <div class="md:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 dark:bg-[#1A1A1A]/95 backdrop-blur-md border-t border-neutral-200/80 dark:border-white/10 px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom,0px))] flex items-center justify-between gap-3 shadow-2xl">
       <div class="flex flex-col">
         <span class="text-xl font-extrabold text-[#D4AF37]">${{ Number(product.price).toFixed(2) }}</span>
         <span
@@ -865,7 +865,7 @@ const scrollToReviews = () => {
         @click="addToCart"
         :disabled="isInCart || product.stock === 0"
         :class="[
-          'flex-1 max-w-[200px] py-3 rounded-xl text-xs font-bold tracking-wide transition-all shadow-sm cursor-pointer',
+          'flex-1 max-w-[200px] min-h-[44px] px-3 py-2.5 rounded-xl text-xs font-bold tracking-wide transition-all shadow-sm cursor-pointer inline-flex items-center justify-center',
           isInCart
             ? 'bg-emerald-600 text-white'
             : product.stock === 0

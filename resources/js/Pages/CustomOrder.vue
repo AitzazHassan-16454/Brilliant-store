@@ -125,22 +125,22 @@ const submit = () => {
               </p>
 
               <!-- CTA Buttons -->
-              <div class="mt-8 flex flex-col gap-4 sm:flex-row">
+              <div class="mt-8 flex flex-col gap-3 sm:gap-4 sm:flex-row">
                 <a :href="whatsappUrl" target="_blank" rel="noreferrer"
-                  class="inline-flex items-center justify-center gap-3 rounded-2xl px-6 py-4 text-base font-semibold text-white shadow-lg transition-all "
+                  class="inline-flex items-center justify-center gap-3 rounded-2xl px-5 py-3.5 sm:px-6 sm:py-4 min-h-[44px] text-sm sm:text-base font-semibold text-white shadow-lg transition-all no-underline"
                   style="background:#25D366; box-shadow:0 18px 40px -18px rgba(37,211,102,0.75);">
-                  <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 6.75c0 8.284 6.716 15 15 15h2.25a2.25 2.25 0 002.25-2.25v-1.372c0-.516-.351-.966-.852-1.091l-4.423-1.106c-.44-.11-.902.055-1.173.417l-.97 1.293c-.282.376-.769.542-1.21.38a12.035 12.035 0 01-7.143-7.143c-.162-.441.004-.928.38-1.21l1.293-.97c.363-.271.527-.734.417-1.173L6.963 3.102a1.125 1.125 0 00-1.091-.852H4.5A2.25 2.25 0 002.25 4.5v2.25z"/>
                   </svg>
-                  Chat on WhatsApp
-                  <svg class="w-5 h-5 transition-transform duration-300 " fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                  <span>Chat on WhatsApp</span>
+                  <svg class="w-5 h-5 transition-transform duration-300 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
                 </a>
                 <button @click="showForm = !showForm"
-                  class="inline-flex items-center justify-center gap-3 rounded-2xl border border-gray-200 dark:border-[#D4AF37]/20 bg-white dark:bg-[#1A1A1A] px-6 py-4 text-base font-semibold text-[#1A1A1A] dark:text-[#F5F5F5] transition-all hover:bg-[#FAF7F2] dark:hover:bg-[#21262d]  cursor-pointer">
-                  <svg class="w-5 h-5 text-[#D4AF37] dark:text-[#D4AF37]" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                  class="inline-flex items-center justify-center gap-3 rounded-2xl border border-gray-200 dark:border-[#D4AF37]/20 bg-white dark:bg-[#1A1A1A] px-5 py-3.5 sm:px-6 sm:py-4 min-h-[44px] text-sm sm:text-base font-semibold text-[#1A1A1A] dark:text-[#F5F5F5] transition-all hover:bg-[#FAF7F2] dark:hover:bg-[#21262d] cursor-pointer">
+                  <svg class="w-5 h-5 text-[#D4AF37] dark:text-[#D4AF37] shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z"/>
                   </svg>
-                  {{ showForm ? "Hide Form" : "Fill Out Form" }}
+                  <span>{{ showForm ? "Hide Form" : "Fill Out Form" }}</span>
                 </button>
               </div>
 
@@ -329,7 +329,7 @@ const submit = () => {
 
             <div class="pt-2">
               <button type="submit" :disabled="submitting"
-                class="pro-btn-primary sm:w-auto px-8">
+                class="pro-btn-primary w-full sm:w-auto px-8 min-h-[44px] justify-center">
                 <svg v-if="submitting" class="w-4 h-4 animate-spin text-[#0A0A0A]" fill="none" viewBox="0 0 24 24">
                   <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
                   <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />

@@ -23,26 +23,26 @@ defineProps({
     :transition="{ duration: 0.5, ease: m.easeOutExpo }"
     class="bg-white/60 dark:bg-[#1A1A1A] border-b border-gray-200 dark:border-[#D4AF37]/20 shadow-sm"
   >
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-14 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
 
-      <div class="flex items-center gap-6">
+      <div class="flex items-center gap-4 sm:gap-6 min-w-0">
         <div class="relative shrink-0">
-          <div class="w-20 h-20 rounded-2xl overflow-hidden flex items-center justify-center border border-white/25 dark:border-[#D4AF37]/20 bg-white/45 dark:bg-[#0A0A0A] shadow-xl">
+          <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl overflow-hidden flex items-center justify-center border border-white/25 dark:border-[#D4AF37]/20 bg-white/45 dark:bg-[#0A0A0A] shadow-xl">
             <img
               v-if="user.avatar"
               :src="user.avatar"
               :alt="user.name"
               class="w-full h-full object-cover"
             />
-            <svg v-else xmlns="http://www.w3.org/2000/svg" class="w-9 h-9 text-gray-400 dark:text-[#A0A0A0]" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>
+            <svg v-else xmlns="http://www.w3.org/2000/svg" class="w-8 h-8 sm:w-9 sm:h-9 text-gray-400 dark:text-[#A0A0A0]" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z"/></svg>
           </div>
           <span class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full bg-[#D4AF37] border-2 border-[#FAF7F2] dark:border-[#0d1117]"></span>
         </div>
 
-        <div>
-          <h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-gray-900 dark:text-[#F5F5F5]">{{ user.name }}</h2>
-          <p class="text-sm mt-1 text-gray-500 dark:text-[#A0A0A0]">{{ user.email }}</p>
-          <div class="flex flex-wrap gap-2 mt-3">
+        <div class="min-w-0">
+          <h2 class="text-xl sm:text-2xl md:text-3xl font-bold tracking-tight text-gray-900 dark:text-[#F5F5F5] truncate">{{ user.name }}</h2>
+          <p class="text-xs sm:text-sm mt-1 text-gray-500 dark:text-[#A0A0A0] truncate">{{ user.email }}</p>
+          <div class="flex flex-wrap gap-2 mt-2.5 sm:mt-3">
             <span v-if="user.role === 'user'"
               class="px-3 py-1 rounded-full text-xs font-semibold bg-white/60 dark:bg-[#1A1A1A]/60 border border-black/10 dark:border-[#D4AF37]/20 text-gray-500 dark:text-[#A0A0A0]">
               Customer
@@ -55,16 +55,16 @@ defineProps({
         </div>
       </div>
 
-      <div class="flex items-center gap-3 shrink-0">
+      <div class="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:gap-3 shrink-0 w-full md:w-auto">
         <Link
           href="/orders"
-          class="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300  no-underline border border-black/10 dark:border-[#D4AF37]/20 bg-white/60 dark:bg-[#1A1A1A]/60 text-gray-900 dark:text-[#F5F5F5]">
+          class="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-2.5 min-h-[44px] rounded-xl text-sm font-semibold transition-all duration-300 no-underline border border-black/10 dark:border-[#D4AF37]/20 bg-white/60 dark:bg-[#1A1A1A]/60 text-gray-900 dark:text-[#F5F5F5]">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z"/></svg>
           My Orders
         </Link>
         <Link
           href="/EditProfile"
-          class="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300  no-underline text-white bg-gradient-to-br from-[#D4AF37] via-[#B8960F] to-[#D4AF37] shadow-lg shadow-[#D4AF37]/30">
+          class="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-2.5 min-h-[44px] rounded-xl text-sm font-semibold transition-all duration-300 no-underline text-white bg-gradient-to-br from-[#D4AF37] via-[#B8960F] to-[#D4AF37] shadow-lg shadow-[#D4AF37]/30">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L10.582 16.07a4.5 4.5 0 01-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 011.13-1.897l8.932-8.931z"/></svg>
           Edit Profile
         </Link>

@@ -312,46 +312,80 @@ const confirmOrder = () => {
           <div
             v-for="item in cartItems"
             :key="item.id"
-            class="p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#1A1A1A] border border-neutral-200/80 dark:border-white/10 shadow-sm flex flex-col sm:flex-row items-start sm:items-center gap-4 transition-all hover:border-[#D4AF37]/40"
+            class="p-3.5 sm:p-5 rounded-2xl bg-white dark:bg-[#1A1A1A] border border-neutral-200/80 dark:border-white/10 shadow-sm flex flex-col sm:flex-row items-stretch sm:items-center gap-3.5 sm:gap-4 transition-all hover:border-[#D4AF37]/40"
           >
-            <!-- Product Thumbnail -->
-            <Link
-              :href="`/products/${item.product.uid}`"
-              class="w-20 h-20 sm:w-24 sm:h-24 rounded-xl overflow-hidden shrink-0 bg-neutral-100 dark:bg-neutral-900 border border-neutral-200/60 dark:border-neutral-800 relative block group"
-            >
-              <img
-                v-if="item.product.image"
-                :src="`/storage/${item.product.image}`"
-                :alt="item.product.name"
-                class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-              />
-              <div v-else class="w-full h-full flex items-center justify-center text-xs text-[#D4AF37] font-bold">
-                {{ item.product.name.charAt(0) }}
-              </div>
-            </Link>
-
-            <!-- Product Details -->
-            <div class="flex-1 min-w-0">
-              <span
-                v-if="item.product.category"
-                class="text-[10px] font-bold uppercase tracking-wider text-[#D4AF37] block mb-0.5"
-              >
-                {{ item.product.category.name }}
-              </span>
-
+            <!-- Product Thumbnail & Details Row on Mobile -->
+            <div class="flex items-start gap-3 sm:gap-4 flex-1 min-w-0">
               <Link
                 :href="`/products/${item.product.uid}`"
-                class="text-sm sm:text-base font-bold text-neutral-900 dark:text-white truncate block hover:text-[#D4AF37] transition-colors no-underline"
+                class="w-16 h-16 sm:w-24 sm:h-24 rounded-xl overflow-hidden shrink-0 bg-neutral-100 dark:bg-neutral-900 border border-neutral-200/60 dark:border-neutral-800 relative block group"
               >
-                {{ item.product.name }}
+                <img
+                  v-if="item.product.image"
+                  :src="`/storage/${item.product.image}`"
+                  :alt="item.product.name"
+                  class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+                <div v-else class="w-full h-full flex items-center justify-center text-xs text-[#D4AF37] font-bold">
+                  {{ item.product.name.charAt(0) }}
+                </div>
               </Link>
 
-              <p class="text-xs text-neutral-500 dark:text-neutral-400 mt-1">
-                ${{ Number(item.product.price).toFixed(2) }} each
-              </p>
+              <!-- Product Details -->
+              <div class="flex-1 min-w-0">
+                <span
+                  v-if="item.product.category"
+                  class="text-[10px] font-bold uppercase tracking-wider text-[#D4AF37] block mb-0.5 truncate"
+                >
+                  {{ item.product.category.name }}
+                </span>
 
-              <!-- Quantity Controls -->
-              <div class="flex items-center gap-2 mt-3">
+                <Link
+                  :href="`/products/${item.product.uid}`"
+                  class="text-sm sm:text-base font-bold text-neutral-900 dark:text-white truncate block hover:text-[#D4AF37] transition-colors no-underline"
+                >
+                  {{ item.product.name }}
+                </Link>
+
+                <p class="text-xs text-neutral-500 dark:text-neutral-400 mt-1">
+                  ${{ Number(item.product.price).toFixed(2) }} each
+                </p>
+
+                <!-- Quantity Controls for desktop -->
+                <div class="hidden sm:flex items-center gap-2 mt-3">
+                  <button
+                    @click="decreaseQty(item.id)"
+                    class="w-7 h-7 rounded-lg flex items-center justify-center font-bold text-sm border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900 text-neutral-800 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors cursor-pointer"
+                    title="Decrease quantity"
+                  >
+                    −
+                  </button>
+
+                  <span class="w-8 text-center text-xs font-bold text-neutral-900 dark:text-white">
+                    {{ item.qty }}
+                  </span>
+
+                  <button
+                    @click="increaseQty(item.id)"
+                    :disabled="item.qty >= item.product.stock"
+                    :class="[
+                      'w-7 h-7 rounded-lg flex items-center justify-center font-bold text-sm border transition-colors cursor-pointer',
+                      item.qty >= item.product.stock
+                        ? 'border-neutral-200 dark:border-neutral-800 bg-neutral-100 dark:bg-neutral-900 text-neutral-400 cursor-not-allowed'
+                        : 'border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900 text-neutral-800 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800'
+                    ]"
+                    title="Increase quantity"
+                  >
+                    +
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Mobile Quantity, Price & Remove Row -->
+            <div class="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-3 w-full sm:w-auto pt-2.5 sm:pt-0 border-t sm:border-t-0 border-neutral-100 dark:border-neutral-800/80">
+              <!-- Quantity Controls on Mobile -->
+              <div class="flex sm:hidden items-center gap-2">
                 <button
                   @click="decreaseQty(item.id)"
                   class="w-7 h-7 rounded-lg flex items-center justify-center font-bold text-sm border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-900 text-neutral-800 dark:text-neutral-200 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors cursor-pointer"
@@ -360,7 +394,7 @@ const confirmOrder = () => {
                   −
                 </button>
 
-                <span class="w-8 text-center text-xs font-bold text-neutral-900 dark:text-white">
+                <span class="w-7 text-center text-xs font-bold text-neutral-900 dark:text-white">
                   {{ item.qty }}
                 </span>
 
@@ -378,12 +412,9 @@ const confirmOrder = () => {
                   +
                 </button>
               </div>
-            </div>
 
-            <!-- Line Price & Remove Action -->
-            <div class="flex sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-3 w-full sm:w-auto pt-2 sm:pt-0 border-t sm:border-t-0 border-neutral-100 dark:border-neutral-800">
-              <div class="text-left sm:text-right">
-                <span class="text-[10px] uppercase tracking-wider text-neutral-400 block font-semibold">Subtotal</span>
+              <div class="text-right">
+                <span class="text-[10px] uppercase tracking-wider text-neutral-400 block font-semibold hidden sm:block">Subtotal</span>
                 <span class="text-base sm:text-lg font-extrabold text-neutral-900 dark:text-white">
                   ${{ (item.product.price * item.qty).toFixed(2) }}
                 </span>

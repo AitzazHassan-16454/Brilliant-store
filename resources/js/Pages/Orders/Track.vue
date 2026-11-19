@@ -204,12 +204,12 @@ const formatTime = (date) => {
           <p class="text-xs font-medium uppercase tracking-wider text-gray-400 dark:text-[#A0A0A0]">Your Tracking Code</p>
           <p class="mt-1 text-2xl font-bold font-mono tracking-wide text-[#1A1A1A] dark:text-[#D4AF37] break-all">{{ order.tracking_code }}</p>
         </div>
-        <div class="flex items-center gap-2">
-          <button @click="copyCode" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold transition cursor-pointer border border-gray-200 dark:border-[#D4AF37]/20 text-gray-600 dark:text-[#A0A0A0] hover:bg-gray-50 dark:hover:bg-[#21262d]">
+        <div class="flex flex-wrap items-center gap-2">
+          <button @click="copyCode" class="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 min-h-[44px] rounded-xl text-sm font-semibold transition cursor-pointer border border-gray-200 dark:border-[#D4AF37]/20 text-gray-600 dark:text-[#A0A0A0] hover:bg-gray-50 dark:hover:bg-[#21262d]">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
             {{ copied ? "Copied!" : "Copy" }}
           </button>
-          <button @click="copyLink" class="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-semibold transition cursor-pointer border border-gray-200 dark:border-[#D4AF37]/20 text-gray-600 dark:text-[#A0A0A0] hover:bg-gray-50 dark:hover:bg-[#21262d]">
+          <button @click="copyLink" class="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 min-h-[44px] rounded-xl text-sm font-semibold transition cursor-pointer border border-gray-200 dark:border-[#D4AF37]/20 text-gray-600 dark:text-[#A0A0A0] hover:bg-gray-50 dark:hover:bg-[#21262d]">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244"/></svg>
             {{ copied ? "Copied!" : "Copy Link" }}
           </button>
