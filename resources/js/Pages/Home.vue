@@ -568,7 +568,7 @@ onUnmounted(() => {
         initial="hidden"
         whileInView="visible"
         :viewport="m.viewport.onceLight"
-        class="grid grid-cols-1 min-[360px]:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3.5 sm:gap-6"
+        class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6"
       >
         <motion.div
           v-for="product in trendingProducts"

@@ -613,7 +613,7 @@ const paginationPages = computed(() => {
           <!-- Products Grid -->
           <div
             v-if="products.data && products.data.length > 0"
-            class="grid grid-cols-1 min-[360px]:grid-cols-2 gap-3.5 sm:gap-4 md:gap-6 lg:grid-cols-3 xl:grid-cols-4"
+            class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 md:gap-6"
           >
             <ProductCard
               v-for="item in products.data"

@@ -46,7 +46,7 @@ const imgLoaded = ref(false)
         :whileHover="{ scale: 1.12 }"
         :whileTap="{ scale: 0.88 }"
         :class="[
-          'absolute top-2.5 right-2.5 md:top-3 md:right-3 z-10 flex h-9 w-9 items-center justify-center rounded-full border border-border bg-card/95 backdrop-blur-sm shadow-sm transition-luxury',
+          'absolute top-2 right-2 sm:top-2.5 sm:right-2.5 md:top-3 md:right-3 z-10 flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-full border border-border bg-card/95 backdrop-blur-sm shadow-sm transition-luxury',
           isInWishlist
             ? 'hover:bg-red-500 hover:text-white'
             : 'hover:bg-[#D4AF37]',
@@ -55,7 +55,7 @@ const imgLoaded = ref(false)
             : 'translate-y-0 opacity-100 md:translate-y-2 md:opacity-0 md:group-hover:translate-y-0 md:group-hover:opacity-100'
         ]">
         <svg
-          :class="['w-4 h-4', isInWishlist ? 'fill-red-500 text-red-500' : 'text-foreground']"
+          :class="['w-3.5 h-3.5 sm:w-4 sm:h-4', isInWishlist ? 'fill-red-500 text-red-500' : 'text-foreground']"
           :fill="isInWishlist ? 'currentColor' : 'none'"
           stroke="currentColor"
           stroke-width="2"
@@ -66,26 +66,26 @@ const imgLoaded = ref(false)
     </Link>
 
     <!-- Card body -->
-    <div class="flex flex-1 flex-col p-3 md:p-4">
+    <div class="flex flex-1 flex-col p-2.5 sm:p-3 md:p-4">
 
       <!-- Category (mobile) -->
-      <div class="mb-1.5 md:mb-2">
-        <span class="text-xs font-medium uppercase tracking-wide text-muted-foreground md:text-[#D4AF37]">
+      <div class="mb-1 sm:mb-1.5 md:mb-2">
+        <span class="text-[10px] sm:text-xs font-medium uppercase tracking-wide text-muted-foreground md:text-[#D4AF37] truncate block">
           {{ product.category?.name }}
         </span>
       </div>
 
       <!-- Title -->
       <Link :href="`/products/${product.uid}`"
-        class="mb-1.5 md:mb-2 line-clamp-2 min-h-[2.5rem] md:min-h-0 text-sm leading-5 md:text-base md:leading-normal font-semibold text-foreground no-underline transition-colors group-hover:text-[#D4AF37]">
+        class="mb-1.5 md:mb-2 line-clamp-2 min-h-[2.1rem] sm:min-h-[2.5rem] md:min-h-0 text-xs sm:text-sm md:text-base leading-snug md:leading-normal font-semibold text-foreground no-underline transition-colors group-hover:text-[#D4AF37]">
         {{ product.name }}
       </Link>
 
       <!-- Stock badge -->
-      <div class="mb-2 md:mb-3">
+      <div class="mb-1.5 sm:mb-2 md:mb-3">
         <span
           :class="[
-            'text-[10px] font-bold uppercase tracking-wider w-fit',
+            'text-[9px] sm:text-[10px] font-bold uppercase tracking-wider w-fit',
             product.stock > 0
               ? 'text-green-600 dark:text-green-400'
               : 'text-red-500 dark:text-red-400'
@@ -96,12 +96,12 @@ const imgLoaded = ref(false)
       </div>
 
       <!-- Stars (mobile) -->
-      <div v-if="product.reviews_count > 0" class="mb-2 flex items-center gap-1 md:hidden">
-        <svg class="w-3.5 h-3.5 fill-[#D4AF37] text-[#D4AF37]" viewBox="0 0 20 20">
+      <div v-if="product.reviews_count > 0" class="mb-1.5 sm:mb-2 flex items-center gap-1 md:hidden">
+        <svg class="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-[#D4AF37] text-[#D4AF37]" viewBox="0 0 20 20">
           <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
         </svg>
-        <span class="text-xs font-medium text-foreground">{{ Number(product.reviews_avg_rating || 0).toFixed(1) }}</span>
-        <span class="text-xs text-muted-foreground">({{ product.reviews_count }})</span>
+        <span class="text-[11px] sm:text-xs font-medium text-foreground">{{ Number(product.reviews_avg_rating || 0).toFixed(1) }}</span>
+        <span class="text-[11px] sm:text-xs text-muted-foreground">({{ product.reviews_count }})</span>
       </div>
 
       <!-- Stars (desktop) -->
@@ -120,16 +120,16 @@ const imgLoaded = ref(false)
       </div>
 
       <!-- No reviews yet -->
-      <p v-if="!product.reviews_count" class="mb-2 md:mb-3 text-xs text-muted-foreground">
+      <p v-if="!product.reviews_count" class="mb-1.5 sm:mb-2 md:mb-3 text-[11px] sm:text-xs text-muted-foreground">
         No reviews yet
       </p>
 
       <!-- Price + Add to Cart Button -->
-      <div class="mt-auto flex items-center justify-between gap-2 pt-2">
+      <div class="mt-auto flex items-center justify-between gap-1.5 sm:gap-2 pt-2 border-t border-border/40">
         <div class="flex flex-col min-w-0">
-          <div class="flex flex-wrap items-baseline gap-x-1.5">
-            <span class="text-base sm:text-xl font-bold text-foreground">${{ Number(product.price).toFixed(2) }}</span>
-            <span v-if="product.compare_price" class="text-xs text-muted-foreground line-through">${{ Number(product.compare_price).toFixed(2) }}</span>
+          <div class="flex flex-wrap items-baseline gap-x-1 sm:gap-x-1.5">
+            <span class="text-sm sm:text-base md:text-xl font-bold text-foreground truncate">${{ Number(product.price).toFixed(2) }}</span>
+            <span v-if="product.compare_price" class="text-[10px] sm:text-xs text-muted-foreground line-through truncate">${{ Number(product.compare_price).toFixed(2) }}</span>
           </div>
         </div>
         <motion.button
@@ -138,7 +138,7 @@ const imgLoaded = ref(false)
           :whileTap="{ scale: 0.92 }"
           :whileHover="{ scale: 1.06 }"
           :class="[
-            'flex h-10 w-10 shrink-0 items-center justify-center rounded-xl shadow-xs transition-luxury cursor-pointer',
+            'flex h-8 w-8 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-lg sm:rounded-xl shadow-xs transition-luxury cursor-pointer',
             product.stock === 0 || isInCart
               ? 'bg-muted text-muted-foreground cursor-not-allowed'
               : 'bg-[#D4AF37] text-[#0A0A0A] hover:bg-[#B8941E] hover:shadow-md'
@@ -147,15 +147,15 @@ const imgLoaded = ref(false)
           :aria-label="product.stock === 0 ? 'Sold Out' : isInCart ? 'Added to Cart' : 'Add to Cart'"
         >
           <!-- In stock / Not in cart: Shopping Bag Icon -->
-          <svg v-if="!isInCart && product.stock > 0" class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <svg v-if="!isInCart && product.stock > 0" class="w-3.5 h-3.5 sm:w-5 sm:h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 1 0-7.5 0v4.5m11.356-1.993 1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 0 1-1.12-1.243l1.264-12A1.125 1.125 0 0 1 5.513 7.5h12.974c.576 0 1.059.435 1.119 1.007ZM8.625 10.5a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm7.5 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z" />
           </svg>
           <!-- Already In Cart: Checkmark Icon -->
-          <svg v-else-if="isInCart" class="w-4 h-4 sm:w-5 sm:h-5 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+          <svg v-else-if="isInCart" class="w-3.5 h-3.5 sm:w-5 sm:h-5 text-emerald-600 dark:text-emerald-400" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 12.75 6 6 9-13.5"/>
           </svg>
           <!-- Out of stock: Slash Icon -->
-          <svg v-else class="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <svg v-else class="w-3.5 h-3.5 sm:w-5 sm:h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 0 0 5.636 5.636m12.728 12.728A9 9 0 0 1 5.636 5.636m12.728 12.728L5.636 5.636"/>
           </svg>
         </motion.button>

@@ -145,7 +145,7 @@ const gridItem = staggerItem
       :variants="gridStagger"
       initial="hidden"
       animate="visible"
-      class="grid grid-cols-1 min-[360px]:grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3.5 sm:gap-6"
+      class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-6"
     >
       <motion.div
         v-for="item in wishlistItems"
@@ -179,10 +179,10 @@ const gridItem = staggerItem
           </div>
 
           <!-- Stock Pill Badge -->
-          <div class="absolute top-2.5 left-2.5 z-10">
+          <div class="absolute top-2 left-2 sm:top-2.5 sm:left-2.5 z-10">
             <span
               :class="[
-                'inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider backdrop-blur-md border',
+                'inline-flex items-center px-1.5 sm:px-2 py-0.5 rounded-full text-[9px] sm:text-[10px] font-bold uppercase tracking-wider backdrop-blur-md border',
                 item.product?.stock > 0
                   ? 'bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 border-emerald-500/30'
                   : 'bg-rose-500/15 text-rose-700 dark:text-rose-400 border-rose-500/30'
@@ -197,33 +197,33 @@ const gridItem = staggerItem
             type="button"
             @click.prevent.stop="removeFromWishlist(item)"
             aria-label="Remove from wishlist"
-            class="absolute top-2.5 right-2.5 z-10 flex h-8 w-8 sm:h-9 sm:w-9 items-center justify-center rounded-full bg-white/90 dark:bg-[#1A1A1A]/90 backdrop-blur-md border border-gray-200 dark:border-white/10 text-rose-500 hover:bg-rose-500 hover:text-white hover:border-rose-500 transition-all duration-200 shadow-sm cursor-pointer"
+            class="absolute top-2 right-2 sm:top-2.5 sm:right-2.5 z-10 flex h-7 w-7 sm:h-9 sm:w-9 items-center justify-center rounded-full bg-white/90 dark:bg-[#1A1A1A]/90 backdrop-blur-md border border-gray-200 dark:border-white/10 text-rose-500 hover:bg-rose-500 hover:text-white hover:border-rose-500 transition-all duration-200 shadow-sm cursor-pointer"
           >
-            <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
+            <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 fill-current" viewBox="0 0 24 24">
               <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
             </svg>
           </button>
         </Link>
 
         <!-- Card Body -->
-        <div class="flex flex-1 flex-col p-3.5 sm:p-4">
+        <div class="flex flex-1 flex-col p-2.5 sm:p-4">
           <!-- Category -->
-          <div v-if="item.product?.category" class="text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.16em] text-[#D4AF37] mb-1 truncate">
+          <div v-if="item.product?.category" class="text-[9px] sm:text-[11px] font-bold uppercase tracking-[0.16em] text-[#D4AF37] mb-1 truncate">
             {{ item.product.category.name }}
           </div>
 
           <!-- Product Title -->
           <Link
             :href="`/products/${item.product?.uid}`"
-            class="font-bold text-xs sm:text-sm text-[#1A1A1A] dark:text-[#F5F5F5] line-clamp-2 hover:text-[#D4AF37] transition-colors leading-snug mb-3 no-underline"
+            class="font-bold text-xs sm:text-sm text-[#1A1A1A] dark:text-[#F5F5F5] line-clamp-2 hover:text-[#D4AF37] transition-colors leading-snug mb-2 sm:mb-3 no-underline min-h-[2.1rem] sm:min-h-0"
           >
             {{ item.product?.name }}
           </Link>
 
           <!-- Price & Add to Bag (Matching ProductCard.vue icon-only style) -->
-          <div class="mt-auto flex items-center justify-between gap-2 pt-2 border-t border-gray-100 dark:border-white/5">
+          <div class="mt-auto flex items-center justify-between gap-1.5 sm:gap-2 pt-2 border-t border-gray-100 dark:border-white/5">
             <div class="min-w-0">
-              <span class="text-sm sm:text-base font-extrabold text-[#D4AF37]">
+              <span class="text-xs sm:text-base font-extrabold text-[#D4AF37] truncate">
                 {{ formatPrice(item.product?.price) }}
               </span>
             </div>
@@ -236,7 +236,7 @@ const gridItem = staggerItem
               :title="item.product?.stock === 0 ? 'Sold Out' : isInCart(item.product) ? 'In Bag' : 'Add to Bag'"
               :aria-label="item.product?.stock === 0 ? 'Sold Out' : isInCart(item.product) ? 'In Bag' : 'Add to Bag'"
               :class="[
-                'flex h-9 w-9 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-xl shadow-sm transition-all duration-300 cursor-pointer',
+                'flex h-8 w-8 sm:h-10 sm:w-10 shrink-0 items-center justify-center rounded-lg sm:rounded-xl shadow-sm transition-all duration-300 cursor-pointer',
                 item.product?.stock === 0
                   ? 'bg-neutral-100 dark:bg-neutral-800 text-neutral-400 cursor-not-allowed opacity-60'
                   : isInCart(item.product)
