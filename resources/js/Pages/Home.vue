@@ -73,13 +73,12 @@ const resumeCategory = () => {
 const onCategoryScroll = (e) => {
   const el = e.target
   if (!el || !el.children.length) return
-  const elCenter = el.getBoundingClientRect().left + el.clientWidth / 2
+  const scrollLeft = el.scrollLeft
   let closestIdx = 0
   let minDiff = Infinity
   Array.from(el.children).forEach((child, idx) => {
-    const rect = child.getBoundingClientRect()
-    const childCenter = rect.left + rect.width / 2
-    const diff = Math.abs(childCenter - elCenter)
+    const targetLeft = idx === 0 ? 0 : child.offsetLeft - (parseFloat(getComputedStyle(el).paddingLeft) || 16)
+    const diff = Math.abs(targetLeft - scrollLeft)
     if (diff < minDiff) {
       minDiff = diff
       closestIdx = idx
@@ -93,10 +92,13 @@ const scrollCategoryTo = (idx) => {
   if (!el) return
   const child = el.children[idx]
   if (child) {
-    const elRect = el.getBoundingClientRect()
-    const childRect = child.getBoundingClientRect()
-    const targetLeft = (childRect.left - elRect.left + el.scrollLeft) - (el.clientWidth - child.offsetWidth) / 2
-    el.scrollTo({ left: Math.max(0, targetLeft), behavior: "smooth" })
+    if (idx === 0) {
+      el.scrollTo({ left: 0, behavior: "smooth" })
+    } else {
+      const paddingLeft = parseFloat(getComputedStyle(el).paddingLeft) || 16
+      const targetLeft = child.offsetLeft - paddingLeft
+      el.scrollTo({ left: Math.max(0, targetLeft), behavior: "smooth" })
+    }
     activeCategoryIndex.value = idx
   }
 }
@@ -141,13 +143,12 @@ const resumeReview = () => {
 const onReviewScroll = (e) => {
   const el = e.target
   if (!el || !el.children.length) return
-  const elCenter = el.getBoundingClientRect().left + el.clientWidth / 2
+  const scrollLeft = el.scrollLeft
   let closestIdx = 0
   let minDiff = Infinity
   Array.from(el.children).forEach((child, idx) => {
-    const rect = child.getBoundingClientRect()
-    const childCenter = rect.left + rect.width / 2
-    const diff = Math.abs(childCenter - elCenter)
+    const targetLeft = idx === 0 ? 0 : child.offsetLeft - (parseFloat(getComputedStyle(el).paddingLeft) || 16)
+    const diff = Math.abs(targetLeft - scrollLeft)
     if (diff < minDiff) {
       minDiff = diff
       closestIdx = idx
@@ -161,10 +162,13 @@ const scrollReviewTo = (idx) => {
   if (!el) return
   const child = el.children[idx]
   if (child) {
-    const elRect = el.getBoundingClientRect()
-    const childRect = child.getBoundingClientRect()
-    const targetLeft = (childRect.left - elRect.left + el.scrollLeft) - (el.clientWidth - child.offsetWidth) / 2
-    el.scrollTo({ left: Math.max(0, targetLeft), behavior: "smooth" })
+    if (idx === 0) {
+      el.scrollTo({ left: 0, behavior: "smooth" })
+    } else {
+      const paddingLeft = parseFloat(getComputedStyle(el).paddingLeft) || 16
+      const targetLeft = child.offsetLeft - paddingLeft
+      el.scrollTo({ left: Math.max(0, targetLeft), behavior: "smooth" })
+    }
     activeReviewIndex.value = idx
   }
 }
@@ -407,23 +411,24 @@ onUnmounted(() => {
           @touchend.passive="resumeCategory"
           @mouseenter="pauseCategory"
           @mouseleave="resumeCategory"
+          @wheel.passive="pauseCategory(); resumeCategory()"
           :class="[
             'gap-5 sm:gap-8 scroll-smooth pb-4 sm:pb-0',
             categories.length === 1
               ? 'flex justify-center max-w-md mx-auto px-4 sm:px-0'
               : categories.length === 2
-                ? 'flex sm:grid sm:grid-cols-2 justify-center max-w-3xl mx-auto overflow-x-auto sm:overflow-visible snap-x snap-mandatory -mx-4 px-4 sm:mx-auto sm:px-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden'
-                : 'flex sm:grid sm:grid-cols-2 lg:grid-cols-3 overflow-x-auto sm:overflow-visible snap-x snap-mandatory -mx-4 px-4 pb-4 sm:mx-0 sm:px-0 sm:pb-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden'
+                ? 'flex sm:grid sm:grid-cols-2 sm:justify-center max-w-3xl mx-auto overflow-x-auto sm:overflow-visible snap-x snap-mandatory scroll-px-4 -mx-4 px-4 sm:mx-auto sm:px-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden'
+                : 'flex sm:grid sm:grid-cols-2 lg:grid-cols-3 overflow-x-auto sm:overflow-visible snap-x snap-mandatory scroll-px-4 -mx-4 px-4 pb-4 sm:mx-0 sm:px-0 sm:pb-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden'
           ]"
         >
           <div
             v-for="cat in categories"
             :key="cat.id"
             :class="[
-              'group relative overflow-hidden rounded-2xl border border-gray-200/80 dark:border-[#D4AF37]/20 bg-white dark:bg-[#141414] shadow-sm hover:shadow-xl hover:border-[#D4AF37]/60 transition-all duration-500 shrink-0 snap-center',
+              'group relative overflow-hidden rounded-2xl border border-gray-200/80 dark:border-[#D4AF37]/20 bg-white dark:bg-[#141414] shadow-sm hover:shadow-xl hover:border-[#D4AF37]/60 transition-all duration-500 shrink-0 snap-start',
               categories.length === 1
                 ? 'w-full max-w-[380px]'
-                : 'w-[78vw] max-w-[300px] sm:w-auto sm:max-w-none'
+                : 'w-[80vw] max-w-[310px] sm:w-auto sm:max-w-none'
             ]"
           >
             <Link :href="`/categories/${cat.uid}`" class="block no-underline">
@@ -471,19 +476,41 @@ onUnmounted(() => {
           </div>
         </div>
 
-        <!-- Slider Pagination Indicator for Mobile -->
-        <div v-if="categories?.length > 1" class="flex sm:hidden items-center justify-center gap-1.5 mt-4">
+        <!-- Slider Pagination Indicator & Controls for Mobile -->
+        <div v-if="categories?.length > 1" class="flex sm:hidden items-center justify-center gap-3 mt-4">
           <button
-            v-for="(cat, idx) in categories"
-            :key="'cat-dot-' + cat.id"
             type="button"
-            @click="scrollCategoryTo(idx)"
-            :aria-label="`Slide to ${cat.name}`"
-            :class="[
-              'h-1.5 rounded-full transition-all duration-300 cursor-pointer',
-              activeCategoryIndex === idx ? 'w-6 bg-[#D4AF37]' : 'w-1.5 bg-neutral-300 dark:bg-neutral-700'
-            ]"
-          />
+            @click="scrollCategoryTo(Math.max(0, activeCategoryIndex - 1))"
+            :disabled="activeCategoryIndex === 0"
+            class="w-7 h-7 rounded-full flex items-center justify-center border border-gray-300 dark:border-[#D4AF37]/30 text-[#1A1A1A] dark:text-[#F5F5F5] disabled:opacity-25 disabled:cursor-not-allowed bg-white/80 dark:bg-[#1A1A1A]/80 cursor-pointer shadow-xs transition"
+            aria-label="Previous category"
+          >
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
+          </button>
+
+          <div class="flex items-center gap-1.5">
+            <button
+              v-for="(cat, idx) in categories"
+              :key="'cat-dot-' + cat.id"
+              type="button"
+              @click="scrollCategoryTo(idx)"
+              :aria-label="`Slide to ${cat.name}`"
+              :class="[
+                'h-1.5 rounded-full transition-all duration-300 cursor-pointer',
+                activeCategoryIndex === idx ? 'w-6 bg-[#D4AF37]' : 'w-1.5 bg-neutral-300 dark:bg-neutral-700'
+              ]"
+            />
+          </div>
+
+          <button
+            type="button"
+            @click="scrollCategoryTo(Math.min(categories.length - 1, activeCategoryIndex + 1))"
+            :disabled="activeCategoryIndex === categories.length - 1"
+            class="w-7 h-7 rounded-full flex items-center justify-center border border-gray-300 dark:border-[#D4AF37]/30 text-[#1A1A1A] dark:text-[#F5F5F5] disabled:opacity-25 disabled:cursor-not-allowed bg-white/80 dark:bg-[#1A1A1A]/80 cursor-pointer shadow-xs transition"
+            aria-label="Next category"
+          >
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+          </button>
         </div>
       </div>
 
@@ -682,12 +709,13 @@ onUnmounted(() => {
           @touchend.passive="resumeReview"
           @mouseenter="pauseReview"
           @mouseleave="resumeReview"
-          class="flex md:grid md:grid-cols-3 gap-5 md:gap-6 overflow-x-auto md:overflow-visible snap-x snap-mandatory -mx-4 px-4 pb-4 md:mx-0 md:px-0 md:pb-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden scroll-smooth"
+          @wheel.passive="pauseReview(); resumeReview()"
+          class="flex md:grid md:grid-cols-3 gap-5 md:gap-6 overflow-x-auto md:overflow-visible snap-x snap-mandatory scroll-px-4 -mx-4 px-4 pb-4 md:mx-0 md:px-0 md:pb-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden scroll-smooth"
         >
           <div
             v-for="testimonial in testimonials"
             :key="testimonial.author"
-            class="rounded-2xl border border-gray-200/80 dark:border-[#D4AF37]/20 bg-white/90 dark:bg-[#1A1A1A]/90 backdrop-blur-sm p-6 sm:p-7 shadow-md hover:border-[#D4AF37]/50 hover:shadow-lg transition-all duration-300 flex flex-col justify-between w-[82vw] max-w-[320px] shrink-0 snap-center md:w-auto md:max-w-none"
+            class="rounded-2xl border border-gray-200/80 dark:border-[#D4AF37]/20 bg-white/90 dark:bg-[#1A1A1A]/90 backdrop-blur-sm p-6 sm:p-7 shadow-md hover:border-[#D4AF37]/50 hover:shadow-lg transition-all duration-300 flex flex-col justify-between w-[80vw] max-w-[310px] shrink-0 snap-start md:w-auto md:max-w-none"
           >
             <div>
               <div class="mb-4 flex items-center space-x-1">
@@ -712,19 +740,41 @@ onUnmounted(() => {
           </div>
         </div>
 
-        <!-- Slider Pagination Indicator for Mobile -->
-        <div class="flex md:hidden items-center justify-center gap-1.5 mt-4">
+        <!-- Slider Pagination Indicator & Controls for Mobile -->
+        <div class="flex md:hidden items-center justify-center gap-3 mt-4">
           <button
-            v-for="(_, idx) in testimonials"
-            :key="'review-dot-' + idx"
             type="button"
-            @click="scrollReviewTo(idx)"
-            :aria-label="`Slide to review ${idx + 1}`"
-            :class="[
-              'h-1.5 rounded-full transition-all duration-300 cursor-pointer',
-              activeReviewIndex === idx ? 'w-6 bg-[#D4AF37]' : 'w-1.5 bg-neutral-300 dark:bg-neutral-700'
-            ]"
-          />
+            @click="scrollReviewTo(Math.max(0, activeReviewIndex - 1))"
+            :disabled="activeReviewIndex === 0"
+            class="w-7 h-7 rounded-full flex items-center justify-center border border-gray-300 dark:border-[#D4AF37]/30 text-[#1A1A1A] dark:text-[#F5F5F5] disabled:opacity-25 disabled:cursor-not-allowed bg-white/80 dark:bg-[#1A1A1A]/80 cursor-pointer shadow-xs transition"
+            aria-label="Previous review"
+          >
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
+          </button>
+
+          <div class="flex items-center gap-1.5">
+            <button
+              v-for="(_, idx) in testimonials"
+              :key="'review-dot-' + idx"
+              type="button"
+              @click="scrollReviewTo(idx)"
+              :aria-label="`Slide to review ${idx + 1}`"
+              :class="[
+                'h-1.5 rounded-full transition-all duration-300 cursor-pointer',
+                activeReviewIndex === idx ? 'w-6 bg-[#D4AF37]' : 'w-1.5 bg-neutral-300 dark:bg-neutral-700'
+              ]"
+            />
+          </div>
+
+          <button
+            type="button"
+            @click="scrollReviewTo(Math.min(testimonials.length - 1, activeReviewIndex + 1))"
+            :disabled="activeReviewIndex === testimonials.length - 1"
+            class="w-7 h-7 rounded-full flex items-center justify-center border border-gray-300 dark:border-[#D4AF37]/30 text-[#1A1A1A] dark:text-[#F5F5F5] disabled:opacity-25 disabled:cursor-not-allowed bg-white/80 dark:bg-[#1A1A1A]/80 cursor-pointer shadow-xs transition"
+            aria-label="Next review"
+          >
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+          </button>
         </div>
       </div>
 
