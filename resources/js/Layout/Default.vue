@@ -16,8 +16,8 @@ const mobileOpen = ref(false)
 const profileOpen = ref(false)
 
 const site = computed(() => page.props.site ?? {})
-const siteName = computed(() => site.value.site_name || 'Brilliant')
-const siteTagline = computed(() => site.value.tagline || 'Premium Store')
+const siteName = computed(() => site.value.site_name || 'GharBazaar')
+const siteTagline = computed(() => site.value.tagline || 'Shop Smart • Live Better')
 const siteLogo = computed(() => site.value.logo_url || null)
 
 const dropdownVariants = {
@@ -110,7 +110,7 @@ const inactiveMobileNavClasses = 'text-[#1A1A1A] dark:text-[#F5F5F5] bg-transpar
 
         <!-- Logo -->
         <Link href="/" class="flex items-center gap-2.5 sm:gap-3 shrink-0 no-underline group logo-link min-w-0">
-          <div v-if="siteLogo" class="relative w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center overflow-hidden logo-icon bg-white transition-shadow duration-300 shrink-0">
+          <div v-if="siteLogo" class="relative w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center overflow-hidden logo-icon bg-white dark:bg-white shadow-xs transition-shadow duration-300 shrink-0">
             <img :src="siteLogo" :alt="siteName" class="w-full h-full object-contain p-0.5" />
           </div>
           <div v-else class="relative w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center overflow-hidden logo-icon transition-shadow duration-300 shrink-0" style="background:linear-gradient(135deg,var(--gold),var(--gold-dark));">

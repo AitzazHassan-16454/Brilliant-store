@@ -13,7 +13,7 @@ const logoInput = ref(null)
 const logoPreview = ref(null)
 
 const form = useForm({
-  site_name: props.settings.site_name || "Brilliant",
+  site_name: props.settings.site_name || "GharBazaar",
   tagline: props.settings.tagline || "",
   logo: null,
   remove_logo: false,

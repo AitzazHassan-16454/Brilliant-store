@@ -6,7 +6,7 @@ const pages = import.meta.glob('./Pages/**/*.vue')
 
 
 createInertiaApp({
-    title : (title) => `${window.__SITE_NAME__ || 'Brilliant'} - ${title}`,
+    title : (title) => `${window.__SITE_NAME__ || 'GharBazaar'} - ${title}`,
       resolve: async (name) => {
         const page = await pages[`./Pages/${name}.vue`]()
         if (page.default.layout === undefined) {

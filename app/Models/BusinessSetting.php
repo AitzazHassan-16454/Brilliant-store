@@ -26,14 +26,14 @@ class BusinessSetting extends Model
     public static function defaults(): array
     {
         return [
-            'site_name' => 'Brilliant',
-            'tagline' => 'Premium Store',
-            'logo' => null,
+            'site_name' => 'GharBazaar',
+            'tagline' => 'Shop Smart • Live Better',
+            'logo' => 'branding/logo.png',
             'primary_color' => '#D4AF37',
             'accent_color' => '#B8960F',
-            'contact_email' => 'info@brilliantstore.com',
+            'contact_email' => 'info@gharbazaar.com',
             'contact_hours' => 'Mon - Fri: 9:00 AM - 6:00 PM',
-            'footer_description' => 'Premium products crafted with precision and passion.',
+            'footer_description' => 'GharBazaar — Shop Smart, Live Better. Everyday essentials and curated collections delivered to your doorstep.',
         ];
     }
 
@@ -49,10 +49,17 @@ class BusinessSetting extends Model
     {
         $settings = static::current();
 
+        $logoUrl = null;
+        if ($settings->logo) {
+            $logoUrl = asset('storage/'.$settings->logo);
+        } elseif (file_exists(public_path('images/logo.png'))) {
+            $logoUrl = asset('images/logo.png');
+        }
+
         return [
             'site_name' => $settings->site_name,
             'tagline' => $settings->tagline,
-            'logo_url' => $settings->logo ? asset('storage/'.$settings->logo) : null,
+            'logo_url' => $logoUrl,
             'primary_color' => $settings->primary_color,
             'accent_color' => $settings->accent_color,
             'contact_email' => $settings->contact_email,

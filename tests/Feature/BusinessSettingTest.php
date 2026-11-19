@@ -3,6 +3,7 @@
 use App\Models\BusinessSetting;
 use App\Models\User;
 use App\Support\ApplicationPermissions;
+use Database\Seeders\BusinessSettingSeeder;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Permission\Models\Permission;
@@ -53,7 +54,7 @@ it('shows business settings to an admin', function () {
         ->assertSuccessful()
         ->assertInertia(fn ($page) => $page
             ->component('Settings/Index', false)
-            ->where('settings.site_name', 'Brilliant')
+            ->where('settings.site_name', 'GharBazaar')
         );
 });
 
@@ -119,4 +120,16 @@ it('validates color and required fields', function () {
             'accent_color' => 'not-a-color',
         ]))
         ->assertSessionHasErrors(['site_name', 'primary_color', 'accent_color']);
+});
+
+it('seeds GharBazaar logo and settings via BusinessSettingSeeder', function () {
+    $this->seed(BusinessSettingSeeder::class);
+
+    $this->assertDatabaseHas('business_settings', [
+        'id' => 1,
+        'site_name' => 'GharBazaar',
+        'tagline' => 'Shop Smart • Live Better',
+        'logo' => 'branding/logo.png',
+        'contact_email' => 'info@gharbazaar.com',
+    ]);
 });

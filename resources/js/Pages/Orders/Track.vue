@@ -1,8 +1,11 @@
 <script setup>
-import { Link, Head, router, useForm } from "@inertiajs/vue3";
-import { ref, watch } from "vue";
+import { Link, Head, router, useForm, usePage } from "@inertiajs/vue3";
+import { ref, watch, computed } from "vue";
 import { motion } from "motion-v";
 import { motionPresets as m } from "../../lib/motion.js";
+
+const page = usePage();
+const siteName = computed(() => page.props.site?.site_name || "GharBazaar");
 
 const props = defineProps({
   order: Object,
@@ -121,7 +124,7 @@ const formatTime = (date) => {
 
 <template>
 <Head>
-  <title>Track Your Order — Brilliant</title>
+  <title>Track Your Order — {{ siteName }}</title>
   <meta name="description" content="Track your order status in real time using your unique tracking code." />
 </Head>
 
@@ -311,7 +314,7 @@ const formatTime = (date) => {
             </div>
             <div class="flex items-center justify-between p-2 rounded-lg bg-white dark:bg-[#1A1A1A] border border-gray-200/60 dark:border-white/5">
               <span class="text-gray-400 dark:text-[#A0A0A0]">Account Title:</span>
-              <span class="font-semibold text-[#1A1A1A] dark:text-white">Brilliant Store</span>
+              <span class="font-semibold text-[#1A1A1A] dark:text-white">{{ siteName }}</span>
             </div>
             <div class="flex items-center justify-between p-2 rounded-lg bg-white dark:bg-[#1A1A1A] border border-gray-200/60 dark:border-white/5">
               <span class="text-gray-400 dark:text-[#A0A0A0]">Account No:</span>

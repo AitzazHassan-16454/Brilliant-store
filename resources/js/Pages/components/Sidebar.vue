@@ -6,7 +6,7 @@ import NotificationModal from "../../Components/NotificationModal.vue";
 
 const page = usePage();
 const site = computed(() => page.props.site ?? {});
-const siteName = computed(() => site.value.site_name || "Brilliant");
+const siteName = computed(() => site.value.site_name || "GharBazaar");
 const siteLogo = computed(() => site.value.logo_url || null);
 const siteInitial = computed(() => siteName.value.charAt(0).toUpperCase());
 

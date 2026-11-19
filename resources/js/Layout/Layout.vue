@@ -1,7 +1,11 @@
 <script setup>
+import { computed } from "vue"
 import { Link, usePage } from "@inertiajs/vue3"
 
 const page = usePage()
+const site = computed(() => page.props.site ?? {})
+const siteName = computed(() => site.value.site_name || "GharBazaar")
+const siteLogo = computed(() => site.value.logo_url || null)
 </script>
 
 <template>
@@ -12,15 +16,18 @@ const page = usePage()
       <div class="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center gap-3">
 
         <!-- Logo -->
-        <Link href="/" class="flex items-center gap-2 shrink-0 no-underline">
-          <div class="w-8 h-8 bg-[#1a1f36] rounded-xl flex items-center justify-center">
+        <Link href="/" class="flex items-center gap-2.5 shrink-0 no-underline">
+          <div v-if="siteLogo" class="w-8 h-8 rounded-xl flex items-center justify-center overflow-hidden bg-white shadow-xs">
+            <img :src="siteLogo" :alt="siteName" class="w-full h-full object-contain p-0.5" />
+          </div>
+          <div v-else class="w-8 h-8 bg-[#1a1f36] rounded-xl flex items-center justify-center">
             <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
               <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
               <line x1="3" y1="6" x2="21" y2="6"/>
               <path d="M16 10a4 4 0 0 1-8 0"/>
             </svg>
           </div>
-          <span class="font-extrabold text-lg tracking-tight text-gray-900 dark:text-[#F5F5F5]">Brilliant</span>
+          <span class="font-extrabold text-lg tracking-tight text-gray-900 dark:text-[#F5F5F5]">{{ siteName }}</span>
         </Link>
 
         <!-- AUTH / NAV -->

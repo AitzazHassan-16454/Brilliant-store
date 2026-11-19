@@ -4,10 +4,10 @@ import { Link, usePage } from "@inertiajs/vue3"
 
 const page = usePage()
 const site = computed(() => page.props.site ?? {})
-const siteName = computed(() => site.value.site_name || "Brilliant")
+const siteName = computed(() => site.value.site_name || "GharBazaar")
 const siteLogo = computed(() => site.value.logo_url || null)
-const description = computed(() => site.value.footer_description || "Premium products crafted with precision and passion.")
-const contactEmail = computed(() => site.value.contact_email || "info@brilliantstore.com")
+const description = computed(() => site.value.footer_description || "GharBazaar — Shop Smart, Live Better. Everyday essentials and curated collections delivered to your doorstep.")
+const contactEmail = computed(() => site.value.contact_email || "info@gharbazaar.com")
 const contactHours = computed(() => site.value.contact_hours || "Mon - Fri: 9:00 AM - 6:00 PM")
 </script>
 

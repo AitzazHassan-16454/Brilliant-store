@@ -1,8 +1,13 @@
 <script setup>
-import { Head, Link } from "@inertiajs/vue3"
+import { computed } from "vue"
+import { Head, Link, usePage } from "@inertiajs/vue3"
 import AppFooter from "./components/AppFooter.vue"
 import { motion } from "motion-v"
 import { motionPresets as m, staggerContainer } from "../lib/motion.js"
+
+const page = usePage()
+const site = computed(() => page.props.site ?? {})
+const siteName = computed(() => site.value.site_name || "GharBazaar")
 
 const values = [
   {
@@ -58,8 +63,8 @@ const reasons = [
 
 <template>
 <Head>
-  <title>About Us — Brilliant</title>
-  <meta name="description" content="Learn about Brilliant — who we are, our story, our mission, our values, and why customers choose us." />
+  <title>About Us — {{ siteName }}</title>
+  <meta name="description" :content="`Learn about ${siteName} — who we are, our story, our mission, our values, and why customers choose us.`" />
 </Head>
 
   <div class="min-h-screen bg-[#FAF7F2] dark:bg-[#0A0A0A] text-[#1A1A1A] dark:text-[#F5F5F5]" style="font-family:'Inter',system-ui,sans-serif;">
@@ -78,7 +83,7 @@ const reasons = [
             About Us
           </span>
           <h1 :variants="m.itemFadeUp(1)" class="mt-5 text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-gray-900 dark:text-[#F5F5F5]">
-            About <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] via-[#B8960F] to-[#D4AF37]">Brilliant</span>
+            About <span class="text-transparent bg-clip-text bg-gradient-to-r from-[#D4AF37] via-[#B8960F] to-[#D4AF37]">{{ siteName }}</span>
           </h1>
           <p :variants="m.itemFadeUp(2)" class="mt-5 max-w-2xl mx-auto text-base sm:text-lg leading-relaxed text-gray-500 dark:text-[#A0A0A0]">
             A premium store built on a simple idea: everyday products made exceptionally well.
@@ -110,13 +115,13 @@ const reasons = [
           <h2 class="mt-2 text-3xl sm:text-4xl font-extrabold tracking-tight text-gray-900 dark:text-[#F5F5F5]">Premium products, thoughtfully delivered</h2>
           <div class="mt-5 space-y-4 text-sm sm:text-base leading-relaxed text-gray-500 dark:text-[#A0A0A0]">
             <p>
-              Brilliant is a premium online store that brings together carefully curated everyday essentials
+              {{ siteName }} is a premium online store that brings together carefully curated everyday essentials
               and made-to-order pieces. We focus on quality, honest pricing, and a shopping experience that
               feels personal from start to finish.
             </p>
             <p>
               From browsing the catalog to following your package to the door with a tracking code, everything
-              at Brilliant is designed with the customer in mind.
+              at {{ siteName }} is designed with the customer in mind.
             </p>
           </div>
         </motion.div>
@@ -158,16 +163,16 @@ const reasons = [
       >
         <div :variants="m.itemFadeUp(0)" class="text-center mb-8">
           <p class="text-xs font-bold uppercase tracking-widest text-[#D4AF37]">Our Story</p>
-          <h2 class="mt-2 text-3xl sm:text-4xl font-extrabold tracking-tight text-gray-900 dark:text-[#F5F5F5]">How Brilliant came to be</h2>
+          <h2 class="mt-2 text-3xl sm:text-4xl font-extrabold tracking-tight text-gray-900 dark:text-[#F5F5F5]">How {{ siteName }} came to be</h2>
         </div>
         <div :variants="m.itemFadeUp(1)" class="space-y-4 text-sm sm:text-base leading-relaxed text-gray-500 dark:text-[#A0A0A0] text-center max-w-2xl mx-auto">
           <p>
-            Brilliant started with a frustration with disposable goods — products that look great for a week
+            {{ siteName }} started with a frustration with disposable goods — products that look great for a week
             and then fall apart. So we set out to build a store where quality comes first: curated collections,
             honest materials, and finishes that age beautifully.
           </p>
           <p>
-            Today, Brilliant brings together premium everyday essentials and made-to-order pieces, backed by
+            Today, {{ siteName }} brings together premium everyday essentials and made-to-order pieces, backed by
             dependable shipping and support that treats every customer like a person, not a number.
           </p>
         </div>
@@ -186,7 +191,7 @@ const reasons = [
         <div class="absolute inset-0 pointer-events-none" style="background:radial-gradient(circle at center,rgba(212,175,55,0.18),transparent 60%);"></div>
         <div class="relative">
           <p class="text-xs font-bold uppercase tracking-widest text-[#D4AF37]">Our Mission</p>
-          <h2 class="mt-2 text-3xl sm:text-4xl font-extrabold tracking-tight text-white">Make every purchase feel Brilliant</h2>
+          <h2 class="mt-2 text-3xl sm:text-4xl font-extrabold tracking-tight text-white">Make every purchase feel delightful</h2>
           <p class="mt-4 max-w-2xl mx-auto text-sm sm:text-base leading-relaxed text-white/60">
             We're on a mission to deliver premium quality products with a shopping experience that is simple,
             honest, and enjoyable — so every order feels like a gift, even when it's for you.
@@ -230,7 +235,7 @@ const reasons = [
       <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-20">
         <div class="text-center mb-10">
           <p class="text-xs font-bold uppercase tracking-widest text-[#D4AF37]">Why Choose Us</p>
-          <h2 class="mt-2 text-3xl sm:text-4xl font-extrabold tracking-tight text-gray-900 dark:text-[#F5F5F5]">The Brilliant difference</h2>
+          <h2 class="mt-2 text-3xl sm:text-4xl font-extrabold tracking-tight text-gray-900 dark:text-[#F5F5F5]">The {{ siteName }} difference</h2>
         </div>
 
         <motion.div
@@ -260,7 +265,7 @@ const reasons = [
     <!-- CTA -->
     <section class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-14 sm:py-20">
       <div class="text-center">
-        <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-gray-900 dark:text-[#F5F5F5]">Experience Brilliant for yourself</h2>
+        <h2 class="text-3xl sm:text-4xl font-extrabold tracking-tight text-gray-900 dark:text-[#F5F5F5]">Experience {{ siteName }} for yourself</h2>
         <p class="mt-3 max-w-xl mx-auto text-sm sm:text-base text-gray-500 dark:text-[#A0A0A0]">
           Browse the collection, place an order, and enjoy premium quality delivered to your door.
         </p>

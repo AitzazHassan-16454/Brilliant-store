@@ -11,7 +11,7 @@ const saving = ref(false)
 const steps = [
     {
         icon: 'M12 0l2.5 9.5L24 12l-9.5 2.5L12 24l-2.5-9.5L0 12l9.5-2.5z',
-        title: 'Welcome to Brilliant',
+        title: 'Welcome to GharBazaar',
         text: 'Your premium destination for jewelry, watches, fashion and electronics. Let us show you around.',
     },
     {

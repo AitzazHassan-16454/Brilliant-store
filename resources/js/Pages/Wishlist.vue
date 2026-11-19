@@ -12,6 +12,7 @@ const props = defineProps({
 })
 
 const page = usePage()
+const siteName = computed(() => page.props.site?.site_name || 'GharBazaar')
 const { openLogin } = useAuthModal()
 const { success } = useNotification()
 
@@ -72,7 +73,7 @@ const gridItem = staggerItem
 
 <template>
 <Head>
-  <title>Curated Wishlist — Brilliant</title>
+  <title>Curated Wishlist — {{ siteName }}</title>
   <meta name="description" content="Review your curated acquisitions and saved masterworks." />
 </Head>
 

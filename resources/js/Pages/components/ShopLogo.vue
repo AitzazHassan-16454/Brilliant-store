@@ -1,4 +1,12 @@
 <script setup>
+import { computed } from "vue"
+import { usePage } from "@inertiajs/vue3"
+
+const page = usePage()
+const site = computed(() => page.props.site ?? {})
+const siteName = computed(() => site.value.site_name || "GharBazaar")
+const siteTagline = computed(() => site.value.tagline || "Shop Smart • Live Better")
+const siteLogo = computed(() => site.value.logo_url || null)
 </script>
 
 <template>
@@ -40,9 +48,12 @@
     <!-- Logo card -->
     <div class="relative bg-[#1a1f36] rounded-3xl p-8 sm:p-10 shadow-2xl shadow-gray-900/30">
 
-      <!-- Bag icon -->
-      <div class="relative">
-        <svg class="w-20 h-20 sm:w-24 sm:h-24 text-white mx-auto" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+      <!-- Logo Image or Bag icon -->
+      <div class="relative flex items-center justify-center">
+        <div v-if="siteLogo" class="w-20 h-20 sm:w-24 sm:h-24 rounded-2xl bg-white p-2 shadow-lg flex items-center justify-center overflow-hidden">
+          <img :src="siteLogo" :alt="siteName" class="w-full h-full object-contain" />
+        </div>
+        <svg v-else class="w-20 h-20 sm:w-24 sm:h-24 text-white mx-auto" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
           <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" stroke-linecap="round" stroke-linejoin="round"/>
           <line x1="3" y1="6" x2="21" y2="6" stroke-linecap="round"/>
           <path d="M16 10a4 4 0 0 1-8 0" stroke-linecap="round" stroke-linejoin="round"/>
@@ -75,10 +86,10 @@
 
       <!-- Brand name -->
       <div class="mt-6 text-center">
-        <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Brilliant</h1>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">{{ siteName }}</h1>
         <div class="mt-2 flex items-center justify-center gap-2">
           <span class="w-8 h-px bg-[#D4AF37]"></span>
-          <span class="text-[10px] font-bold uppercase tracking-[0.3em] text-[#D4AF37]">Premium Store</span>
+          <span class="text-[10px] font-bold uppercase tracking-[0.3em] text-[#D4AF37]">{{ siteTagline }}</span>
           <span class="w-8 h-px bg-[#D4AF37]"></span>
         </div>
       </div>

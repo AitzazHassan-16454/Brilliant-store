@@ -13,8 +13,8 @@ const heroItem = staggerItem
 
 const page = usePage()
 const site = computed(() => page.props.site ?? {})
-const siteName = computed(() => site.value.site_name || "Brilliant")
-const siteTagline = computed(() => site.value.tagline || "Premium Store")
+const siteName = computed(() => site.value.site_name || "GharBazaar")
+const siteTagline = computed(() => site.value.tagline || "Shop Smart • Live Better")
 const { success } = useNotification()
 const { openLogin } = useAuthModal()
 

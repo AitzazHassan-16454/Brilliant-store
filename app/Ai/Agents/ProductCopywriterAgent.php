@@ -14,7 +14,7 @@ class ProductCopywriterAgent implements Agent, HasStructuredOutput
 
     public function instructions(): Stringable|string
     {
-        return 'You are a luxury copywriter for Brilliant Premium Store, an online shop selling premium handmade products.
+        return 'You are an e-commerce copywriter for GharBazaar, an online shop selling quality products with the tagline "Shop Smart • Live Better".
 
 Given a product name (and optionally its category and price), write elegant, persuasive e-commerce copy that matches a high-end, timeless brand voice.
 
