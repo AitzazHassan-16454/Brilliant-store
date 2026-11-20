@@ -44,7 +44,7 @@ const submit = () => {
 <template>
 <Head title="Edit Profile" />
 
-<div class="min-h-screen bg-[#FAF7F2] dark:bg-[#0A0A0A] text-[#1A1A1A] dark:text-[#F5F5F5]" style="font-family:'Inter',system-ui,sans-serif;">
+<div class="min-h-screen hero-gradient-static text-[#1A1A1A] dark:text-[#F5F5F5]" style="font-family:'Inter',system-ui,sans-serif;">
 
   <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-14">
 

@@ -67,7 +67,7 @@ const reasons = [
   <meta name="description" :content="`Learn about ${siteName} — who we are, our story, our mission, our values, and why customers choose us.`" />
 </Head>
 
-  <div class="min-h-screen bg-[#FAF7F2] dark:bg-[#0A0A0A] text-[#1A1A1A] dark:text-[#F5F5F5]" style="font-family:'Inter',system-ui,sans-serif;">
+  <div class="min-h-screen hero-gradient-static text-[#1A1A1A] dark:text-[#F5F5F5]" style="font-family:'Inter',system-ui,sans-serif;">
 
     <!-- HERO -->
     <section class="relative overflow-hidden border-b border-gray-200 dark:border-[#D4AF37]/20">
@@ -248,10 +248,10 @@ const reasons = [
           <motion.div
             v-for="(reason, index) in reasons" :key="reason.title"
             :variants="m.itemFadeUp(index * 0.05)"
-            class="group rounded-2xl p-6 border border-gray-200 dark:border-[#D4AF37]/20 bg-[#FAF7F2] dark:bg-[#0A0A0A] shadow-xl transition-all duration-300"
+            class="group rounded-2xl p-6 border border-gray-200 dark:border-[#D4AF37]/20 bg-white/80 dark:bg-[#161616]/80 shadow-md hover:border-[#D4AF37]/60 hover:shadow-xl transition-all duration-300"
           >
-            <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-4 bg-[#D4AF37]/10 transition group-hover:bg-[#D4AF37]">
-              <svg class="w-5 h-5 text-[#D4AF37] transition group-hover:text-white" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+            <div class="w-11 h-11 rounded-xl flex items-center justify-center mb-4 bg-[#D4AF37]/10 dark:bg-[#D4AF37]/15 border border-[#D4AF37]/25 text-[#B8941E] dark:text-[#D4AF37] group-hover:border-[#D4AF37] group-hover:bg-[#D4AF37]/20 group-hover:scale-105 transition-all duration-300">
+              <svg class="w-5 h-5 text-[#B8941E] dark:text-[#D4AF37] transition" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" :d="reason.icon"/>
               </svg>
             </div>

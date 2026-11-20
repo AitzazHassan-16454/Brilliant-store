@@ -210,7 +210,7 @@ const timeAgo = (date) => {
 <template>
 <Head title="My Orders" />
 
-<div class="min-h-screen bg-[#FAF7F2] dark:bg-[#0A0A0A]">
+<div class="min-h-screen hero-gradient-static">
 
   <div class="max-w-4xl mx-auto px-4 sm:px-6 py-8 sm:py-12">
 

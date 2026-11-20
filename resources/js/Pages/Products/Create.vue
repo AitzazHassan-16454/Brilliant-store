@@ -2,6 +2,7 @@
 import { useForm, usePage } from '@inertiajs/vue3'
 import { ref, computed } from 'vue'
 import Sidebar from "../components/Sidebar.vue";
+import ProductImageUploader from "../../Components/ProductImageUploader.vue";
 import { Link, Head } from '@inertiajs/vue3'
 import { useNotification } from "../../composables/useNotification.js";
 
@@ -21,10 +22,12 @@ const form = useForm({
     name: '',
     category_id: '',
     price: '',
+    compare_price: '',
     stock: 0,
     is_active: true,
     is_trending: false,
     image: null,
+    images: [],
     description: '',
 })
 
@@ -32,7 +35,7 @@ const canSubmit = computed(() => {
     return form.name.trim() !== '' &&
            form.category_id !== '' &&
            form.price !== '' &&
-           form.image !== null
+           (form.images?.length > 0 || form.image !== null)
 })
 
 const submit = () => {
@@ -41,10 +44,6 @@ const submit = () => {
         onError: () => error("Can't save data. Please check input fields."),
         onSuccess: () => form.reset()
     })
-}
-
-function handleFileChange(event) {
-    form.image = event.target.files[0] || null
 }
 
 const generating = ref(false)
@@ -160,10 +159,13 @@ const generateWithAI = async () => {
                 </div>
 
                 <!-- PRICE & STOCK ROW -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
-                    <!-- PRICE -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5">
+                    <!-- SELLING / DISCOUNTED PRICE -->
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 dark:text-[#F5F5F5] mb-2">Price ($) <span class="text-red-500">*</span></label>
+                        <label class="block text-sm font-semibold text-gray-700 dark:text-[#F5F5F5] mb-1">
+                            Selling Price ($) <span class="text-red-500">*</span>
+                        </label>
+                        <p class="text-[11px] text-gray-400 dark:text-neutral-500 mb-2">The active price customers pay</p>
                         <input
                             type="number"
                             v-model="form.price"
@@ -177,9 +179,34 @@ const generateWithAI = async () => {
                         <p v-if="form.errors.price" class="text-red-500 text-xs mt-1.5">{{ form.errors.price }}</p>
                     </div>
 
+                    <!-- ORIGINAL / COMPARE AT PRICE (WITH LINE THROUGH) -->
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 dark:text-[#F5F5F5] mb-1">
+                            Original Price ($) <span class="text-xs font-normal text-gray-400">(Optional)</span>
+                        </label>
+                        <p class="text-[11px] text-gray-400 dark:text-neutral-500 mb-2">Shown with strikethrough line</p>
+                        <input
+                            type="number"
+                            v-model="form.compare_price"
+                            min="0"
+                            step="0.01"
+                            max="999999.99"
+                            inputmode="decimal"
+                            placeholder="e.g. 150.00"
+                            class="w-full border border-gray-200 dark:border-[#D4AF37]/20 rounded-xl px-4 py-3 text-sm focus:outline-none bg-white dark:bg-[#1A1A1A] dark:text-[#F5F5F5] transition focus:border-[#D4AF37]"
+                        />
+                        <p v-if="form.errors.compare_price" class="text-red-500 text-xs mt-1.5">{{ form.errors.compare_price }}</p>
+                        <div v-if="form.compare_price && form.price && Number(form.compare_price) > Number(form.price)" class="mt-1.5 inline-flex items-center gap-1.5 text-xs font-bold text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 px-2.5 py-0.5 rounded-full border border-amber-200 dark:border-amber-800/40">
+                            <span>Save {{ Math.round(((Number(form.compare_price) - Number(form.price)) / Number(form.compare_price)) * 100) }}% badge preview</span>
+                        </div>
+                    </div>
+
                     <!-- STOCK -->
                     <div>
-                        <label class="block text-sm font-semibold text-gray-700 dark:text-[#F5F5F5] mb-2">Stock Quantity <span class="text-red-500">*</span></label>
+                        <label class="block text-sm font-semibold text-gray-700 dark:text-[#F5F5F5] mb-1">
+                            Stock Quantity <span class="text-red-500">*</span>
+                        </label>
+                        <p class="text-[11px] text-gray-400 dark:text-neutral-500 mb-2">Available inventory units</p>
                         <input
                             type="number"
                             v-model="form.stock"
@@ -214,15 +241,13 @@ const generateWithAI = async () => {
                     </div>
                 </div>
 
-                <!-- IMAGE -->
+                <!-- PRODUCT IMAGES WITH MOBILE CAROUSEL -->
                 <div>
-                    <label class="block text-sm font-semibold text-gray-700 dark:text-[#F5F5F5] mb-2">Product Image <span class="text-red-500">*</span></label>
-                    <input
-                        type="file"
-                        @change="handleFileChange"
-                        class="w-full border border-gray-200 dark:border-[#D4AF37]/20 rounded-xl px-4 py-3 text-sm bg-white dark:bg-[#1A1A1A] dark:text-[#F5F5F5]"
+                    <ProductImageUploader
+                        v-model="form.images"
+                        :error="form.errors.images || form.errors.image"
+                        @update:modelValue="(files) => form.image = files[0] || null"
                     />
-                    <p v-if="form.errors.image" class="text-red-500 text-xs mt-1.5">{{ form.errors.image }}</p>
                 </div>
 
                 <!-- BUTTONS -->

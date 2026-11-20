@@ -111,10 +111,11 @@ const answerVariants = {
           Can't find what you're looking for? Reach out and we'll get back to you as soon as possible.
         </p>
         <div class="mt-6 flex flex-col gap-3 sm:flex-row sm:justify-center">
-          <Link href="/custom-order"
-            class="inline-flex items-center justify-center gap-2 rounded-2xl px-6 py-3 min-h-[44px] text-sm font-semibold text-white bg-[#D4AF37] hover:bg-[#B8960F] transition-all no-underline">
-            Place a Custom Order
-          </Link>
+          <a href="https://wa.me/03414425591" target="_blank" rel="noopener noreferrer"
+            class="inline-flex items-center justify-center gap-2 rounded-2xl px-6 py-3 min-h-[44px] text-sm font-semibold text-[#0A0A0A] bg-[#D4AF37] hover:bg-[#B8960F] transition-all no-underline shadow-md">
+            <span>Contact on WhatsApp</span>
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+          </a>
         </div>
       </motion.div>
 

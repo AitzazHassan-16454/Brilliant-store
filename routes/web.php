@@ -6,8 +6,6 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ChatBotController;
 use App\Http\Controllers\CheckoutController;
-use App\Http\Controllers\CouponController;
-use App\Http\Controllers\CustomOrderController;
 use App\Http\Controllers\FaqController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\OrderTrackingController;
@@ -29,11 +27,10 @@ Route::get('/shop', fn (Request $request) => redirect()->route('products.all', $
 
 Route::get('/login', fn () => redirect('/'))->name('login');
 
-Route::get('/custom-order', [CustomOrderController::class, 'create'])->name('custom-order.create');
-
 Route::get('/faq', [FaqController::class, 'index'])->name('faq');
 
 Route::get('/products/{product}', [ProductController::class, 'show'])
+    ->where('product', '^(?!create$)[^/]+')
     ->name('products.show');
 
 Route::get('/track-order', [OrderTrackingController::class, 'show'])
@@ -152,15 +149,6 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('roles', RoleController::class)
         ->except(['show']);
-
-    Route::post('/coupons', [CouponController::class, 'store']);
-    Route::put('/coupons/{coupon}', [CouponController::class, 'update']);
-    Route::delete('/coupons/{coupon}', [CouponController::class, 'destroy']);
-    Route::get('/coupons', [CouponController::class, 'index']);
-    Route::post('/coupons/validate', [CouponController::class, 'validateCode']);
-
-    Route::post('/custom-order', [CustomOrderController::class, 'store']);
-    Route::get('/custom-orders', [CustomOrderController::class, 'index']);
 
     Route::get('/faqs', [FaqController::class, 'adminIndex']);
 

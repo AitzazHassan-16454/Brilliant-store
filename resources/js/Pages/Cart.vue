@@ -15,12 +15,6 @@ const deleteId = ref(null)
 const showCheckoutModal = ref(false)
 const loading = ref(false)
 
-const couponCode = ref("")
-const appliedCoupon = ref(null)
-const couponDiscount = ref(0)
-const couponError = ref("")
-const couponLoading = ref(false)
-
 const shipping = ref({
   name: "",
   email: "",
@@ -41,31 +35,19 @@ onMounted(() => {
 
 const shippingErrors = ref({})
 
-const paymentMethod = ref("stripe")
+const paymentMethod = ref("cod")
 const paymentMethods = [
   {
-    value: "stripe",
-    label: "Credit / Debit Card (Stripe)",
-    description: "Pay securely online with credit or debit card via Stripe.",
-    badge: "Instant",
-  },
-  {
     value: "cod",
-    label: "Cash on Delivery",
+    label: "Cash on Delivery (COD)",
     description: "Pay with cash directly when your order is delivered.",
-    badge: "Popular",
-  },
-  {
-    value: "bank_transfer",
-    label: "Direct Bank Transfer",
-    description: "Transfer directly to our account and share payment slip.",
-    badge: "Secure",
+    badge: "Default",
   },
   {
     value: "whatsapp",
-    label: "Personal Concierge (WhatsApp)",
-    description: "Finalize and confirm payment directly with our team.",
-    badge: "Assisted",
+    label: "Payment Via WhatsApp",
+    description: "Pay through WhatsApp and confirm your order directly with our team.",
+    badge: "WhatsApp",
   },
 ]
 
@@ -75,60 +57,7 @@ const subtotal = computed(() => {
   }, 0)
 })
 
-const total = computed(() => {
-  return Math.max(0, subtotal.value - couponDiscount.value)
-})
-
-const applyCoupon = () => {
-  if (!couponCode.value.trim()) return
-  couponLoading.value = true
-  couponError.value = ""
-
-  router.post(
-    "/coupons/validate",
-    {
-      code: couponCode.value,
-      subtotal: subtotal.value,
-    },
-    {
-      preserveScroll: true,
-      onSuccess: (page) => {
-        const flash = page.props.flash
-        if (flash?.coupon) {
-          appliedCoupon.value = flash.coupon
-          couponDiscount.value = flash.coupon.discount
-          couponError.value = ""
-          success({
-            title: "Promotion Applied",
-            message: `Code "${flash.coupon.code}" applied for a $${flash.coupon.discount.toFixed(2)} discount.`,
-          })
-        } else if (flash?.error) {
-          appliedCoupon.value = null
-          couponDiscount.value = 0
-          couponError.value = flash.error
-          error({
-            title: "Invalid Code",
-            message: flash.error,
-          })
-        }
-      },
-      onFinish: () => {
-        couponLoading.value = false
-      },
-    }
-  )
-}
-
-const removeCoupon = () => {
-  appliedCoupon.value = null
-  couponDiscount.value = 0
-  couponError.value = ""
-  couponCode.value = ""
-  info({
-    title: "Promotion Removed",
-    message: "Promotional code was removed from your order.",
-  })
-}
+const total = computed(() => subtotal.value)
 
 const removeItem = (id) => {
   deleteId.value = id
@@ -162,9 +91,6 @@ const confirmOrder = () => {
   router.post(
     "/checkout",
     {
-      coupon_code: appliedCoupon.value
-        ? appliedCoupon.value.code
-        : couponCode.value.trim() || null,
       shipping_name: shipping.value.name,
       shipping_email: shipping.value.email,
       shipping_phone: shipping.value.phone,
@@ -188,10 +114,6 @@ const confirmOrder = () => {
         loading.value = false
         if (Object.keys(shippingErrors.value).length === 0 && !page.props.flash?.error) {
           showCheckoutModal.value = false
-          couponCode.value = ""
-          appliedCoupon.value = null
-          couponDiscount.value = 0
-          couponError.value = ""
           shipping.value = {
             name: "",
             email: "",
@@ -209,7 +131,7 @@ const confirmOrder = () => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-[var(--background)] text-neutral-900 dark:text-neutral-100 pb-24 selection:bg-[#D4AF37]/30">
+  <div class="min-h-screen hero-gradient-static text-neutral-900 dark:text-neutral-100 pb-24 selection:bg-[#D4AF37]/30">
     <Head title="Shopping Bag — Curated Collection" />
 
     <!-- TOP NAVIGATION BREADCRUMB -->
@@ -448,69 +370,11 @@ const confirmOrder = () => {
               </span>
             </div>
 
-            <!-- Direct Coupon Code Input -->
-            <div class="pro-form-group">
-              <label class="pro-label">
-                <span>Promotional Code</span>
-              </label>
-
-              <div v-if="!appliedCoupon" class="flex gap-2">
-                <input
-                  v-model="couponCode"
-                  type="text"
-                  placeholder="e.g. LUXURY20"
-                  class="pro-input font-mono uppercase"
-                  :class="{ 'pro-input-error': couponError }"
-                />
-                <button
-                  type="button"
-                  @click="applyCoupon"
-                  :disabled="couponLoading || !couponCode.trim()"
-                  class="pro-btn-primary w-auto px-5 whitespace-nowrap text-xs"
-                >
-                  <svg v-if="couponLoading" class="w-3.5 h-3.5 animate-spin text-[#0A0A0A]" fill="none" viewBox="0 0 24 24">
-                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4" />
-                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
-                  </svg>
-                  <span>{{ couponLoading ? '...' : 'Apply' }}</span>
-                </button>
-              </div>
-
-              <!-- Applied coupon banner -->
-              <div
-                v-else
-                class="flex items-center justify-between px-3 py-2 rounded-xl bg-[#D4AF37]/10 border border-[#D4AF37]/30 text-xs font-bold text-[#D4AF37]"
-              >
-                <div class="flex items-center gap-1.5 font-mono">
-                  <svg class="w-3.5 h-3.5 text-[#D4AF37] shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.568 3H5.25A2.25 2.25 0 0 0 3 5.25v4.318c0 .597.237 1.17.659 1.591l9.581 9.581c.699.699 1.78.872 2.607.386l3.874-2.274c.827-.486 1.168-1.504.757-2.336L16.5 10.5M9 7.5a1.5 1.5 0 1 1-3 0 1.5 1.5 0 0 1 3 0Z" />
-                  </svg>
-                  <span>{{ appliedCoupon.code }}</span>
-                  <span class="text-[11px] font-sans font-normal opacity-90">(-${{ couponDiscount.toFixed(2) }})</span>
-                </div>
-                <button
-                  @click="removeCoupon"
-                  class="text-xs text-neutral-500 hover:text-rose-500 underline cursor-pointer"
-                >
-                  Remove
-                </button>
-              </div>
-
-              <p v-if="couponError" class="text-xs text-rose-500 font-medium">
-                {{ couponError }}
-              </p>
-            </div>
-
             <!-- Price Breakdown Calculation -->
             <div class="space-y-3 pt-2 text-xs sm:text-sm">
               <div class="flex justify-between text-neutral-500 dark:text-neutral-400">
                 <span>Items Subtotal</span>
                 <span class="font-bold text-neutral-900 dark:text-white">${{ subtotal.toFixed(2) }}</span>
-              </div>
-
-              <div v-if="couponDiscount > 0" class="flex justify-between text-[#D4AF37]">
-                <span>Promotional Savings</span>
-                <span class="font-bold">-${{ couponDiscount.toFixed(2) }}</span>
               </div>
 
               <div class="flex justify-between text-neutral-500 dark:text-neutral-400">

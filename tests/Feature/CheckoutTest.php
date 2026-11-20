@@ -3,7 +3,6 @@
 use App\Enums\PaymentMethod;
 use App\Mail\OrderPlaced;
 use App\Models\Cart;
-use App\Models\Coupon;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
@@ -24,7 +23,6 @@ function checkoutPayload(array $overrides = []): array
         'shipping_city' => 'Lahore',
         'shipping_postal_code' => '54000',
         'notes' => 'Leave at the door',
-        'coupon_code' => null,
         'payment_method' => 'cod',
     ], $overrides);
 }
@@ -88,17 +86,27 @@ it('confirms cash on delivery orders immediately', function () {
     expect($order->payment_method)->toBe(PaymentMethod::CashOnDelivery->value);
 });
 
-it('keeps bank transfer and whatsapp orders pending', function (string $method) {
+it('keeps whatsapp orders pending', function () {
     $user = User::factory()->create();
     $product = Product::factory()->create(['price' => 50, 'stock' => 5]);
     withCart($user, [['product' => $product, 'qty' => 1]]);
 
-    $this->actingAs($user)->post('/checkout', checkoutPayload(['payment_method' => $method]));
+    $this->actingAs($user)->post('/checkout', checkoutPayload(['payment_method' => 'whatsapp']));
 
     $order = Order::where('user_id', $user->id)->firstOrFail();
     expect($order->status)->toBe('pending');
-    expect($order->payment_method)->toBe($method);
-})->with(['bank_transfer', 'whatsapp']);
+    expect($order->payment_method)->toBe('whatsapp');
+});
+
+it('rejects removed payment methods like stripe and bank transfer', function (string $method) {
+    $user = User::factory()->create();
+    $product = Product::factory()->create(['price' => 50, 'stock' => 5]);
+    withCart($user, [['product' => $product, 'qty' => 1]]);
+
+    $this->actingAs($user)
+        ->post('/checkout', checkoutPayload(['payment_method' => $method]))
+        ->assertSessionHasErrors('payment_method');
+})->with(['stripe', 'bank_transfer', 'bitcoin']);
 
 it('decrements product stock when placing an order', function () {
     $user = User::factory()->create();
@@ -118,47 +126,6 @@ it('clears the cart after placing an order', function () {
     $this->actingAs($user)->post('/checkout', checkoutPayload());
 
     expect(Cart::where('user_id', $user->id)->count())->toBe(0);
-});
-
-it('applies a valid coupon to the order', function () {
-    $user = User::factory()->create();
-    $product = Product::factory()->create(['price' => 100, 'stock' => 5]);
-    $coupon = Coupon::factory()->fixed()->create(['code' => 'SAVE10', 'value' => 10, 'min_order' => 0]);
-    withCart($user, [['product' => $product, 'qty' => 1]]);
-
-    $this->actingAs($user)->post('/checkout', checkoutPayload(['coupon_code' => 'save10']));
-
-    $order = Order::where('user_id', $user->id)->firstOrFail();
-    expect($order->discount)->toBe('10.00');
-    expect($order->total)->toBe('90.00');
-    expect($order->coupon)->not->toBeNull();
-    expect($order->coupon->coupon_id)->toBe($coupon->id);
-    expect($coupon->fresh()->used_count)->toBe(1);
-});
-
-it('rejects an invalid coupon without creating an order', function () {
-    $user = User::factory()->create();
-    $product = Product::factory()->create(['price' => 50, 'stock' => 5]);
-    withCart($user, [['product' => $product, 'qty' => 1]]);
-
-    $this->actingAs($user)->post('/checkout', checkoutPayload(['coupon_code' => 'NOPE']))
-        ->assertRedirect()
-        ->assertSessionHas('error', 'Invalid or expired coupon code.');
-
-    expect(Order::count())->toBe(0);
-});
-
-it('rejects a coupon below the minimum order value', function () {
-    $user = User::factory()->create();
-    $product = Product::factory()->create(['price' => 10, 'stock' => 5]);
-    $coupon = Coupon::factory()->fixed()->create(['code' => 'MIN50', 'value' => 5, 'min_order' => 50]);
-    withCart($user, [['product' => $product, 'qty' => 1]]);
-
-    $this->actingAs($user)->post('/checkout', checkoutPayload(['coupon_code' => 'MIN50']))
-        ->assertRedirect()
-        ->assertSessionHas('error', 'Minimum order of $50.00 required for this coupon.');
-
-    expect(Order::count())->toBe(0);
 });
 
 it('rejects checkout when the cart is empty', function () {

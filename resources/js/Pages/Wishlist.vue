@@ -77,7 +77,7 @@ const gridItem = staggerItem
   <meta name="description" content="Review your curated acquisitions and saved masterworks." />
 </Head>
 
-<div class="min-h-screen bg-[#FAF7F2] dark:bg-[#0A0A0A] text-[#1A1A1A] dark:text-[#F5F5F5] selection:bg-[#D4AF37]/30 selection:text-[#1A1A1A] dark:selection:text-white" style="font-family:'Instrument Sans',Inter,system-ui,sans-serif;">
+<div class="min-h-screen hero-gradient-static text-[#1A1A1A] dark:text-[#F5F5F5] selection:bg-[#D4AF37]/30 selection:text-[#1A1A1A] dark:selection:text-white" style="font-family:'Instrument Sans',Inter,system-ui,sans-serif;">
 
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-16">
 

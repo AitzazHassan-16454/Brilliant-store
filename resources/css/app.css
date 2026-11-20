@@ -23,6 +23,15 @@ body {
   max-width: 100%;
   width: 100%;
   -webkit-text-size-adjust: 100%;
+  background: linear-gradient(135deg, #FAF7F2, #F5F1E8, #FFFFFF, #F5F1E8, #FAF7F2);
+  color: #1A1A1A;
+}
+
+html.dark,
+html.dark body,
+body.dark {
+  background: linear-gradient(135deg, #0A0A0A, #1A1A1A, #111111, #1A1A1A, #0A0A0A) !important;
+  color: #F5F5F5;
 }
 
 /* Prevent viewport auto-zoom on mobile devices when focusing inputs */
@@ -922,13 +931,13 @@ body {
 
 .hero-stat-card {
   border-radius: 1rem;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  background: rgba(255, 255, 255, 0.45);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: rgba(255, 255, 255, 0.82);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   padding: 0.75rem 0.5rem;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
-  transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.3s ease;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s ease, border-color 0.3s ease, background 0.3s ease;
   will-change: transform;
 }
 
@@ -939,24 +948,31 @@ body {
 }
 
 .dark .hero-stat-card {
-  background: rgba(26, 26, 26, 0.6);
-  border-color: color-mix(in srgb, var(--gold) 15%, transparent);
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+  background: rgba(26, 26, 26, 0.75);
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
 }
 
 .hero-stat-card:hover {
-  border-color: rgba(212, 175, 55, 0.3);
+  transform: translateY(-3px);
+  background: rgba(255, 255, 255, 0.95);
+  border-color: rgba(212, 175, 55, 0.45);
+  box-shadow: 0 8px 24px rgba(212, 175, 55, 0.15);
 }
 
 .dark .hero-stat-card:hover {
-  border-color: rgba(212, 175, 55, 0.3);
+  transform: translateY(-3px);
+  background: rgba(34, 34, 34, 0.95);
+  border-color: rgba(212, 175, 55, 0.4);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
 }
 
 .hero-stat-value {
   font-size: 1.25rem;
-  font-weight: 700;
+  font-weight: 800;
   line-height: 1.2;
   color: #1A1A1A;
+  transition: color 0.2s ease;
 }
 
 @media (min-width: 640px) {
@@ -1095,7 +1111,8 @@ body {
   background: linear-gradient(135deg, #FAF7F2, #F5F1E8, #FFF, #F5F1E8, #FAF7F2);
 }
 
-.dark .hero-gradient-static {
+.dark .hero-gradient-static,
+html.dark .hero-gradient-static {
   background: linear-gradient(135deg, #0A0A0A, #1A1A1A, #111, #1A1A1A, #0A0A0A) !important;
 }
 

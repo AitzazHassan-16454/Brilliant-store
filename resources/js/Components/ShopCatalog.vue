@@ -349,7 +349,7 @@ const paginationPages = computed(() => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-background py-6 pb-24 sm:py-12 md:pb-12">
+  <div class="min-h-screen hero-gradient-static py-6 pb-24 sm:py-12 md:pb-12">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
       <!-- Section Header -->

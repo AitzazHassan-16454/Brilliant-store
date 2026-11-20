@@ -166,6 +166,48 @@ const toggleWishlist = () => {
 const imgLoaded = ref(false)
 const imgError = ref(false)
 
+// Multi-image gallery setup
+const galleryImages = computed(() => {
+  if (Array.isArray(props.product.gallery_images) && props.product.gallery_images.length) {
+    return props.product.gallery_images.filter(Boolean)
+  }
+  if (Array.isArray(props.product.images) && props.product.images.length) {
+    return props.product.images.filter(Boolean)
+  }
+  return props.product.image ? [props.product.image] : []
+})
+
+const activeGalleryIndex = ref(0)
+const galleryScrollRef = ref(null)
+
+const onGalleryScroll = (e) => {
+  const el = e.target
+  if (!el || !el.children.length) return
+  const scrollLeft = el.scrollLeft
+  let closestIdx = 0
+  let minDiff = Infinity
+
+  Array.from(el.children).forEach((child, idx) => {
+    const diff = Math.abs(child.offsetLeft - el.offsetLeft - scrollLeft)
+    if (diff < minDiff) {
+      minDiff = diff
+      closestIdx = idx
+    }
+  })
+
+  activeGalleryIndex.value = closestIdx
+}
+
+const scrollGalleryTo = (idx) => {
+  activeGalleryIndex.value = idx
+  const el = galleryScrollRef.value
+  if (!el) return
+  const child = el.children[idx]
+  if (child) {
+    el.scrollTo({ left: child.offsetLeft - el.offsetLeft, behavior: "smooth" })
+  }
+}
+
 function onImgLoad() {
   imgLoaded.value = true
 }
@@ -184,7 +226,7 @@ const scrollToReviews = () => {
 </script>
 
 <template>
-  <div class="min-h-screen bg-[var(--background)] text-neutral-900 dark:text-neutral-100 pb-32 md:pb-24 selection:bg-[#D4AF37]/30">
+  <div class="min-h-screen hero-gradient-static text-neutral-900 dark:text-neutral-100 pb-32 md:pb-24 selection:bg-[#D4AF37]/30">
     <Head :title="`${product.name} — Luxury Collection`" />
 
     <!-- TOP NAVIGATION BAR -->
@@ -290,11 +332,75 @@ const scrollToReviews = () => {
               </svg>
             </button>
 
-            <!-- Main Product Image Frame -->
-            <div class="relative w-full aspect-square sm:aspect-4/3 flex items-center justify-center p-6 sm:p-12 overflow-hidden bg-radial from-neutral-50/50 to-neutral-100/50 dark:from-neutral-900/40 dark:to-neutral-950/80">
+            <!-- MOBILE CAROUSEL (< sm) - Matches Category Section Layout -->
+            <div v-if="galleryImages.length > 1" class="block sm:hidden relative">
+              <div
+                ref="galleryScrollRef"
+                @scroll.passive="onGalleryScroll"
+                class="flex overflow-x-auto snap-x snap-mandatory scroll-smooth [scrollbar-width:none] [&::-webkit-scrollbar]:hidden w-full aspect-square"
+              >
+                <div
+                  v-for="(img, idx) in galleryImages"
+                  :key="'mob-img-' + idx"
+                  class="w-full h-full shrink-0 snap-start relative flex items-center justify-center p-6 bg-radial from-neutral-50/50 to-neutral-100/50 dark:from-neutral-900/40 dark:to-neutral-950/80"
+                >
+                  <img
+                    :src="`/storage/${img}`"
+                    :alt="`${product.name} - Angle ${idx + 1}`"
+                    class="w-full h-full object-contain"
+                  />
+                  <!-- Photo index pill -->
+                  <div class="absolute bottom-3 right-3 z-10">
+                    <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-md border border-white/10 text-[10px] font-semibold text-white/90">
+                      {{ idx + 1 }} / {{ galleryImages.length }}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Mobile Carousel Pagination Indicator & Controls (Matches Category Section) -->
+              <div class="flex items-center justify-center gap-3 py-2.5 border-t border-neutral-100 dark:border-neutral-800 bg-neutral-50/50 dark:bg-neutral-900/30">
+                <button
+                  type="button"
+                  @click="scrollGalleryTo(Math.max(0, activeGalleryIndex - 1))"
+                  :disabled="activeGalleryIndex === 0"
+                  class="w-7 h-7 rounded-full flex items-center justify-center border border-gray-300 dark:border-[#D4AF37]/30 text-[#1A1A1A] dark:text-[#F5F5F5] disabled:opacity-25 disabled:cursor-not-allowed bg-white/80 dark:bg-[#1A1A1A]/80 cursor-pointer shadow-xs transition"
+                  aria-label="Previous photo"
+                >
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
+                </button>
+
+                <div class="flex items-center gap-1.5">
+                  <button
+                    v-for="(img, idx) in galleryImages"
+                    :key="'gal-dot-' + idx"
+                    type="button"
+                    @click="scrollGalleryTo(idx)"
+                    :aria-label="`Slide to photo ${idx + 1}`"
+                    :class="[
+                      'h-1.5 rounded-full transition-all duration-300 cursor-pointer',
+                      activeGalleryIndex === idx ? 'w-6 bg-[#D4AF37]' : 'w-1.5 bg-neutral-300 dark:bg-neutral-700'
+                    ]"
+                  />
+                </div>
+
+                <button
+                  type="button"
+                  @click="scrollGalleryTo(Math.min(galleryImages.length - 1, activeGalleryIndex + 1))"
+                  :disabled="activeGalleryIndex === galleryImages.length - 1"
+                  class="w-7 h-7 rounded-full flex items-center justify-center border border-gray-300 dark:border-[#D4AF37]/30 text-[#1A1A1A] dark:text-[#F5F5F5] disabled:opacity-25 disabled:cursor-not-allowed bg-white/80 dark:bg-[#1A1A1A]/80 cursor-pointer shadow-xs transition"
+                  aria-label="Next photo"
+                >
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+                </button>
+              </div>
+            </div>
+
+            <!-- DESKTOP (or single image on mobile) FRAME -->
+            <div :class="[galleryImages.length > 1 ? 'hidden sm:flex' : 'flex', 'relative w-full aspect-square sm:aspect-4/3 items-center justify-center p-6 sm:p-12 overflow-hidden bg-radial from-neutral-50/50 to-neutral-100/50 dark:from-neutral-900/40 dark:to-neutral-950/80']">
               <img
-                v-if="product.image && !imgError"
-                :src="`/storage/${product.image}`"
+                v-if="galleryImages[activeGalleryIndex] && !imgError"
+                :src="`/storage/${galleryImages[activeGalleryIndex]}`"
                 :alt="product.name"
                 class="relative z-10 w-full h-full object-contain transition-transform duration-700 ease-out group-hover:scale-105"
                 @load="onImgLoad"
@@ -312,6 +418,24 @@ const scrollToReviews = () => {
                 <h3 class="text-base font-bold text-neutral-800 dark:text-neutral-200">{{ product.name }}</h3>
                 <p class="text-xs text-neutral-400 mt-1">Authentic Luxury Piece</p>
               </div>
+            </div>
+
+            <!-- Desktop Gallery Thumbnail Strip (>= sm) -->
+            <div v-if="galleryImages.length > 1" class="hidden sm:flex items-center gap-2 p-3 border-t border-neutral-100 dark:border-neutral-800 bg-neutral-50/40 dark:bg-neutral-900/20 overflow-x-auto">
+              <button
+                v-for="(img, idx) in galleryImages"
+                :key="'thumb-' + idx"
+                type="button"
+                @click="activeGalleryIndex = idx"
+                :class="[
+                  'w-16 h-16 rounded-xl overflow-hidden border-2 transition-all shrink-0 cursor-pointer',
+                  activeGalleryIndex === idx
+                    ? 'border-[#D4AF37] ring-2 ring-[#D4AF37]/30 scale-105'
+                    : 'border-transparent opacity-60 hover:opacity-100 hover:border-gray-300 dark:hover:border-neutral-700'
+                ]"
+              >
+                <img :src="`/storage/${img}`" :alt="`${product.name} thumb ${idx + 1}`" class="w-full h-full object-cover" />
+              </button>
             </div>
 
             <!-- Bottom Gallery Ribbon Highlights -->
@@ -384,9 +508,21 @@ const scrollToReviews = () => {
           <!-- Price & Stock Status Box -->
           <div class="p-5 rounded-2xl border border-neutral-200/80 dark:border-white/10 bg-white/60 dark:bg-[#1A1A1A]/60 backdrop-blur-md">
             <div class="flex items-baseline justify-between gap-4">
-              <div class="flex items-baseline gap-2">
+              <div class="flex flex-wrap items-baseline gap-2.5">
                 <span class="text-3xl sm:text-4xl font-extrabold text-[#D4AF37]">
                   ${{ Number(product.price).toFixed(2) }}
+                </span>
+                <span
+                  v-if="product.compare_price && Number(product.compare_price) > Number(product.price)"
+                  class="text-base sm:text-lg text-neutral-400 line-through font-semibold"
+                >
+                  ${{ Number(product.compare_price).toFixed(2) }}
+                </span>
+                <span
+                  v-if="product.compare_price && Number(product.compare_price) > Number(product.price)"
+                  class="inline-flex items-center text-xs font-bold text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/50 px-2.5 py-1 rounded-full border border-amber-200 dark:border-amber-800/40"
+                >
+                  Save {{ Math.round(((Number(product.compare_price) - Number(product.price)) / Number(product.compare_price)) * 100) }}%
                 </span>
                 <span class="text-xs text-neutral-400 uppercase tracking-wider font-semibold">USD</span>
               </div>

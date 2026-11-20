@@ -119,7 +119,13 @@ const toggleTrending = (product) => {
 
                 <!-- PRICE -->
                 <td class="p-4 font-semibold text-green-600">
-                  ${{ product.price }}
+                  <span>${{ product.price }}</span>
+                  <span
+                    v-if="product.compare_price && Number(product.compare_price) > Number(product.price)"
+                    class="text-xs text-gray-400 dark:text-neutral-500 line-through ml-1.5 font-normal"
+                  >
+                    ${{ product.compare_price }}
+                  </span>
                 </td>
 
                 <!-- STOCK -->
