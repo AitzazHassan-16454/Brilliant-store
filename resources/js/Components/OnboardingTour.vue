@@ -22,7 +22,7 @@ const steps = [
     {
         icon: 'M9 20a1 1 0 100-2 1 1 0 000 2zM19 20a1 1 0 100-2 1 1 0 000 2zM2 2h3l2.4 12.1a2 2 0 002 1.6h9.6a2 2 0 002-1.6L23 6H6',
         title: 'Shop with ease',
-        text: 'Add items to your cart, save favorites to your wishlist, or place a custom order for something unique.',
+        text: 'Add items to your cart or save favorites to your wishlist with a single tap.',
     },
     {
         icon: 'M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z',

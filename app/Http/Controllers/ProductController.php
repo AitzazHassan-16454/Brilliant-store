@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Ai\Agents\ProductCopywriterAgent;
 use App\Models\Cart;
 use App\Models\Category;
-use App\Models\Coupon;
 use App\Models\Order;
 use App\Models\Product;
 use App\Models\Review;
@@ -394,7 +393,6 @@ class ProductController extends Controller
             'usersCount' => User::count(),
             'rolesCount' => Role::count(),
             'ordersCount' => Order::count(),
-            'couponsCount' => Coupon::count(),
             'pendingReviewsCount' => Review::where('status', 'pending')->count(),
             'revenue' => (float) Order::sum('total'),
             'revenueThisMonth' => $revenueThisMonth,
@@ -492,10 +490,14 @@ class ProductController extends Controller
         $validatedData = $request->validate([
             'name' => ['required', 'max:255'],
             'price' => ['required', 'numeric', 'between:0,999999.99'],
+            'compare_price' => ['nullable', 'numeric', 'between:0,999999.99'],
             'stock' => ['required', 'integer', 'min:0'],
             'is_active' => ['sometimes', 'boolean'],
+            'is_trending' => ['sometimes', 'boolean'],
             'category_id' => ['required', 'exists:categories,id'],
-            'image' => ['nullable', 'image', 'max:2048'],
+            'image' => ['nullable', 'image', 'max:5120'],
+            'images' => ['nullable', 'array', 'max:10'],
+            'images.*' => ['nullable', 'image', 'max:5120'],
             'description' => ['nullable', 'string'],
         ]);
 
@@ -505,9 +507,31 @@ class ProductController extends Controller
         // Convert the is_trending checkbox to a boolean
         $validatedData['is_trending'] = $request->boolean('is_trending');
 
-        // If an image was uploaded, save it
+        // Collect uploaded images
+        $storedImages = [];
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $file) {
+                if ($file && $file->isValid()) {
+                    $storedImages[] = $file->store('products', 'public');
+                }
+            }
+        }
+
         if ($request->hasFile('image')) {
-            $validatedData['image'] = $request->file('image')->store('products', 'public');
+            $singlePath = $request->file('image')->store('products', 'public');
+            if (empty($storedImages)) {
+                $storedImages[] = $singlePath;
+            } else {
+                array_unshift($storedImages, $singlePath);
+            }
+        }
+
+        if (! empty($storedImages)) {
+            $validatedData['image'] = $storedImages[0];
+            $validatedData['images'] = array_values($storedImages);
+        } else {
+            $validatedData['image'] = $validatedData['image'] ?? 'products/default.jpg';
+            $validatedData['images'] = [$validatedData['image']];
         }
 
         // Create the product
@@ -546,28 +570,68 @@ class ProductController extends Controller
         $validatedData = $request->validate([
             'name' => ['required', 'max:255'],
             'price' => ['required', 'numeric', 'between:0,999999.99'],
+            'compare_price' => ['nullable', 'numeric', 'between:0,999999.99'],
             'stock' => ['required', 'integer', 'min:0'],
             'is_active' => ['sometimes', 'boolean'],
+            'is_trending' => ['sometimes', 'boolean'],
             'category_id' => ['required', 'exists:categories,id'],
-            'image' => ['nullable', 'max:2048'],
+            'image' => ['nullable', 'max:5120'],
+            'images' => ['nullable', 'array', 'max:10'],
+            'images.*' => ['nullable', 'image', 'max:5120'],
+            'existing_images' => ['nullable', 'array'],
+            'existing_images.*' => ['string'],
             'description' => ['nullable', 'string'],
         ]);
 
-        // Convert the is_active checkbox to a boolean
+        // Convert checkboxes to boolean
         $validatedData['is_active'] = $request->boolean('is_active');
-
-        // Convert the is_trending checkbox to a boolean
         $validatedData['is_trending'] = $request->boolean('is_trending');
 
-        // If a new image was uploaded, replace the old one
-        if ($request->hasFile('image')) {
-            // Delete the old image if it exists
-            if ($product->image && Storage::disk('public')->exists($product->image)) {
-                Storage::disk('public')->delete($product->image);
+        // Retained existing images
+        $currentImages = is_array($product->images) && ! empty($product->images)
+            ? $product->images
+            : ($product->image ? [$product->image] : []);
+
+        $keptImages = [];
+        if ($request->has('existing_images')) {
+            $inputExisting = (array) $request->input('existing_images');
+            foreach ($inputExisting as $imgPath) {
+                if (in_array($imgPath, $currentImages, true)) {
+                    $keptImages[] = $imgPath;
+                }
             }
 
-            // Save the new image
-            $validatedData['image'] = $request->file('image')->store('products', 'public');
+            // Delete removed images that are not default
+            $removedImages = array_diff($currentImages, $keptImages);
+            foreach ($removedImages as $removed) {
+                if ($removed && $removed !== 'products/default.jpg' && Storage::disk('public')->exists($removed)) {
+                    Storage::disk('public')->delete($removed);
+                }
+            }
+        } else {
+            $keptImages = $currentImages;
+        }
+
+        // Save newly uploaded images
+        $newStoredImages = [];
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $file) {
+                if ($file && $file->isValid()) {
+                    $newStoredImages[] = $file->store('products', 'public');
+                }
+            }
+        }
+
+        if ($request->hasFile('image')) {
+            $singlePath = $request->file('image')->store('products', 'public');
+            $newStoredImages[] = $singlePath;
+        }
+
+        $allImages = array_values(array_merge($keptImages, $newStoredImages));
+
+        if (! empty($allImages)) {
+            $validatedData['image'] = $allImages[0];
+            $validatedData['images'] = $allImages;
         }
 
         // Update the product
@@ -638,9 +702,15 @@ class ProductController extends Controller
             abort(403);
         }
 
-        // Delete the product image if it exists
-        if ($product->image && Storage::disk('public')->exists($product->image)) {
-            Storage::disk('public')->delete($product->image);
+        // Delete the product images if they exist
+        $imagesToDelete = is_array($product->images) && ! empty($product->images)
+            ? $product->images
+            : ($product->image ? [$product->image] : []);
+
+        foreach ($imagesToDelete as $img) {
+            if ($img && $img !== 'products/default.jpg' && Storage::disk('public')->exists($img)) {
+                Storage::disk('public')->delete($img);
+            }
         }
 
         // Delete the product

@@ -21,9 +21,9 @@ const imgLoaded = ref(false)
     class="group relative flex h-full flex-col overflow-hidden rounded-2xl md:rounded-lg border border-border bg-card shadow-luxury transition-colors hover:border-[#D4AF37]/50">
 
     <!-- Image -->
-    <Link :href="`/products/${product.uid}`" class="relative block aspect-square overflow-hidden bg-gradient-to-br from-[#D4AF37]/25 via-[#D4AF37]/10 to-[#D4AF37]/30 dark:from-[#D4AF37]/20 dark:via-[#D4AF37]/5 dark:to-[#D4AF37]/25">
+    <Link :href="`/products/${product.uid}`" class="relative block aspect-square overflow-hidden bg-neutral-100 dark:bg-neutral-900">
       <div v-if="!product.image || !imgLoaded" class="absolute inset-0 flex items-center justify-center p-4 text-center">
-        <span class="text-sm font-semibold text-[#D4AF37]/80 dark:text-[#D4AF37]/70 leading-tight">{{ product.name }}</span>
+        <span class="text-sm font-semibold text-neutral-500 dark:text-neutral-400 leading-tight">{{ product.name }}</span>
       </div>
       <img v-if="product.image"
         :src="`/storage/${product.image}`"
@@ -38,6 +38,13 @@ const imgLoaded = ref(false)
       <!-- Quick view overlay -->
       <div class="absolute inset-x-0 bottom-0 flex justify-center pb-3 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
         <span class="text-white text-xs font-semibold px-4 py-1.5 rounded-full bg-black/85">Quick View</span>
+      </div>
+
+      <!-- Discount Badge -->
+      <div v-if="product.compare_price && Number(product.compare_price) > Number(product.price)" class="absolute top-2 left-2 sm:top-2.5 sm:left-2.5 z-10">
+        <span class="inline-flex items-center px-2 py-0.5 rounded-full bg-[#D4AF37] text-neutral-950 font-bold text-[10px] shadow-xs uppercase tracking-wider">
+          Save {{ Math.round(((Number(product.compare_price) - Number(product.price)) / Number(product.compare_price)) * 100) }}%
+        </span>
       </div>
 
       <!-- Wishlist -->
@@ -129,7 +136,7 @@ const imgLoaded = ref(false)
         <div class="flex flex-col min-w-0">
           <div class="flex flex-wrap items-baseline gap-x-1 sm:gap-x-1.5">
             <span class="text-sm sm:text-base md:text-xl font-bold text-foreground truncate">${{ Number(product.price).toFixed(2) }}</span>
-            <span v-if="product.compare_price" class="text-[10px] sm:text-xs text-muted-foreground line-through truncate">${{ Number(product.compare_price).toFixed(2) }}</span>
+            <span v-if="product.compare_price && Number(product.compare_price) > Number(product.price)" class="text-[10px] sm:text-xs text-muted-foreground line-through truncate">${{ Number(product.compare_price).toFixed(2) }}</span>
           </div>
         </div>
         <motion.button

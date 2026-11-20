@@ -31,6 +31,31 @@ const props = defineProps({
 const isInCart = (product) => props.cartProductIds?.includes(product?.id)
 const isInWishlist = (product) => props.wishlistProductIds?.includes(product?.id)
 
+const spotlightProduct = computed(() => {
+  // Prefer a curated trending product that has a real image and name
+  const validTrending = props.trendingProducts?.find(
+    (p) => p && p.image && p.name && !p.name.toLowerCase().includes('iure sit')
+  )
+  if (validTrending) return validTrending
+
+  // If latestProduct has an image and clean name
+  if (props.latestProduct?.image && !props.latestProduct?.name?.toLowerCase().includes('iure sit')) {
+    return props.latestProduct
+  }
+
+  // Fallback to first catalog product with image
+  const firstWithImage = props.products?.data?.find((p) => p && p.image)
+  if (firstWithImage) return firstWithImage
+
+  return props.trendingProducts?.[0] || props.latestProduct || null
+})
+
+const comparePrice = (price) => {
+  const num = Number(price)
+  if (isNaN(num) || num <= 0) return null
+  return num * 1.25
+}
+
 const formatPrice = (val) => {
   const num = Number(val)
   return isNaN(num) ? "$0.00" : `$${num.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
@@ -226,6 +251,18 @@ onUnmounted(() => {
        HERO SECTION: ATMOSPHERIC BRAND CREST & EDITORIAL INTRO
   ══════════════════════════════════════════════════════ -->
   <section class="relative overflow-hidden hero-premium-bg hero-spotlight-bg border-b border-[#D4AF37]/15">
+    <!-- Generated Store Hero Background Image with Atmospheric Overlays -->
+    <div class="absolute inset-0 pointer-events-none z-0 overflow-hidden">
+      <img
+        :src="'/images/hero-bg.jpg'"
+        alt=""
+        class="w-full h-full object-cover object-center scale-105 opacity-35 dark:opacity-25 transition-transform duration-1000"
+      />
+      <!-- Ambient dual-gradient overlays for readable typography in light & dark mode -->
+      <div class="absolute inset-0 bg-gradient-to-r from-[#FAF7F2] via-[#FAF7F2]/85 to-transparent dark:from-[#0A0A0A] dark:via-[#0A0A0A]/90 dark:to-transparent"></div>
+      <div class="absolute inset-0 bg-gradient-to-t from-[#FAF7F2] via-transparent to-[#FAF7F2]/60 dark:from-[#0A0A0A] dark:via-transparent dark:to-[#0A0A0A]/70"></div>
+    </div>
+
     <div class="hero-noise" aria-hidden="true"></div>
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-12 lg:pt-16 pb-16 sm:pb-20 lg:pb-24 relative z-10">
@@ -245,7 +282,7 @@ onUnmounted(() => {
                 <span class="hero-badge-dot-ring"></span>
                 <span class="hero-badge-dot-core"></span>
               </span>
-              Haute Horology & Fine Art
+              Curated Collections • Smart Living
             </motion.div>
 
             <!-- Heading -->
@@ -262,7 +299,7 @@ onUnmounted(() => {
               :variants="heroItem"
               class="max-w-lg text-sm leading-relaxed sm:text-base lg:text-lg text-[#6B6B6B] dark:text-[#A0A0A0]"
             >
-              Discover exclusive luxury products crafted with passion, precision, and excellence. Every collection is carefully curated to feel timeless.
+              Discover curated lifestyle pieces and premium essentials crafted with passion, precision, and excellence. Shop smart, live better with GharBazaar.
             </motion.p>
           </div>
 
@@ -272,9 +309,9 @@ onUnmounted(() => {
               <span>Explore Collection</span>
               <svg class="btn-arrow h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </Link>
-            <Link href="/custom-order" class="btn-glass group no-underline inline-flex items-center justify-center gap-2">
-              <span>Custom Order</span>
-              <svg class="btn-arrow h-4 w-4 transition-transform duration-300 group-hover:rotate-45" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            <Link href="/about" class="btn-glass group no-underline inline-flex items-center justify-center gap-2">
+              <span>About Atelier</span>
+              <svg class="btn-arrow h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
             </Link>
           </motion.div>
 
@@ -298,75 +335,159 @@ onUnmounted(() => {
           </motion.div>
         </motion.div>
 
-        <!-- Right: Glowing Brand Crest Emblem & Masterpiece Card -->
+        <!-- Right: Modern Spotlight Product Showcase Card -->
         <motion.div
-          :initial="{ opacity: 0, scale: 0.9, y: 24 }"
+          v-if="spotlightProduct"
+          :initial="{ opacity: 0, scale: 0.94, y: 20 }"
           :animate="{ opacity: 1, scale: 1, y: 0 }"
-          :transition="{ duration: 0.8, ease: m.easeOutExpo, delay: 0.25 }"
-          class="relative flex justify-center lg:justify-end"
+          :transition="{ duration: 0.7, ease: m.easeOutExpo, delay: 0.2 }"
+          class="relative flex justify-center lg:justify-end w-full"
         >
-          <div class="hero-image-group relative max-w-full overflow-hidden sm:overflow-visible">
+          <div class="relative w-full max-w-[360px] sm:max-w-[400px] lg:max-w-[420px]">
 
-            <!-- Breathing glow aura -->
-            <div class="hero-glow"></div>
+            <!-- Subtle ambient back shadow -->
+            <div class="absolute -inset-1 rounded-[32px] bg-black/5 dark:bg-white/5 blur-lg pointer-events-none"></div>
 
-            <!-- Brand emblem card -->
-            <div class="hero-emblem">
-              <div class="hero-emblem-card">
-                <div class="relative">
+            <!-- Spotlight Card -->
+            <div class="relative rounded-3xl border border-gray-200/90 dark:border-white/10 bg-white/95 dark:bg-[#141414]/95 backdrop-blur-xl p-4 sm:p-5 shadow-2xl shadow-black/8 dark:shadow-black/50 transition-all duration-300">
 
-                  <!-- Diamond icon -->
-                  <svg class="w-16 h-16 sm:w-20 sm:h-20 lg:w-24 lg:h-24 text-[#D4AF37] mx-auto" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
-                    <path d="M6 3h12l4 6-10 13L2 9z"/>
-                    <path d="M2 9h20"/>
-                    <path d="M12 22L6 9"/>
-                    <path d="M12 22l6-13"/>
-                  </svg>
-
-                  <!-- Twinkling sparkles -->
-                  <div class="hero-sparkle" style="top:-10px; right:-12px; animation-delay:1.2s;">
-                    <svg class="w-4 h-4 sm:w-5 sm:h-5" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12 0l2.5 9.5L24 12l-9.5 2.5L12 24l-2.5-9.5L0 12l9.5-2.5z"/>
-                    </svg>
-                  </div>
-                  <div class="hero-sparkle" style="bottom:-6px; left:-14px; animation-delay:2.1s;">
-                    <svg class="w-3 h-3 sm:w-4 sm:h-4" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M12 0l2.5 9.5L24 12l-9.5 2.5L12 24l-2.5-9.5L0 12l9.5-2.5z"/>
-                    </svg>
-                  </div>
-                  <div class="hero-sparkle" style="top: calc(50% - 4px); right: -22px; animation-delay:2.8s;">
-                    <span class="block w-2 h-2 bg-[#D4AF37] rounded-full"></span>
-                  </div>
-                  <div class="hero-sparkle" style="top: calc(50% - 4px); left: -22px; animation-delay:2.8s;">
-                    <span class="block w-2 h-2 bg-[#D4AF37] rounded-full"></span>
-                  </div>
+              <!-- Top Status Pill & Category -->
+              <div class="flex items-center justify-between gap-2 mb-3">
+                <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200/70 dark:border-emerald-500/20 text-emerald-700 dark:text-emerald-400 text-xs font-semibold">
+                  <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                  Curated Spotlight
                 </div>
-
-                <!-- Wordmark -->
-                <div class="mt-5 text-center">
-                  <h2 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">{{ siteName }}</h2>
-                  <div class="mt-2 flex items-center justify-center gap-2">
-                    <span class="w-8 h-px bg-[#D4AF37]"></span>
-                    <span class="text-[9px] font-bold uppercase tracking-[0.3em] text-[#D4AF37]">{{ siteTagline }}</span>
-                    <span class="w-8 h-px bg-[#D4AF37]"></span>
-                  </div>
-                </div>
-
-                <!-- Latest Creation Direct Link -->
-                <div v-if="latestProduct" class="mt-5 pt-4 border-t border-[#D4AF37]/20 text-center">
-                  <Link
-                    :href="`/products/${latestProduct.uid}`"
-                    class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#D4AF37]/15 border border-[#D4AF37]/30 text-[11px] font-semibold text-[#D4AF37] hover:bg-[#D4AF37] hover:text-[#0A0A0A] transition-all duration-300 no-underline"
-                  >
-                    <span>Latest: {{ latestProduct.name }}</span>
-                    <span class="font-bold">({{ formatPrice(latestProduct.price) }})</span>
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
-                  </Link>
-                </div>
-
-                <!-- Gradient border -->
-                <div class="absolute -inset-px rounded-[28px] border border-transparent bg-gradient-to-br from-[#D4AF37]/40 via-transparent to-[#D4AF37]/40 pointer-events-none"></div>
+                <span v-if="spotlightProduct.category?.name" class="text-xs font-medium text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-white/5 px-2.5 py-1 rounded-full">
+                  {{ spotlightProduct.category.name }}
+                </span>
               </div>
+
+              <!-- Product Image Frame -->
+              <div class="relative aspect-[4/3] rounded-2xl overflow-hidden bg-[#FAF7F2] dark:bg-[#1F1F1F] border border-gray-100 dark:border-white/5 group/showcase">
+                <img
+                  v-if="spotlightProduct.image"
+                  :src="`/storage/${spotlightProduct.image}`"
+                  :alt="spotlightProduct.name"
+                  class="w-full h-full object-cover object-center transition-transform duration-700 ease-out group-hover/showcase:scale-105"
+                />
+                <div v-else class="w-full h-full flex items-center justify-center text-[#D4AF37]">
+                  <svg class="w-12 h-12" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                    <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
+                    <line x1="3" y1="6" x2="21" y2="6"/>
+                    <path d="M16 10a4 4 0 0 1-8 0"/>
+                  </svg>
+                </div>
+
+                <!-- Floating Wishlist Button -->
+                <button
+                  type="button"
+                  @click.prevent="toggleWishlist(spotlightProduct)"
+                  :aria-label="isInWishlist(spotlightProduct) ? 'Remove from wishlist' : 'Add to wishlist'"
+                  class="absolute top-3 right-3 w-9 h-9 rounded-full bg-white/90 dark:bg-[#1A1A1A]/90 backdrop-blur-md shadow-md border border-gray-200/70 dark:border-white/10 flex items-center justify-center transition-transform active:scale-90 hover:scale-110"
+                >
+                  <svg
+                    class="w-4 h-4 transition-colors"
+                    :class="isInWishlist(spotlightProduct) ? 'fill-red-500 text-red-500' : 'text-gray-600 dark:text-gray-300'"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                  </svg>
+                </button>
+
+                <!-- Rating Pill Overlay -->
+                <div class="absolute bottom-3 left-3 inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-black/75 backdrop-blur-md text-white text-[11px] font-semibold">
+                  <svg class="w-3.5 h-3.5 text-amber-400 fill-amber-400" viewBox="0 0 20 20">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                  </svg>
+                  <span>4.9</span>
+                  <span class="text-white/60">·</span>
+                  <span class="text-white/80 font-normal">Verified Quality</span>
+                </div>
+              </div>
+
+              <!-- Product Info -->
+              <div class="mt-3.5">
+                <Link :href="`/products/${spotlightProduct.uid}`" class="block no-underline group/title">
+                  <h3 class="text-base sm:text-lg font-bold text-gray-900 dark:text-white tracking-tight line-clamp-1 group-hover/title:text-[#D4AF37] transition-colors">
+                    {{ spotlightProduct.name }}
+                  </h3>
+                </Link>
+                <p class="mt-0.5 text-xs text-gray-500 dark:text-gray-400 line-clamp-1">
+                  Handcrafted with precision • Limited GharBazaar edition
+                </p>
+
+                <!-- Pricing Lockup -->
+                <div class="mt-3 flex items-baseline gap-2.5">
+                  <span class="text-xl sm:text-2xl font-extrabold text-gray-900 dark:text-white">
+                    {{ formatPrice(spotlightProduct.price) }}
+                  </span>
+                  <span
+                    v-if="spotlightProduct.compare_price && Number(spotlightProduct.compare_price) > Number(spotlightProduct.price)"
+                    class="text-xs sm:text-sm text-gray-400 line-through"
+                  >
+                    {{ formatPrice(spotlightProduct.compare_price) }}
+                  </span>
+                  <span
+                    v-else-if="comparePrice(spotlightProduct.price)"
+                    class="text-xs sm:text-sm text-gray-400 line-through"
+                  >
+                    {{ formatPrice(comparePrice(spotlightProduct.price)) }}
+                  </span>
+                  <span class="ml-auto inline-flex items-center text-[10px] font-bold text-amber-700 dark:text-amber-400 bg-amber-50 dark:bg-amber-950/40 px-2 py-0.5 rounded-md border border-amber-200 dark:border-amber-800/40">
+                    Save {{ spotlightProduct.compare_price && Number(spotlightProduct.compare_price) > Number(spotlightProduct.price) ? Math.round(((Number(spotlightProduct.compare_price) - Number(spotlightProduct.price)) / Number(spotlightProduct.compare_price)) * 100) : 20 }}%
+                  </span>
+                </div>
+              </div>
+
+              <!-- Action Buttons -->
+              <div class="mt-4 flex items-center gap-2.5 pt-3 border-t border-gray-100 dark:border-white/5">
+                <Link
+                  :href="`/products/${spotlightProduct.uid}`"
+                  class="flex-1 h-11 px-4 rounded-xl bg-[#D4AF37] hover:bg-[#B8941E] text-[#0A0A0A] text-xs sm:text-sm font-bold flex items-center justify-center gap-2 hover:brightness-105 transition-all no-underline shadow-md shadow-[#D4AF37]/20"
+                >
+                  <span>View Product</span>
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>
+                </Link>
+                <button
+                  type="button"
+                  @click="addToCart(spotlightProduct)"
+                  :aria-label="isInCart(spotlightProduct) ? 'In Cart' : 'Add to cart'"
+                  class="h-11 px-3.5 rounded-xl border border-gray-200 dark:border-white/10 hover:border-[#D4AF37] dark:hover:border-[#D4AF37] text-gray-700 dark:text-gray-200 hover:text-[#D4AF37] dark:hover:text-[#D4AF37] bg-gray-50/50 dark:bg-white/5 flex items-center justify-center gap-1.5 transition-all text-xs font-semibold cursor-pointer"
+                >
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/>
+                  </svg>
+                  <span class="hidden sm:inline">{{ isInCart(spotlightProduct) ? 'In Cart' : 'Add' }}</span>
+                </button>
+              </div>
+
+              <!-- Trust Guarantee Footer -->
+              <div class="mt-3.5 pt-3 border-t border-gray-100 dark:border-white/5 grid grid-cols-2 gap-2 text-[11px] text-gray-500 dark:text-gray-400">
+                <div class="flex items-center gap-1.5">
+                  <svg class="w-3.5 h-3.5 text-emerald-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                  <span>100% Authentic</span>
+                </div>
+                <div class="flex items-center gap-1.5 justify-end">
+                  <svg class="w-3.5 h-3.5 text-[#D4AF37] shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.25V4.5A2.25 2.25 0 0012 2.25H4.5A2.25 2.25 0 002.25 4.5v10.5"/></svg>
+                  <span>Free Shipping</span>
+                </div>
+              </div>
+
+            </div>
+
+            <!-- Floating Micro-Badge Top-Left -->
+            <div class="hidden sm:flex absolute -top-3.5 -left-4 items-center gap-2 px-3 py-1.5 rounded-full bg-white dark:bg-[#1A1A1A] border border-gray-200/80 dark:border-white/10 shadow-lg text-[11px] font-semibold text-gray-800 dark:text-gray-200 pointer-events-none">
+              <span class="w-2 h-2 rounded-full bg-amber-400"></span>
+              <span>⚡ Fast Dispatch</span>
+            </div>
+
+            <!-- Floating Micro-Badge Bottom-Right -->
+            <div class="hidden sm:flex absolute -bottom-3.5 -right-4 items-center gap-1.5 px-3 py-1.5 rounded-full bg-white dark:bg-[#1A1A1A] border border-gray-200/80 dark:border-white/10 shadow-lg text-[11px] font-semibold text-gray-800 dark:text-gray-200 pointer-events-none">
+              <span class="text-emerald-500 font-bold">✓</span>
+              <span>30-Day Easy Returns</span>
             </div>
 
           </div>
@@ -380,7 +501,7 @@ onUnmounted(() => {
        BROWSE BY CATEGORY / CURATED DISCIPLINES
        (Slider on small devices, Grid on sm+)
   ══════════════════════════════════════════════════════ -->
-  <section id="categories" class="py-14 sm:py-24 bg-[#FAF7F2] dark:bg-[#0A0A0A] border-b border-gray-200/60 dark:border-[#D4AF37]/15 overflow-hidden">
+  <section id="categories" class="py-14 sm:py-24 hero-gradient-static border-b border-gray-200/60 dark:border-[#D4AF37]/15 overflow-hidden">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
       <!-- Section Title Lockup -->
@@ -457,7 +578,7 @@ onUnmounted(() => {
 
                 <!-- Bottom Gradient Overlay -->
                 <div class="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent flex flex-col justify-end p-5 sm:p-6 text-white">
-                  <h3 class="text-xl sm:text-2xl font-bold tracking-tight text-white group-hover:text-[#D4AF37] transition-colors">
+                  <h3 class="text-xl sm:text-2xl font-bold tracking-tight text-white group-hover:text-[#FFE58F] transition-colors">
                     {{ cat.name }}
                   </h3>
                   <p v-if="cat.description" class="text-xs sm:text-sm text-white/75 mt-1.5 line-clamp-2 leading-relaxed">
@@ -551,7 +672,7 @@ onUnmounted(() => {
         <motion.div :variants="staggerItem">
           <Link
             href="/all-products"
-            class="group inline-flex items-center gap-2 rounded-xl border border-gray-300 dark:border-[#D4AF37]/30 bg-white/80 dark:bg-[#141414]/80 px-4 py-2.5 text-xs sm:text-sm font-semibold text-[#1A1A1A] dark:text-[#F5F5F5] backdrop-blur-sm transition-all duration-300 hover:border-[#D4AF37] hover:bg-[#D4AF37]/10 hover:text-[#D4AF37] dark:hover:text-[#D4AF37] shadow-sm no-underline"
+            class="group inline-flex items-center gap-2 rounded-xl border border-gray-300 dark:border-[#D4AF37]/30 bg-white/90 dark:bg-[#141414]/90 px-4 py-2.5 text-xs sm:text-sm font-semibold text-[#1A1A1A] dark:text-[#F5F5F5] backdrop-blur-sm transition-all duration-300 hover:border-[#D4AF37] hover:bg-[#D4AF37]/10 hover:text-[#B8941E] dark:hover:text-[#D4AF37] shadow-sm no-underline"
           >
             <span>View Complete Vault</span>
             <svg class="h-4 w-4 text-[#D4AF37] transition-transform duration-300 group-hover:translate-x-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -595,7 +716,7 @@ onUnmounted(() => {
   <!-- ══════════════════════════════════════════════════════
        PILLARS OF ARTISTRY & HERITAGE
   ══════════════════════════════════════════════════════ -->
-  <section class="py-14 sm:py-24 bg-white/60 dark:bg-[#111111]/60 border-b border-gray-200/60 dark:border-[#D4AF37]/15">
+  <section class="py-14 sm:py-24 hero-gradient-static border-b border-gray-200/60 dark:border-[#D4AF37]/15">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
       <!-- Small Section Kicker -->
@@ -611,9 +732,9 @@ onUnmounted(() => {
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
 
         <!-- Pillar 1 -->
-        <div class="group relative rounded-2xl border border-gray-200/70 dark:border-white/5 bg-white dark:bg-[#161616] p-6 sm:p-7 shadow-sm hover:border-[#D4AF37]/40 hover:shadow-lg transition-all duration-300">
-          <div class="mb-5 flex h-13 w-13 items-center justify-center rounded-xl bg-[#D4AF37]/10 dark:bg-[#D4AF37]/15 text-[#D4AF37] group-hover:bg-[#D4AF37] group-hover:text-white transition-colors duration-300">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24">
+        <div class="group relative rounded-2xl border border-gray-200/80 dark:border-white/10 bg-white/90 dark:bg-[#161616]/90 backdrop-blur-xs p-6 sm:p-7 shadow-xs hover:border-[#D4AF37]/60 hover:shadow-xl hover:shadow-[#D4AF37]/5 hover:-translate-y-1 transition-all duration-300">
+          <div class="mb-5 flex h-13 w-13 items-center justify-center rounded-2xl bg-[#D4AF37]/10 dark:bg-[#D4AF37]/15 border border-[#D4AF37]/25 text-[#B8941E] dark:text-[#D4AF37] group-hover:border-[#D4AF37] group-hover:bg-[#D4AF37]/20 dark:group-hover:bg-[#D4AF37]/25 group-hover:text-[#9A7B1C] dark:group-hover:text-[#FFE082] group-hover:shadow-[0_4px_16px_rgba(212,175,55,0.25)] group-hover:scale-105 transition-all duration-300">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
             </svg>
           </div>
@@ -626,9 +747,9 @@ onUnmounted(() => {
         </div>
 
         <!-- Pillar 2 -->
-        <div class="group relative rounded-2xl border border-gray-200/70 dark:border-white/5 bg-white dark:bg-[#161616] p-6 sm:p-7 shadow-sm hover:border-[#D4AF37]/40 hover:shadow-lg transition-all duration-300">
-          <div class="mb-5 flex h-13 w-13 items-center justify-center rounded-xl bg-[#D4AF37]/10 dark:bg-[#D4AF37]/15 text-[#D4AF37] group-hover:bg-[#D4AF37] group-hover:text-white transition-colors duration-300">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24">
+        <div class="group relative rounded-2xl border border-gray-200/80 dark:border-white/10 bg-white/90 dark:bg-[#161616]/90 backdrop-blur-xs p-6 sm:p-7 shadow-xs hover:border-[#D4AF37]/60 hover:shadow-xl hover:shadow-[#D4AF37]/5 hover:-translate-y-1 transition-all duration-300">
+          <div class="mb-5 flex h-13 w-13 items-center justify-center rounded-2xl bg-[#D4AF37]/10 dark:bg-[#D4AF37]/15 border border-[#D4AF37]/25 text-[#B8941E] dark:text-[#D4AF37] group-hover:border-[#D4AF37] group-hover:bg-[#D4AF37]/20 dark:group-hover:bg-[#D4AF37]/25 group-hover:text-[#9A7B1C] dark:group-hover:text-[#FFE082] group-hover:shadow-[0_4px_16px_rgba(212,175,55,0.25)] group-hover:scale-105 transition-all duration-300">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z" />
             </svg>
           </div>
@@ -641,9 +762,9 @@ onUnmounted(() => {
         </div>
 
         <!-- Pillar 3 -->
-        <div class="group relative rounded-2xl border border-gray-200/70 dark:border-white/5 bg-white dark:bg-[#161616] p-6 sm:p-7 shadow-sm hover:border-[#D4AF37]/40 hover:shadow-lg transition-all duration-300">
-          <div class="mb-5 flex h-13 w-13 items-center justify-center rounded-xl bg-[#D4AF37]/10 dark:bg-[#D4AF37]/15 text-[#D4AF37] group-hover:bg-[#D4AF37] group-hover:text-white transition-colors duration-300">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24">
+        <div class="group relative rounded-2xl border border-gray-200/80 dark:border-white/10 bg-white/90 dark:bg-[#161616]/90 backdrop-blur-xs p-6 sm:p-7 shadow-xs hover:border-[#D4AF37]/60 hover:shadow-xl hover:shadow-[#D4AF37]/5 hover:-translate-y-1 transition-all duration-300">
+          <div class="mb-5 flex h-13 w-13 items-center justify-center rounded-2xl bg-[#D4AF37]/10 dark:bg-[#D4AF37]/15 border border-[#D4AF37]/25 text-[#B8941E] dark:text-[#D4AF37] group-hover:border-[#D4AF37] group-hover:bg-[#D4AF37]/20 dark:group-hover:bg-[#D4AF37]/25 group-hover:text-[#9A7B1C] dark:group-hover:text-[#FFE082] group-hover:shadow-[0_4px_16px_rgba(212,175,55,0.25)] group-hover:scale-105 transition-all duration-300">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M21 11.25v8.25a1.5 1.5 0 01-1.5 1.5H4.5a1.5 1.5 0 01-1.5-1.5v-8.25M12 4.875A2.625 2.625 0 109.375 7.5H12m0-2.625V7.5m0-2.625A2.625 2.625 0 1114.625 7.5H12m0 0V21m-8.625-9.75h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
             </svg>
           </div>
@@ -656,9 +777,9 @@ onUnmounted(() => {
         </div>
 
         <!-- Pillar 4 -->
-        <div class="group relative rounded-2xl border border-gray-200/70 dark:border-white/5 bg-white dark:bg-[#161616] p-6 sm:p-7 shadow-sm hover:border-[#D4AF37]/40 hover:shadow-lg transition-all duration-300">
-          <div class="mb-5 flex h-13 w-13 items-center justify-center rounded-xl bg-[#D4AF37]/10 dark:bg-[#D4AF37]/15 text-[#D4AF37] group-hover:bg-[#D4AF37] group-hover:text-white transition-colors duration-300">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.6" viewBox="0 0 24 24">
+        <div class="group relative rounded-2xl border border-gray-200/80 dark:border-white/10 bg-white/90 dark:bg-[#161616]/90 backdrop-blur-xs p-6 sm:p-7 shadow-xs hover:border-[#D4AF37]/60 hover:shadow-xl hover:shadow-[#D4AF37]/5 hover:-translate-y-1 transition-all duration-300">
+          <div class="mb-5 flex h-13 w-13 items-center justify-center rounded-2xl bg-[#D4AF37]/10 dark:bg-[#D4AF37]/15 border border-[#D4AF37]/25 text-[#B8941E] dark:text-[#D4AF37] group-hover:border-[#D4AF37] group-hover:bg-[#D4AF37]/20 dark:group-hover:bg-[#D4AF37]/25 group-hover:text-[#9A7B1C] dark:group-hover:text-[#FFE082] group-hover:shadow-[0_4px_16px_rgba(212,175,55,0.25)] group-hover:scale-105 transition-all duration-300">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
               <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.25V4.125A1.125 1.125 0 0013.125 3H4.875A1.125 1.125 0 003.75 4.125v10.125c0 .621.504 1.125 1.125 1.125h9.75" />
             </svg>
           </div>
@@ -781,60 +902,6 @@ onUnmounted(() => {
     </div>
   </section>
 
-  <!-- ══════════════════════════════════════════════════════
-       BESPOKE COMMISSIONS / CUSTOM INVITATION BANNER
-  ══════════════════════════════════════════════════════ -->
-  <section id="custom-order" class="py-16 sm:py-24 bg-[#FAF7F2] dark:bg-[#0A0A0A]">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-      <motion.div
-        :variants="m.scaleIn"
-        initial="hidden"
-        whileInView="visible"
-        :viewport="m.viewport.once"
-        class="relative overflow-hidden rounded-3xl border border-[#D4AF37]/35 bg-gradient-to-br from-[#1C1814] via-[#121110] to-[#0A0A0A] p-8 sm:p-14 text-center text-white shadow-2xl shadow-black/40"
-      >
-        <!-- Ambient Gold Flare -->
-        <div class="absolute -top-24 left-1/2 -translate-x-1/2 w-96 h-96 bg-[#D4AF37]/15 rounded-full blur-3xl pointer-events-none"></div>
-
-        <div class="relative z-10 max-w-2xl mx-auto">
-          <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-[#D4AF37]/30 bg-[#D4AF37]/10 backdrop-blur-md mb-5">
-            <span class="w-1.5 h-1.5 rounded-full bg-[#D4AF37]"></span>
-            <span class="text-[10px] sm:text-[11px] font-bold uppercase tracking-[0.2em] text-[#D4AF37]">
-              Atelier Commissions
-            </span>
-          </div>
-
-          <h2 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-white mb-4">
-            Desire a One-of-a-Kind Creation?
-          </h2>
-
-          <p class="text-sm sm:text-base text-white/75 leading-relaxed mb-8 max-w-xl mx-auto">
-            Collaborate directly with our master craftsmen to create a bespoke timepiece, sculpted artwork, or customized collectible tailored to your exact aesthetic.
-          </p>
-
-          <div class="flex flex-col sm:flex-row items-center justify-center gap-3.5 sm:gap-4">
-            <Link
-              href="/custom-order"
-              class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl bg-[#D4AF37] text-[#0A0A0A] font-bold text-sm sm:text-base hover:bg-[#C9A032] shadow-xl shadow-[#D4AF37]/25 transition-all duration-300 no-underline"
-            >
-              <span>Begin Bespoke Inquiry</span>
-              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
-              </svg>
-            </Link>
-
-            <Link
-              href="/all-products"
-              class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-xl border border-white/20 bg-white/5 text-white font-semibold text-sm sm:text-base backdrop-blur-md hover:border-[#D4AF37] hover:bg-white/10 transition-all duration-300 no-underline"
-            >
-              <span>Browse Catalog Vault</span>
-            </Link>
-          </div>
-        </div>
-      </motion.div>
-    </div>
-  </section>
-
   <!-- Global Footer -->
   <AppFooter />
 
@@ -858,86 +925,15 @@ html {
 <style scoped>
 .hero-spotlight-bg {
   background:
-    radial-gradient(ellipse 80% 70% at 78% 32%, color-mix(in srgb, var(--gold) 20%, transparent), transparent 62%),
-    radial-gradient(ellipse 55% 55% at 8% 88%, color-mix(in srgb, var(--gold) 10%, transparent), transparent 65%),
-    linear-gradient(135deg, #FAF7F2 0%, #F5F1E8 45%, #FFFFFF 70%, #FAF7F2 100%);
+    radial-gradient(ellipse 80% 70% at 78% 32%, rgba(212, 175, 55, 0.08), transparent 65%),
+    radial-gradient(ellipse 55% 55% at 8% 88%, rgba(212, 175, 55, 0.05), transparent 65%),
+    linear-gradient(135deg, #FAF7F2 0%, #F8F5EE 50%, #FAF7F2 100%);
 }
 
 .dark .hero-spotlight-bg {
   background:
-    radial-gradient(ellipse 80% 70% at 78% 30%, color-mix(in srgb, var(--gold) 16%, transparent), transparent 62%),
-    radial-gradient(ellipse 55% 55% at 12% 86%, color-mix(in srgb, var(--gold) 8%, transparent), transparent 65%),
-    linear-gradient(135deg, #0A0A0A 0%, #141414 45%, #1A1A1A 70%, #0A0A0A 100%);
-}
-
-@keyframes glow-pulse {
-  0%, 100% { opacity: 0.25; transform: scale(1); }
-  50% { opacity: 0.4; transform: scale(1.05); }
-}
-
-.hero-glow {
-  position: absolute;
-  width: 280px;
-  height: 280px;
-  border-radius: 9999px;
-  background: radial-gradient(circle, color-mix(in srgb, var(--gold) 28%, transparent), transparent 65%);
-  filter: blur(30px);
-  animation: glow-pulse 6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-  pointer-events: none;
-}
-
-.hero-emblem {
-  position: relative;
-  animation: emblem-float 6s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-}
-
-@keyframes emblem-float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-12px); }
-}
-
-.hero-emblem-card {
-  position: relative;
-  background: #141414;
-  border: 1px solid color-mix(in srgb, var(--gold) 35%, transparent);
-  border-radius: 28px;
-  padding: 1.75rem 1.5rem;
-  max-width: 100%;
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.08);
-  animation: emblem-breathe 5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
-}
-
-@media (min-width: 640px) {
-  .hero-emblem-card {
-    padding: 2.5rem 2.75rem;
-  }
-}
-
-@keyframes emblem-breathe {
-  0%, 100% { box-shadow: 0 25px 60px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 0 30px color-mix(in srgb, var(--gold) 8%, transparent); }
-  50% { box-shadow: 0 28px 70px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 0 50px color-mix(in srgb, var(--gold) 22%, transparent); }
-}
-
-.hero-sparkle {
-  position: absolute;
-  color: var(--gold);
-  animation: sparkle-twinkle 3s ease-in-out infinite;
-}
-
-@keyframes sparkle-twinkle {
-  0%, 100% { opacity: 0.2; transform: scale(0.6); }
-  50% { opacity: 1; transform: scale(1); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .hero-glow,
-  .hero-emblem,
-  .hero-emblem-card,
-  .hero-sparkle {
-    animation: none !important;
-    transition: none !important;
-    transform: none !important;
-    opacity: 1 !important;
-  }
+    radial-gradient(ellipse 80% 70% at 78% 30%, rgba(212, 175, 55, 0.12), transparent 65%),
+    radial-gradient(ellipse 55% 55% at 12% 86%, rgba(212, 175, 55, 0.06), transparent 65%),
+    linear-gradient(135deg, #0A0A0A 0%, #121212 50%, #0A0A0A 100%);
 }
 </style>

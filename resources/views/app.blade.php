@@ -37,7 +37,7 @@
     @inertiaHead
 </head>
 
-<body class="min-h-screen">
+<body class="min-h-screen hero-gradient-static">
     @inertia
 </body>
 </html>

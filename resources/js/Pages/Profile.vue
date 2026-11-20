@@ -14,7 +14,7 @@ defineProps({
 <template>
 <Head title="My Profile" />
 
-<div class="min-h-screen bg-[#FAF7F2] dark:bg-[#0A0A0A] text-[#1A1A1A] dark:text-[#F5F5F5]" style="font-family:'Inter',system-ui,sans-serif;">
+<div class="min-h-screen hero-gradient-static text-[#1A1A1A] dark:text-[#F5F5F5]" style="font-family:'Inter',system-ui,sans-serif;">
 
   <!-- HERO / PROFILE BANNER -->
   <motion.div

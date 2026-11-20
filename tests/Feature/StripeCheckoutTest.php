@@ -13,7 +13,7 @@ beforeEach(function () {
     Mail::fake();
 });
 
-it('creates a stripe checkout session and redirects to stripe', function () {
+it('rejects initiating a stripe checkout session when stripe is disabled', function () {
     $user = User::factory()->create();
     $product = Product::factory()->create(['price' => 45.00, 'stock' => 5]);
 
@@ -22,17 +22,6 @@ it('creates a stripe checkout session and redirects to stripe', function () {
         'product_id' => $product->id,
         'qty' => 1,
     ]);
-
-    $fakeSession = Session::constructFrom([
-        'id' => 'cs_test_mock_123',
-        'url' => 'https://checkout.stripe.com/c/pay/cs_test_mock_123',
-    ]);
-
-    $stripeService = Mockery::mock(StripeService::class);
-    $stripeService->shouldReceive('createCheckoutSession')
-        ->once()
-        ->andReturn($fakeSession);
-    $this->app->instance(StripeService::class, $stripeService);
 
     $response = $this->actingAs($user)
         ->withHeaders(['X-Inertia' => 'true'])
@@ -47,15 +36,8 @@ it('creates a stripe checkout session and redirects to stripe', function () {
             'payment_method' => 'stripe',
         ]);
 
-    $order = Order::where('user_id', $user->id)->firstOrFail();
-
-    expect($order->payment_method)->toBe('stripe');
-    expect($order->status)->toBe('pending');
-    expect($order->stripe_session_id)->toBe('cs_test_mock_123');
-
-    // Inertia external redirect sets header X-Inertia-Location and status 409
-    $response->assertStatus(409);
-    $response->assertHeader('X-Inertia-Location', 'https://checkout.stripe.com/c/pay/cs_test_mock_123');
+    $response->assertSessionHasErrors(['payment_method']);
+    expect(Order::where('user_id', $user->id)->count())->toBe(0);
 });
 
 it('confirms the order and sends confirmation email on stripe success return', function () {

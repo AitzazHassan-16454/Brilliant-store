@@ -14,7 +14,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Validation\Rule;
-use Inertia\Inertia;
 use Stripe\Webhook;
 use Symfony\Component\HttpFoundation\Response;
 use Throwable;
@@ -34,7 +33,6 @@ class CheckoutController extends Controller
             'shipping_city' => ['required', 'string', 'max:255'],
             'shipping_postal_code' => ['nullable', 'string', 'max:20'],
             'notes' => ['nullable', 'string', 'max:500'],
-            'coupon_code' => ['nullable', 'string'],
             'payment_method' => ['required', Rule::enum(PaymentMethod::class)],
         ]);
 
@@ -42,21 +40,6 @@ class CheckoutController extends Controller
             $order = $orderService->placeOrder($request->user(), $validated);
         } catch (OrderException $e) {
             return back()->with('error', $e->getMessage());
-        }
-
-        if ($validated['payment_method'] === PaymentMethod::Stripe->value) {
-            try {
-                $session = $stripeService->createCheckoutSession($order);
-                $order->update(['stripe_session_id' => $session->id]);
-
-                return Inertia::location($session->url);
-            } catch (Throwable $e) {
-                Log::error('Stripe session creation failed', ['error' => $e->getMessage()]);
-
-                return redirect('/orders')
-                    ->with('error', 'Order created, but unable to redirect to Stripe. You can retry payment later.')
-                    ->with('tracking_code', $order->tracking_code);
-            }
         }
 
         try {

@@ -5,9 +5,7 @@ namespace App\Services;
 use App\Enums\PaymentMethod;
 use App\Exceptions\OrderException;
 use App\Models\Cart;
-use App\Models\Coupon;
 use App\Models\Order;
-use App\Models\OrderCoupon;
 use App\Models\OrderItem;
 use App\Models\OrderStatusHistory;
 use App\Models\Product;
@@ -19,13 +17,12 @@ class OrderService
     /**
      * Create an order from the user's cart.
      *
-     * Validates stock and coupon server-side, then persists the order,
-     * its items, coupon usage and status history inside a transaction.
+     * Validates stock server-side, then persists the order,
+     * its items and status history inside a transaction.
      *
      * @param  array<string, mixed>  $validated
      *
-     * @throws OrderException When the cart is empty, stock is insufficient
-     *                        or the coupon is invalid.
+     * @throws OrderException When the cart is empty or stock is insufficient.
      */
     public function placeOrder(User $user, array $validated): Order
     {
@@ -46,28 +43,11 @@ class OrderService
         }
 
         $subtotal = $cartItems->sum(fn ($item) => $item->product->price * $item->qty);
-        $discount = 0;
-        $coupon = null;
-
-        if ($validated['coupon_code'] ?? null) {
-            $coupon = Coupon::where('code', strtoupper($validated['coupon_code']))->first();
-
-            if (! $coupon || ! $coupon->isValid()) {
-                throw new OrderException('Invalid or expired coupon code.');
-            }
-
-            if ($subtotal < $coupon->min_order) {
-                throw new OrderException('Minimum order of $'.$coupon->min_order.' required for this coupon.');
-            }
-
-            $discount = $coupon->calculateDiscount($subtotal);
-        }
-
-        $total = max(0, $subtotal - $discount);
+        $total = $subtotal;
         $paymentMethod = PaymentMethod::from($validated['payment_method']);
         $status = $paymentMethod->initialStatus();
 
-        return DB::transaction(function () use ($user, $cartItems, $subtotal, $discount, $total, $coupon, $validated, $status) {
+        return DB::transaction(function () use ($user, $cartItems, $subtotal, $total, $validated, $status) {
             foreach ($cartItems as $item) {
                 $affected = Product::where('id', $item->product_id)
                     ->where('stock', '>=', $item->qty)
@@ -81,7 +61,7 @@ class OrderService
             $order = Order::create([
                 'user_id' => $user->id,
                 'subtotal' => $subtotal,
-                'discount' => $discount,
+                'discount' => 0,
                 'total' => $total,
                 'status' => $status,
                 'payment_method' => $validated['payment_method'],
@@ -101,16 +81,6 @@ class OrderService
                     'quantity' => $item->qty,
                     'price' => $item->product->price,
                 ]);
-            }
-
-            if ($coupon) {
-                OrderCoupon::create([
-                    'order_id' => $order->id,
-                    'coupon_id' => $coupon->id,
-                    'discount_amount' => $discount,
-                ]);
-
-                $coupon->increment('used_count');
             }
 
             OrderStatusHistory::create([

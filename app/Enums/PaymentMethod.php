@@ -4,27 +4,21 @@ namespace App\Enums;
 
 enum PaymentMethod: string
 {
-    case Stripe = 'stripe';
-    case BankTransfer = 'bank_transfer';
     case CashOnDelivery = 'cod';
     case WhatsApp = 'whatsapp';
 
     public function label(): string
     {
         return match ($this) {
-            self::Stripe => 'Credit / Debit Card (Stripe)',
-            self::BankTransfer => 'Bank Transfer',
             self::CashOnDelivery => 'Cash on Delivery',
-            self::WhatsApp => 'Pay via WhatsApp',
+            self::WhatsApp => 'Payment Via WhatsApp',
         };
     }
 
     public function description(): string
     {
         return match ($this) {
-            self::Stripe => 'Pay securely online with credit card, debit card, or digital wallet via Stripe.',
-            self::BankTransfer => 'Pay by bank transfer and share your proof to confirm the order.',
-            self::CashOnDelivery => 'Pay in cash when your order is delivered.',
+            self::CashOnDelivery => 'Pay with cash directly when your order is delivered.',
             self::WhatsApp => 'Pay through WhatsApp and confirm with our team.',
         };
     }
@@ -33,7 +27,7 @@ enum PaymentMethod: string
     {
         return match ($this) {
             self::CashOnDelivery => 'confirmed',
-            default => 'pending',
+            self::WhatsApp => 'pending',
         };
     }
 }

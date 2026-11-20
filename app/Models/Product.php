@@ -15,23 +15,34 @@ class Product extends Model
         'uid',
         'name',
         'price',
+        'compare_price',
         'stock',
         'is_active',
         'is_trending',
         'image',
+        'images',
         'description',
         'embedding',
         'category_id',
         'subcategory_id',
     ];
 
+    protected $appends = [
+        'average_rating',
+        'reviews_count',
+        'is_in_stock',
+        'gallery_images',
+    ];
+
     protected function casts(): array
     {
         return [
             'price' => 'decimal:2',
+            'compare_price' => 'decimal:2',
             'is_active' => 'boolean',
             'is_trending' => 'boolean',
             'embedding' => 'array',
+            'images' => 'array',
         ];
     }
 
@@ -86,5 +97,17 @@ class Product extends Model
     public function getIsInStockAttribute(): bool
     {
         return $this->stock > 0;
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    public function getGalleryImagesAttribute(): array
+    {
+        if (! empty($this->images) && is_array($this->images)) {
+            return array_values($this->images);
+        }
+
+        return $this->image ? [$this->image] : [];
     }
 }

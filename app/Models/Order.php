@@ -80,11 +80,6 @@ class Order extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function coupon()
-    {
-        return $this->hasOne(OrderCoupon::class);
-    }
-
     public function statuses()
     {
         return $this->hasMany(OrderStatusHistory::class)->latest();

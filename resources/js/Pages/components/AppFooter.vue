@@ -38,7 +38,7 @@ const contactHours = computed(() => site.value.contact_hours || "Mon - Fri: 9:00
           <h4 class="font-semibold mb-4 text-gray-900 dark:text-white">Quick Links</h4>
           <ul class="space-y-2 text-sm list-none p-0">
             <li><Link href="/" class="transition-colors no-underline text-gray-500 dark:text-white/50 hover:text-gray-700 dark:hover:text-white/80">Home</Link></li>
-            <li><Link href="/custom-order" class="transition-colors no-underline text-gray-500 dark:text-white/50 hover:text-gray-700 dark:hover:text-white/80">Custom Order</Link></li>
+            <li><Link href="/all-products" class="transition-colors no-underline text-gray-500 dark:text-white/50 hover:text-gray-700 dark:hover:text-white/80">Products</Link></li>
             <li><Link href="/about" class="transition-colors no-underline text-gray-500 dark:text-white/50 hover:text-gray-700 dark:hover:text-white/80">About Us</Link></li>
             <li><Link href="/faq" class="transition-colors no-underline text-gray-500 dark:text-white/50 hover:text-gray-700 dark:hover:text-white/80">FAQ</Link></li>
           </ul>

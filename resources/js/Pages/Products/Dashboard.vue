@@ -17,7 +17,6 @@ const props = defineProps({
     usersCount: Number,
     rolesCount: Number,
     ordersCount: Number,
-    couponsCount: Number,
     pendingReviewsCount: Number,
     revenue: Number,
     revenueThisMonth: Number,
@@ -359,10 +358,6 @@ const categoryChartOptions = {
                 <div class="bg-white dark:bg-[#1A1A1A] border border-gray-200 dark:border-[#D4AF37]/20 rounded-xl px-3.5 py-3">
                     <p class="text-[11px] font-medium text-gray-400 dark:text-[#A0A0A0]">Roles</p>
                     <p class="text-base sm:text-lg font-semibold text-[#1A1A1A] dark:text-[#F5F5F5] mt-0.5">{{ rolesCount }}</p>
-                </div>
-                <div class="bg-white dark:bg-[#1A1A1A] border border-gray-200 dark:border-[#D4AF37]/20 rounded-xl px-3.5 py-3">
-                    <p class="text-[11px] font-medium text-gray-400 dark:text-[#A0A0A0]">Coupons</p>
-                    <p class="text-base sm:text-lg font-semibold text-[#1A1A1A] dark:text-[#F5F5F5] mt-0.5">{{ couponsCount }}</p>
                 </div>
                 <div class="bg-white dark:bg-[#1A1A1A] border border-gray-200 dark:border-[#D4AF37]/20 rounded-xl px-3.5 py-3">
                     <p class="text-[11px] font-medium text-gray-400 dark:text-[#A0A0A0]">Stock Total</p>
