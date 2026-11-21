@@ -54,11 +54,13 @@ COPY --from=frontend_builder /app/public/build ./public/build
 # Install PHP dependencies without dev packages
 RUN composer install --no-dev --optimize-autoloader --no-interaction
 
-# Set directory permissions for Laravel
-RUN chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
-    && chmod -R 775 /var/www/html/storage /var/www/html/bootstrap/cache
+# Set directory permissions for Laravel and support non-root user 1000
+RUN useradd -m -u 1000 user 2>/dev/null || true \
+    && chown -R www-data:www-data /var/www/html/storage /var/www/html/bootstrap/cache \
+    && chmod -R 777 /var/www/html/storage /var/www/html/bootstrap/cache
 
-# Expose default HTTP port
+# Expose HTTP ports (7860 for Hugging Face Spaces, 80 for standard Docker)
+EXPOSE 7860
 EXPOSE 80
 
 # Run entrypoint script
