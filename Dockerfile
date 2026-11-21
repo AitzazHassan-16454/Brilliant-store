@@ -19,6 +19,7 @@ WORKDIR /var/www/html
 RUN apt-get update && apt-get install -y --no-install-recommends \
     git \
     unzip \
+    ca-certificates \
     libzip-dev \
     libpng-dev \
     libjpeg-dev \
