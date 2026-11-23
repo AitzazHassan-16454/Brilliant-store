@@ -6,6 +6,7 @@ use App\Models\BusinessSetting;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -48,11 +49,15 @@ class BusinessSettingController extends Controller
         }
 
         if ($request->hasFile('logo')) {
-            if ($settings->logo) {
-                Storage::disk('public')->delete($settings->logo);
-            }
+            try {
+                if ($settings->logo && Storage::disk('public')->exists($settings->logo)) {
+                    Storage::disk('public')->delete($settings->logo);
+                }
 
-            $settings->logo = $request->file('logo')->store('branding', 'public');
+                $settings->logo = $request->file('logo')->store('branding', 'public');
+            } catch (\Throwable $e) {
+                Log::warning('Logo upload failed: '.$e->getMessage());
+            }
         }
 
         $settings->save();
