@@ -8,6 +8,7 @@ use App\Models\Product;
 use App\Models\Wishlist;
 use App\Services\SemanticSearchService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
@@ -173,7 +174,11 @@ class CategoryController extends Controller
 
         // If an image was uploaded, save it
         if ($request->hasFile('image')) {
-            $validatedData['image'] = $request->file('image')->store('categories', 'public');
+            try {
+                $validatedData['image'] = $request->file('image')->store('categories', 'public');
+            } catch (\Throwable $e) {
+                Log::warning('Category image upload failed: '.$e->getMessage());
+            }
         }
 
         // Create the category
@@ -201,13 +206,17 @@ class CategoryController extends Controller
 
         // If a new image was uploaded, replace the old one
         if ($request->hasFile('image')) {
-            // Delete the old image if it exists
-            if ($category->image && Storage::disk('public')->exists($category->image)) {
-                Storage::disk('public')->delete($category->image);
-            }
+            try {
+                // Delete the old image if it exists
+                if ($category->image && Storage::disk('public')->exists($category->image)) {
+                    Storage::disk('public')->delete($category->image);
+                }
 
-            // Save the new image
-            $validatedData['image'] = $request->file('image')->store('categories', 'public');
+                // Save the new image
+                $validatedData['image'] = $request->file('image')->store('categories', 'public');
+            } catch (\Throwable $e) {
+                Log::warning('Category image update failed: '.$e->getMessage());
+            }
         }
 
         // Update the category

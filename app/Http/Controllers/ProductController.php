@@ -14,6 +14,7 @@ use App\Models\User;
 use App\Models\Wishlist;
 use App\Services\SemanticSearchService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
@@ -512,17 +513,25 @@ class ProductController extends Controller
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $file) {
                 if ($file && $file->isValid()) {
-                    $storedImages[] = $file->store('products', 'public');
+                    try {
+                        $storedImages[] = $file->store('products', 'public');
+                    } catch (\Throwable $e) {
+                        Log::warning('Product multi-image store failed: '.$e->getMessage());
+                    }
                 }
             }
         }
 
         if ($request->hasFile('image')) {
-            $singlePath = $request->file('image')->store('products', 'public');
-            if (empty($storedImages)) {
-                $storedImages[] = $singlePath;
-            } else {
-                array_unshift($storedImages, $singlePath);
+            try {
+                $singlePath = $request->file('image')->store('products', 'public');
+                if (empty($storedImages)) {
+                    $storedImages[] = $singlePath;
+                } else {
+                    array_unshift($storedImages, $singlePath);
+                }
+            } catch (\Throwable $e) {
+                Log::warning('Product single image store failed: '.$e->getMessage());
             }
         }
 
@@ -617,14 +626,22 @@ class ProductController extends Controller
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $file) {
                 if ($file && $file->isValid()) {
-                    $newStoredImages[] = $file->store('products', 'public');
+                    try {
+                        $newStoredImages[] = $file->store('products', 'public');
+                    } catch (\Throwable $e) {
+                        Log::warning('Update product multi-image store failed: '.$e->getMessage());
+                    }
                 }
             }
         }
 
         if ($request->hasFile('image')) {
-            $singlePath = $request->file('image')->store('products', 'public');
-            $newStoredImages[] = $singlePath;
+            try {
+                $singlePath = $request->file('image')->store('products', 'public');
+                $newStoredImages[] = $singlePath;
+            } catch (\Throwable $e) {
+                Log::warning('Update product single image store failed: '.$e->getMessage());
+            }
         }
 
         $allImages = array_values(array_merge($keptImages, $newStoredImages));
