@@ -129,23 +129,7 @@ const scrollCategoryTo = (idx) => {
 }
 
 // ── Mobile Slider Navigation: Reviews ─────────────────
-const testimonials = [
-  {
-    quote: "The hand-finishing, weight, and precision exceeded expectations. The presentation box alone signals that you are holding an heirloom.",
-    author: "Sarah J.",
-    city: "London, UK",
-  },
-  {
-    quote: "Commissioning a bespoke creation was a seamless atelier experience. The artisans accommodated every custom detail with genuine care.",
-    author: "Michael C.",
-    city: "Geneva, Switzerland",
-  },
-  {
-    quote: "The design direction feels cohesive and distinct. The fast dispatch and insured white-glove arrival made it an effortless experience.",
-    author: "Emma W.",
-    city: "New York, USA",
-  },
-]
+const testimonials = ref([])
 
 const activeReviewIndex = ref(0)
 const reviewScrollRef = ref(null)
@@ -266,14 +250,14 @@ onUnmounted(() => {
     <div class="hero-noise" aria-hidden="true"></div>
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-12 lg:pt-16 pb-16 sm:pb-20 lg:pb-24 relative z-10">
-      <div class="grid items-center gap-10 md:gap-16 lg:grid-cols-2 lg:gap-20">
+      <div :class="spotlightProduct ? 'grid items-center gap-10 md:gap-16 lg:grid-cols-2 lg:gap-20' : 'max-w-3xl mx-auto text-center flex flex-col items-center'" class="relative">
 
         <!-- Left: Content & Narrative -->
         <motion.div
           :variants="heroStagger"
           initial="hidden"
           animate="visible"
-          class="space-y-4 md:space-y-5 lg:space-y-6"
+          :class="spotlightProduct ? 'space-y-4 md:space-y-5 lg:space-y-6' : 'space-y-4 md:space-y-5 lg:space-y-6 flex flex-col items-center text-center'"
         >
           <div class="space-y-3 md:space-y-4">
             <!-- Badge -->
@@ -290,8 +274,8 @@ onUnmounted(() => {
               :variants="heroItem"
               class="text-3xl font-extrabold leading-tight sm:text-4xl lg:text-5xl xl:text-6xl tracking-tight"
             >
-              <span class="text-[#1A1A1A] dark:text-[#F5F5F5]">Where Precision Meets</span>
-              <span class="block mt-1 text-gold-gradient">Elegance</span>
+              <span class="block text-[#1A1A1A] dark:text-[#F5F5F5]">Where Precision</span>
+              <span class="inline-block mt-1 text-gold-gradient whitespace-nowrap">Meets Elegance</span>
             </motion.h1>
 
             <!-- Subtitle -->
@@ -319,9 +303,9 @@ onUnmounted(() => {
           <motion.div :variants="heroItem" class="grid grid-cols-3 gap-2 sm:gap-4 pt-2">
             <motion.div
               v-for="(stat, i) in [
-                { value: (stats?.products || 50) + '+', label: 'Products' },
-                { value: (stats?.categories || 10) + '+', label: 'Categories' },
-                { value: (stats?.orders || 100) + '+', label: 'Orders' },
+                { value: stats?.products ? `${stats.products}+` : '0', label: 'Products' },
+                { value: stats?.categories ? `${stats.categories}+` : '0', label: 'Categories' },
+                { value: stats?.orders ? `${stats.orders}+` : '0', label: 'Orders' },
               ]"
               :key="stat.label"
               :variants="itemFadeUp(i * 0.1)"
@@ -799,7 +783,7 @@ onUnmounted(() => {
        VERIFIED EXPERIENCES (COLLECTOR ACCLAIM)
        (Slider on small devices, Grid on md+)
   ══════════════════════════════════════════════════════ -->
-  <section class="py-12 sm:py-20 hero-gradient-static dark:hero-gradient-static border-t border-b border-gray-200/50 dark:border-[#D4AF37]/10 shadow-xl overflow-hidden">
+  <section v-if="testimonials && testimonials.length" class="py-12 sm:py-20 hero-gradient-static dark:hero-gradient-static border-t border-b border-gray-200/50 dark:border-[#D4AF37]/10 shadow-xl overflow-hidden">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
       <!-- Header -->

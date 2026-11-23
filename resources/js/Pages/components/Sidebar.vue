@@ -8,6 +8,7 @@ const page = usePage();
 const site = computed(() => page.props.site ?? {});
 const siteName = computed(() => site.value.site_name || "GharBazaar");
 const siteLogo = computed(() => site.value.logo_url || null);
+const logoFailed = ref(false);
 const siteInitial = computed(() => siteName.value.charAt(0).toUpperCase());
 
 const authUser = computed(() => page.props.auth?.user ?? null);
@@ -167,7 +168,7 @@ const isVisible = (item) => {
       </button>
 
       <div class="flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-[#1A1A1A] text-xs font-bold text-white dark:bg-[#2A2A2A] shadow-sm">
-        <img v-if="siteLogo" :src="siteLogo" :alt="siteName" class="h-full w-full bg-white object-contain p-0.5" />
+        <img v-if="siteLogo && !logoFailed" :src="siteLogo" :alt="siteName" class="h-full w-full bg-white object-contain p-0.5" @error="logoFailed = true" />
         <span v-else>{{ siteInitial }}</span>
       </div>
 
@@ -217,7 +218,7 @@ const isVisible = (item) => {
     <div class="flex h-16 shrink-0 items-center justify-between gap-3 border-b border-gray-200 bg-white px-4 dark:border-[#D4AF37]/20 dark:bg-[#1A1A1A] lg:px-5">
       <Link href="/dashboard" class="flex items-center gap-3 min-w-0 no-underline">
         <div class="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-xl bg-[#1A1A1A] text-sm font-bold text-white dark:bg-[#2A2A2A] shadow-sm">
-          <img v-if="siteLogo" :src="siteLogo" :alt="siteName" class="h-full w-full bg-white object-contain p-0.5" />
+          <img v-if="siteLogo && !logoFailed" :src="siteLogo" :alt="siteName" class="h-full w-full bg-white object-contain p-0.5" @error="logoFailed = true" />
           <span v-else>{{ siteInitial }}</span>
         </div>
         <div :class="collapsed ? 'lg:hidden' : ''" class="min-w-0 overflow-hidden whitespace-nowrap">

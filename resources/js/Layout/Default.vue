@@ -19,6 +19,7 @@ const site = computed(() => page.props.site ?? {})
 const siteName = computed(() => site.value.site_name || 'GharBazaar')
 const siteTagline = computed(() => site.value.tagline || 'Shop Smart • Live Better')
 const siteLogo = computed(() => site.value.logo_url || null)
+const logoFailed = ref(false)
 
 const dropdownVariants = {
   hidden: { opacity: 0, y: -8, scale: 0.96 },
@@ -110,8 +111,8 @@ const inactiveMobileNavClasses = 'text-[#1A1A1A] dark:text-[#F5F5F5] bg-transpar
 
         <!-- Logo -->
         <Link href="/" class="flex items-center gap-2.5 sm:gap-3 shrink-0 no-underline group logo-link min-w-0">
-          <div v-if="siteLogo" class="relative w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center overflow-hidden logo-icon bg-white dark:bg-white shadow-xs transition-shadow duration-300 shrink-0">
-            <img :src="siteLogo" :alt="siteName" class="w-full h-full object-contain p-0.5" />
+          <div v-if="siteLogo && !logoFailed" class="relative w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center overflow-hidden logo-icon bg-white/90 dark:bg-white/10 shadow-xs transition-shadow duration-300 shrink-0">
+            <img :src="siteLogo" :alt="siteName" class="w-full h-full object-contain p-0.5" @error="logoFailed = true" />
           </div>
           <div v-else class="relative w-8 h-8 sm:w-9 sm:h-9 rounded-xl flex items-center justify-center overflow-hidden logo-icon transition-shadow duration-300 shrink-0" style="background:linear-gradient(135deg,var(--gold),var(--gold-dark));">
             <svg class="w-4 h-4 sm:w-5 sm:h-5 relative z-10" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">

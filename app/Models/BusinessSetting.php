@@ -28,7 +28,7 @@ class BusinessSetting extends Model
         return [
             'site_name' => 'GharBazaar',
             'tagline' => 'Shop Smart • Live Better',
-            'logo' => 'branding/logo.png',
+            'logo' => null,
             'primary_color' => '#D4AF37',
             'accent_color' => '#B8960F',
             'contact_email' => 'info@gharbazaar.com',
@@ -50,9 +50,11 @@ class BusinessSetting extends Model
         $settings = static::current();
 
         $logoUrl = null;
-        if ($settings->logo) {
+        if ($settings->logo && $settings->logo !== 'branding/logo.png' && file_exists(storage_path('app/public/'.$settings->logo))) {
             $logoUrl = asset('storage/'.$settings->logo);
         } elseif (file_exists(public_path('images/logo.png'))) {
+            $logoUrl = asset('images/logo.png');
+        } elseif ($settings->logo) {
             $logoUrl = asset('images/logo.png');
         }
 

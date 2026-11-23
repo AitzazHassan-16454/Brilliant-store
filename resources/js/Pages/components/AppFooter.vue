@@ -1,11 +1,12 @@
 <script setup>
-import { computed } from "vue"
+import { ref, computed } from "vue"
 import { Link, usePage } from "@inertiajs/vue3"
 
 const page = usePage()
 const site = computed(() => page.props.site ?? {})
 const siteName = computed(() => site.value.site_name || "GharBazaar")
 const siteLogo = computed(() => site.value.logo_url || null)
+const logoFailed = ref(false)
 const description = computed(() => site.value.footer_description || "GharBazaar — Shop Smart, Live Better. Everyday essentials and curated collections delivered to your doorstep.")
 const contactEmail = computed(() => site.value.contact_email || "info@gharbazaar.com")
 const contactHours = computed(() => site.value.contact_hours || "Mon - Fri: 9:00 AM - 6:00 PM")
@@ -18,8 +19,8 @@ const contactHours = computed(() => site.value.contact_hours || "Mon - Fri: 9:00
 
         <div class="col-span-1 sm:col-span-2 lg:col-span-1">
           <div class="flex items-center gap-2 mb-4">
-            <div v-if="siteLogo" class="w-8 h-8 rounded-xl flex items-center justify-center overflow-hidden bg-white">
-              <img :src="siteLogo" :alt="siteName" class="w-full h-full object-contain p-0.5" />
+            <div v-if="siteLogo && !logoFailed" class="w-8 h-8 rounded-xl flex items-center justify-center overflow-hidden bg-white/90 dark:bg-white/10">
+              <img :src="siteLogo" :alt="siteName" class="w-full h-full object-contain p-0.5" @error="logoFailed = true" />
             </div>
             <div v-else class="w-8 h-8 rounded-xl flex items-center justify-center bg-gradient-to-br from-[#D4AF37] to-[#B8941E]">
               <svg class="w-4 h-4" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" viewBox="0 0 24 24">
