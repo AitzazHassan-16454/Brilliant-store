@@ -41,6 +41,8 @@ Route::post('/track-order/{code}/payment-slip', [OrderTrackingController::class,
 
 Route::get('/about', fn () => Inertia::render('About'))->name('about');
 
+Route::post('/ai/chat', [ChatBotController::class, 'chat'])->name('ai.chat');
+
 Route::post('/stripe/webhook', [CheckoutController::class, 'webhook'])->name('stripe.webhook');
 
 Route::get('/categories/{category}', [CategoryController::class, 'show'])
@@ -104,7 +106,6 @@ Route::middleware('auth')->group(function () {
     Route::post('/reviews/{review}/reject', [ReviewController::class, 'reject']);
     Route::delete('/reviews/{review}/admin', [ReviewController::class, 'adminDestroy']);
 
-    Route::post('/ai/chat', [ChatBotController::class, 'chat']);
     Route::get('/ai/history', [ChatBotController::class, 'history']);
 
     Route::get('/orders', [OrderController::class, 'index']);
